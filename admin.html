@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tax-Agent 관리자 설정</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .api-section {
+            margin-bottom: 40px;
+            padding: 25px;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            background: #f8f9fa;
+        }
+
+        .api-section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #495057;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #4facfe;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .status-connected {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-disconnected {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(79, 172, 254, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .info-box h3 {
+            color: #0056b3;
+            margin-bottom: 10px;
+        }
+
+        .info-box ul {
+            margin-left: 20px;
+            color: #495057;
+        }
+
+        .info-box li {
+            margin-bottom: 8px;
+        }
+
+        .test-result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .test-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .test-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #4facfe;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+
+            .header {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .api-section {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 Tax-Agent 관리자 설정</h1>
+            <p>AI API 키 설정 및 시스템 관리</p>
+        </div>
+
+        <div class="content">
+            <a href="index.html" class="back-link">← 챗봇으로 돌아가기</a>
+
+            <div class="info-box">
+                <h3>📋 설정 안내</h3>
+                <ul>
+                    <li><strong>OpenAI API:</strong> ChatGPT 모델 사용을 위한 API 키</li>
+                    <li><strong>Google API:</strong> Gemini 모델 사용을 위한 API 키</li>
+                    <li><strong>Anthropic API:</strong> Claude 모델 사용을 위한 API 키</li>
+                    <li>API 키는 로컬 스토리지에 안전하게 저장됩니다</li>
+                    <li>설정 후 챗봇에서 AI 응답을 받을 수 있습니다</li>
+                </ul>
+            </div>
+
+            <!-- OpenAI API 설정 -->
+            <div class="api-section">
+                <h2>🤖 OpenAI API 설정</h2>
+                <div class="form-group">
+                    <label>활성화</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="openaiEnabled">
+                        <span class="slider"></span>
+                    </label>
+                    <span id="openaiStatus" class="status-indicator status-disconnected">연결 안됨</span>
+                </div>
+                <div class="form-group">
+                    <label for="openaiApiKey">API 키</label>
+                    <input type="password" id="openaiApiKey" placeholder="sk-...">
+                </div>
+                <div class="form-group">
+                    <label for="openaiModel">모델</label>
+                    <select id="openaiModel">
+                        <option value="gpt-4o">GPT-4o (권장)</option>
+                        <option value="gpt-4o-mini">GPT-4o Mini</option>
+                        <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                    </select>
+                </div>
+                <button class="btn" onclick="testOpenAI()">🔍 OpenAI 연결 테스트</button>
+                <button class="btn btn-secondary" onclick="saveOpenAI()">💾 OpenAI 설정 저장</button>
+                <div id="openaiTestResult"></div>
+            </div>
+
+            <!-- Google API 설정 -->
+            <div class="api-section">
+                <h2>🌐 Google Gemini API 설정</h2>
+                <div class="form-group">
+                    <label>활성화</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="googleEnabled">
+                        <span class="slider"></span>
+                    </label>
+                    <span id="googleStatus" class="status-indicator status-disconnected">연결 안됨</span>
+                </div>
+                <div class="form-group">
+                    <label for="googleApiKey">API 키</label>
+                    <input type="password" id="googleApiKey" placeholder="AIza...">
+                </div>
+                <div class="form-group">
+                    <label for="googleModel">모델</label>
+                    <select id="googleModel">
+                        <option value="gemini-flash-2.5">Gemini Flash 2.5 (권장)</option>
+                        <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
+                        <option value="gemini-1.5-pro">Gemini 1.5 Pro</option>
+                    </select>
+                </div>
+                <button class="btn" onclick="testGoogle()">🔍 Google 연결 테스트</button>
+                <button class="btn btn-secondary" onclick="saveGoogle()">💾 Google 설정 저장</button>
+                <div id="googleTestResult"></div>
+            </div>
+
+            <!-- Anthropic API 설정 -->
+            <div class="api-section">
+                <h2>🧠 Anthropic Claude API 설정</h2>
+                <div class="form-group">
+                    <label>활성화</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="anthropicEnabled">
+                        <span class="slider"></span>
+                    </label>
+                    <span id="anthropicStatus" class="status-indicator status-disconnected">연결 안됨</span>
+                </div>
+                <div class="form-group">
+                    <label for="anthropicApiKey">API 키</label>
+                    <input type="password" id="anthropicApiKey" placeholder="sk-ant-...">
+                </div>
+                <div class="form-group">
+                    <label for="anthropicModel">모델</label>
+                    <select id="anthropicModel">
+                        <option value="claude-3-5-sonnet-20241022">Claude 3.5 Sonnet (권장)</option>
+                        <option value="claude-3-5-haiku-20241022">Claude 3.5 Haiku</option>
+                        <option value="claude-3-opus-20240229">Claude 3 Opus</option>
+                    </select>
+                </div>
+                <button class="btn" onclick="testAnthropic()">🔍 Anthropic 연결 테스트</button>
+                <button class="btn btn-secondary" onclick="saveAnthropic()">💾 Anthropic 설정 저장</button>
+                <div id="anthropicTestResult"></div>
+            </div>
+
+            <!-- 전체 관리 -->
+            <div class="api-section">
+                <h2>⚙️ 전체 관리</h2>
+                <button class="btn" onclick="loadAllSettings()">🔄 모든 설정 불러오기</button>
+                <button class="btn btn-secondary" onclick="testAllAPIs()">🔍 모든 API 연결 테스트</button>
+                <button class="btn btn-danger" onclick="clearAllSettings()">🗑️ 모든 설정 삭제</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 설정 관리 클래스
+        class APISettingsManager {
+            constructor() {
+                this.loadAllSettings();
+                this.updateStatusIndicators();
+            }
+
+            // OpenAI 설정 저장
+            saveOpenAI() {
+                const settings = {
+                    enabled: document.getElementById('openaiEnabled').checked,
+                    apiKey: document.getElementById('openaiApiKey').value,
+                    model: document.getElementById('openaiModel').value
+                };
+
+                localStorage.setItem('openaiSettings', JSON.stringify(settings));
+                this.updateStatusIndicators();
+                this.showMessage('OpenAI 설정이 저장되었습니다.', 'success');
+            }
+
+            // Google 설정 저장
+            saveGoogle() {
+                const settings = {
+                    enabled: document.getElementById('googleEnabled').checked,
+                    apiKey: document.getElementById('googleApiKey').value,
+                    model: document.getElementById('googleModel').value
+                };
+
+                localStorage.setItem('googleSettings', JSON.stringify(settings));
+                this.updateStatusIndicators();
+                this.showMessage('Google 설정이 저장되었습니다.', 'success');
+            }
+
+            // Anthropic 설정 저장
+            saveAnthropic() {
+                const settings = {
+                    enabled: document.getElementById('anthropicEnabled').checked,
+                    apiKey: document.getElementById('anthropicApiKey').value,
+                    model: document.getElementById('anthropicModel').value
+                };
+
+                localStorage.setItem('anthropicSettings', JSON.stringify(settings));
+                this.updateStatusIndicators();
+                this.showMessage('Anthropic 설정이 저장되었습니다.', 'success');
+            }
+
+            // 모든 설정 불러오기
+            loadAllSettings() {
+                // OpenAI 설정 불러오기
+                const openaiSettings = JSON.parse(localStorage.getItem('openaiSettings') || '{}');
+                document.getElementById('openaiEnabled').checked = openaiSettings.enabled || false;
+                document.getElementById('openaiApiKey').value = openaiSettings.apiKey || '';
+                document.getElementById('openaiModel').value = openaiSettings.model || 'gpt-4o';
+
+                // Google 설정 불러오기
+                const googleSettings = JSON.parse(localStorage.getItem('googleSettings') || '{}');
+                document.getElementById('googleEnabled').checked = googleSettings.enabled || false;
+                document.getElementById('googleApiKey').value = googleSettings.apiKey || '';
+                document.getElementById('googleModel').value = googleSettings.model || 'gemini-flash-2.5';
+
+                // Anthropic 설정 불러오기
+                const anthropicSettings = JSON.parse(localStorage.getItem('anthropicSettings') || '{}');
+                document.getElementById('anthropicEnabled').checked = anthropicSettings.enabled || false;
+                document.getElementById('anthropicApiKey').value = anthropicSettings.apiKey || '';
+                document.getElementById('anthropicModel').value = anthropicSettings.model || 'claude-3-5-sonnet-20241022';
+            }
+
+            // 상태 표시 업데이트
+            updateStatusIndicators() {
+                // OpenAI 상태
+                const openaiEnabled = document.getElementById('openaiEnabled').checked;
+                const openaiApiKey = document.getElementById('openaiApiKey').value;
+                const openaiStatus = document.getElementById('openaiStatus');
+                
+                if (openaiEnabled && openaiApiKey) {
+                    openaiStatus.textContent = '연결됨';
+                    openaiStatus.className = 'status-indicator status-connected';
+                } else {
+                    openaiStatus.textContent = '연결 안됨';
+                    openaiStatus.className = 'status-indicator status-disconnected';
+                }
+
+                // Google 상태
+                const googleEnabled = document.getElementById('googleEnabled').checked;
+                const googleApiKey = document.getElementById('googleApiKey').value;
+                const googleStatus = document.getElementById('googleStatus');
+                
+                if (googleEnabled && googleApiKey) {
+                    googleStatus.textContent = '연결됨';
+                    googleStatus.className = 'status-indicator status-connected';
+                } else {
+                    googleStatus.textContent = '연결 안됨';
+                    googleStatus.className = 'status-indicator status-disconnected';
+                }
+
+                // Anthropic 상태
+                const anthropicEnabled = document.getElementById('anthropicEnabled').checked;
+                const anthropicApiKey = document.getElementById('anthropicApiKey').value;
+                const anthropicStatus = document.getElementById('anthropicStatus');
+                
+                if (anthropicEnabled && anthropicApiKey) {
+                    anthropicStatus.textContent = '연결됨';
+                    anthropicStatus.className = 'status-indicator status-connected';
+                } else {
+                    anthropicStatus.textContent = '연결 안됨';
+                    anthropicStatus.className = 'status-indicator status-disconnected';
+                }
+            }
+
+            // OpenAI 연결 테스트
+            async testOpenAI() {
+                const apiKey = document.getElementById('openaiApiKey').value;
+                const model = document.getElementById('openaiModel').value;
+                const resultDiv = document.getElementById('openaiTestResult');
+
+                if (!apiKey) {
+                    this.showTestResult(resultDiv, 'API 키를 입력해주세요.', 'error');
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/.netlify/functions/ask-ai', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            model: model,
+                            messages: [{ role: 'user', content: 'Hello' }],
+                            max_tokens: 10
+                        })
+                    });
+
+                    if (response.ok) {
+                        this.showTestResult(resultDiv, '✅ OpenAI API 연결 성공!', 'success');
+                    } else {
+                        const error = await response.json();
+                        this.showTestResult(resultDiv, `❌ 연결 실패: ${error.message}`, 'error');
+                    }
+                } catch (error) {
+                    this.showTestResult(resultDiv, `❌ 연결 오류: ${error.message}`, 'error');
+                }
+            }
+
+            // Google 연결 테스트
+            async testGoogle() {
+                const apiKey = document.getElementById('googleApiKey').value;
+                const model = document.getElementById('googleModel').value;
+                const resultDiv = document.getElementById('googleTestResult');
+
+                if (!apiKey) {
+                    this.showTestResult(resultDiv, 'API 키를 입력해주세요.', 'error');
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/.netlify/functions/ask-gemini', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            model: model,
+                            prompt: 'Hello',
+                            maxOutputTokens: 10
+                        })
+                    });
+
+                    if (response.ok) {
+                        this.showTestResult(resultDiv, '✅ Google Gemini API 연결 성공!', 'success');
+                    } else {
+                        const error = await response.json();
+                        this.showTestResult(resultDiv, `❌ 연결 실패: ${error.message}`, 'error');
+                    }
+                } catch (error) {
+                    this.showTestResult(resultDiv, `❌ 연결 오류: ${error.message}`, 'error');
+                }
+            }
+
+            // Anthropic 연결 테스트
+            async testAnthropic() {
+                const apiKey = document.getElementById('anthropicApiKey').value;
+                const model = document.getElementById('anthropicModel').value;
+                const resultDiv = document.getElementById('anthropicTestResult');
+
+                if (!apiKey) {
+                    this.showTestResult(resultDiv, 'API 키를 입력해주세요.', 'error');
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/.netlify/functions/ask-claude', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            model: model,
+                            messages: [{ role: 'user', content: 'Hello' }],
+                            max_tokens: 10
+                        })
+                    });
+
+                    if (response.ok) {
+                        this.showTestResult(resultDiv, '✅ Anthropic Claude API 연결 성공!', 'success');
+                    } else {
+                        const error = await response.json();
+                        this.showTestResult(resultDiv, `❌ 연결 실패: ${error.message}`, 'error');
+                    }
+                } catch (error) {
+                    this.showTestResult(resultDiv, `❌ 연결 오류: ${error.message}`, 'error');
+                }
+            }
+
+            // 모든 API 연결 테스트
+            async testAllAPIs() {
+                await this.testOpenAI();
+                await this.testGoogle();
+                await this.testAnthropic();
+            }
+
+            // 모든 설정 삭제
+            clearAllSettings() {
+                if (confirm('정말로 모든 설정을 삭제하시겠습니까?')) {
+                    localStorage.removeItem('openaiSettings');
+                    localStorage.removeItem('googleSettings');
+                    localStorage.removeItem('anthropicSettings');
+                    
+                    this.loadAllSettings();
+                    this.updateStatusIndicators();
+                    this.showMessage('모든 설정이 삭제되었습니다.', 'success');
+                }
+            }
+
+            // 테스트 결과 표시
+            showTestResult(element, message, type) {
+                element.innerHTML = `<div class="test-result test-${type}">${message}</div>`;
+            }
+
+            // 메시지 표시
+            showMessage(message, type) {
+                alert(message);
+            }
+        }
+
+        // 전역 함수들
+        const settingsManager = new APISettingsManager();
+
+        function saveOpenAI() {
+            settingsManager.saveOpenAI();
+        }
+
+        function saveGoogle() {
+            settingsManager.saveGoogle();
+        }
+
+        function saveAnthropic() {
+            settingsManager.saveAnthropic();
+        }
+
+        function loadAllSettings() {
+            settingsManager.loadAllSettings();
+            settingsManager.updateStatusIndicators();
+        }
+
+        function testOpenAI() {
+            settingsManager.testOpenAI();
+        }
+
+        function testGoogle() {
+            settingsManager.testGoogle();
+        }
+
+        function testAnthropic() {
+            settingsManager.testAnthropic();
+        }
+
+        function testAllAPIs() {
+            settingsManager.testAllAPIs();
+        }
+
+        function clearAllSettings() {
+            settingsManager.clearAllSettings();
+        }
+
+        // 상태 표시 업데이트를 위한 이벤트 리스너
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggles = document.querySelectorAll('input[type="checkbox"]');
+            toggles.forEach(toggle => {
+                toggle.addEventListener('change', () => {
+                    settingsManager.updateStatusIndicators();
+                });
+            });
+        });
+    </script>
+</body>
+</html>

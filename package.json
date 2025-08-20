@@ -1,0 +1,26 @@
+{
+  "name": "phoenixai-tax-agent-landing",
+  "version": "1.0.0",
+  "description": "Tax-Agent 양도세 전문 챗봇 랜딩 페이지",
+  "main": "index.html",
+  "scripts": {
+    "dev": "netlify dev",
+    "build": "echo 'No build step required'",
+    "deploy": "netlify deploy --prod"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.7"
+  },
+  "devDependencies": {
+    "netlify-cli": "^15.0.0"
+  },
+  "keywords": [
+    "tax-agent",
+    "chatbot",
+    "capital-gains-tax",
+    "netlify",
+    "ai"
+  ],
+  "author": "PhoenixAI",
+  "license": "MIT"
+}
