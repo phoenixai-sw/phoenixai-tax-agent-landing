@@ -40,12 +40,12 @@ exports.handler = async function(event, context) {
       };
     }
 
-    // OpenAI API 키 확인 (개선된 오류 처리)
-    let apiKey = process.env.OPENAI_API_KEY;
+    // OpenAI API 키 확인 (Netlify 환경변수 우선)
+    let apiKey = process.env.DEFAULT_OPENAI_API_KEY;
     
-    // 환경변수에 API 키가 없으면 기본 키 사용
+    // 기본 키가 없으면 개인 키 사용
     if (!apiKey) {
-      apiKey = process.env.DEFAULT_OPENAI_API_KEY;
+      apiKey = process.env.OPENAI_API_KEY;
       if (!apiKey) {
         console.log('❌ OpenAI API 키가 설정되지 않음');
         return {
@@ -53,11 +53,13 @@ exports.handler = async function(event, context) {
           headers,
           body: JSON.stringify({ 
             error: 'OpenAI API key not configured',
-            message: '관리자에게 API 키 설정을 요청하세요.'
+            message: 'Netlify 환경변수에 DEFAULT_OPENAI_API_KEY를 설정해주세요.'
           })
         };
       }
-      console.log('⚠️ 기본 OpenAI API 키 사용 중');
+      console.log('⚠️ 개인 OpenAI API 키 사용 중');
+    } else {
+      console.log('✅ 기본 OpenAI API 키 사용 중');
     }
 
     // 메시지 배열 검증 및 정리
@@ -75,8 +77,8 @@ exports.handler = async function(event, context) {
       };
     }
 
-    // 토큰 한도 계산 (안전한 한도 설정)
-    const safeMaxTokens = Math.min(max_tokens || 1000, 1500);
+    // 토큰 한도 계산 (복잡한 질문 대응)
+    const safeMaxTokens = Math.min(max_tokens || 3000, 5000);
     
     console.log('🤖 OpenAI API 호출 정보:', {
       model: model || 'gpt-4o',

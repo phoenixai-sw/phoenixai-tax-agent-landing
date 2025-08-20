@@ -103,31 +103,28 @@ npm run dev
 - 기본 API 키가 내장되어 있어 즉시 사용 가능합니다
 
 ### 고급 사용 (선택사항)
-개인 API 키를 사용하려면 Netlify 대시보드에서 다음 환경변수를 설정할 수 있습니다:
+API 키를 사용하려면 Netlify 대시보드에서 다음 환경변수를 설정할 수 있습니다:
 
 ```bash
-# 개인 API 키 (우선순위 높음)
+# 기본 API 키 (1차 우선순위)
+DEFAULT_OPENAI_API_KEY=sk-proj-your-default-openai-api-key
+
+# 개인 API 키 (2차 우선순위)
 OPENAI_API_KEY=sk-your-openai-api-key
 GOOGLE_API_KEY=AIza-your-google-api-key
 ANTHROPIC_API_KEY=sk-ant-your-anthropic-api-key
-
-# 기본 API 키 (개인 키가 없을 때 사용)
-DEFAULT_OPENAI_API_KEY=sk-proj-your-default-openai-api-key
 ```
 
 ### ⚠️ 중요: API 키 설정 필요
 현재 기본 API 키가 설정되지 않아 일부 질문에서 오류가 발생할 수 있습니다. 
-다음 중 하나의 방법으로 해결하세요:
+다음 방법으로 해결하세요:
 
 1. **Netlify 환경변수 설정** (권장):
    - Netlify 대시보드 → Site settings → Environment variables
    - `DEFAULT_OPENAI_API_KEY`에 유효한 OpenAI API 키 설정
+   - 이 키가 1차 우선순위로 사용됩니다
 
-2. **관리자 페이지에서 개인 API 키 설정**:
-   - 챗봇 우측 상단 ⚙️ 버튼 클릭
-   - OpenAI 섹션에서 API 키 입력 및 활성화
-
-3. **개발자용 테스트 키 사용**:
+2. **개발자용 테스트 키 사용**:
    - OpenAI에서 무료 크레딧으로 테스트 가능
 
 ## 🌐 브라우저 호환성
