@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>피닉스 치과 AI 상담사</title>
+    <title>Tax-Agent</title>
     
     <!-- 캐시 방지 및 모바일 최적화 메타 태그 -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -781,7 +781,7 @@
                 <span class="home-icon">🏠</span>
                 <span class="home-arrow">←</span>
             </a>
-            <h1 class="chatbot-title">피닉스 치과 AI 상담사👩‍⚕️</h1>
+            <h1 class="chatbot-title">Tax-Agent💰</h1>
             
             <!-- API 설정 상태 표시 -->
             <div id="apiStatus">❌ AI API 설정 안됨</div>
@@ -818,10 +818,10 @@
     </div>
 
     <script>
-        console.log('🚀 피닉스 치과 AI 챗봇 시작 (최적화 버전)');
+        console.log('🚀 Tax-Agent 양도세 챗봇 시작 (최적화 버전)');
 
         // 🎯 챗봇 핵심 클래스 (단일 책임 원칙 적용)
-        class PhoenixChatbot {
+        class TaxAgentChatbot {
             constructor() {
                 this.currentLanguage = 'ko';
                 this.apiSettings = null;
@@ -843,35 +843,35 @@
             initializeTranslations() {
                 this.translations = {
                     ko: {
-                        title: '피닉스 치과 AI 상담사👩‍⚕️',
-                        placeholder: '메시지를 입력하세요...',
+                        title: 'Tax-Agent💰',
+                        placeholder: '양도세 관련 질문을 입력하세요...',
                         sendButton: '전송',
                         currentLanguage: '🇰🇷 KR',
-                        welcomeMessage: '피닉스 치과 AI상담사 입니다!',
+                        welcomeMessage: 'Tax-Agent 양도세 전문 상담사입니다!',
                         welcomeSubMessage: '우측 상단에서 언어 변경 가능합니다'
                     },
                     en: {
-                        title: 'Phoenix Dental AI Consultant👩‍⚕️',
-                        placeholder: 'Enter your message...',
+                        title: 'Tax-Agent💰',
+                        placeholder: 'Enter your capital gains tax question...',
                         sendButton: 'Send',
                         currentLanguage: '🇺🇸 US',
-                        welcomeMessage: 'I am Phoenix Dental AI consultant!',
+                        welcomeMessage: 'I am Tax-Agent capital gains tax specialist!',
                         welcomeSubMessage: 'Language change available in top right menu'
                     },
                     ru: {
-                        title: 'Консультант ИИ стоматологии Phoenix👩‍⚕️',
-                        placeholder: 'Введите ваше сообщение...',
+                        title: 'Tax-Agent💰',
+                        placeholder: 'Введите ваш вопрос о налоге на прирост капитала...',
                         sendButton: 'Отправить',
                         currentLanguage: '🇷🇺 RU',
-                        welcomeMessage: 'Я консультант ИИ стоматологии Phoenix!',
+                        welcomeMessage: 'Я специалист по налогу на прирост капитала Tax-Agent!',
                         welcomeSubMessage: 'Изменение языка доступно в меню справа вверху'
                     },
                     ja: {
-                        title: 'フェニックス歯科AIコンサルタント👩‍⚕️',
-                        placeholder: 'メッセージを入力してください...',
+                        title: 'Tax-Agent💰',
+                        placeholder: '譲渡税に関する質問を入力してください...',
                         sendButton: '送信',
                         currentLanguage: '🇯🇵 JP',
-                        welcomeMessage: 'フェニックス歯科AIコンサルタントです！',
+                        welcomeMessage: 'Tax-Agent譲渡税専門相談員です！',
                         welcomeSubMessage: '右上メニューで言語変更が可能です'
                     }
                 };
@@ -879,7 +879,7 @@
             
             // 초기화 (브라우저별 호환성 개선)
             async init() {
-                console.log('🤖 피닉스 치과 AI 챗봇 초기화 시작');
+                console.log('🤖 Tax-Agent 양도세 챗봇 초기화 시작');
                 
                 this.loadSettings();
                 this.setupEventListeners();
@@ -894,7 +894,7 @@
                     console.warn('⚠️ 브라우저별 API 연결 테스트 실패:', error);
                 }
                 
-                console.log('✅ 피닉스 치과 AI 챗봇 초기화 완료');
+                console.log('✅ Tax-Agent 양도세 챗봇 초기화 완료');
             }
             
             // 설정 로딩
@@ -944,11 +944,11 @@
                         return;
                     }
                     
-                    // 특정 치료비용 질문 처리 추가
-                    if (this.isSpecificTreatmentCostQuery(message)) {
-                        console.log('💰 특정 치료비용 질문 감지: 키워드 답변 제공');
-                        const costAnswer = this.createTreatmentCostContent(this.currentLanguage);
-                        this.addBotMessage(costAnswer);
+                    // 특정 양도세 계산 질문 처리 추가
+                    if (this.isSpecificTaxCalculationQuery(message)) {
+                        console.log('💰 특정 양도세 계산 질문 감지: 키워드 답변 제공');
+                        const taxAnswer = this.createTaxCalculationContent(this.currentLanguage);
+                        this.addBotMessage(taxAnswer);
                         return;
                     }
                     
@@ -1028,20 +1028,20 @@
                 
                 const greetingResponses = {
                     ko: {
-                        thanks: `천만에요! 피닉스치과를 이용해주셔서 감사합니다. 더 궁금한 점이 있으시면 언제든 문의해주세요 😊`,
-                        hello: `안녕하세요! 피닉스치과 AI 상담사입니다. 궁금한 점이 있으시면 언제든 말씀해 주세요 😊`
+                        thanks: `천만에요! Tax-Agent를 이용해주셔서 감사합니다. 더 궁금한 양도세 관련 질문이 있으시면 언제든 문의해주세요 😊`,
+                        hello: `안녕하세요! Tax-Agent 양도세 전문 상담사입니다. 양도세 관련 궁금한 점이 있으시면 언제든 말씀해 주세요 😊`
                     },
                     en: {
-                        thanks: `You're welcome! Thank you for using Phoenix Dental. If you have any more questions, please feel free to ask anytime 😊`,
-                        hello: `Hello! I am Phoenix Dental AI consultant. If you have any questions, please feel free to ask anytime 😊`
+                        thanks: `You're welcome! Thank you for using Tax-Agent. If you have any more capital gains tax questions, please feel free to ask anytime 😊`,
+                        hello: `Hello! I am Tax-Agent capital gains tax specialist. If you have any tax-related questions, please feel free to ask anytime 😊`
                     },
                     ru: {
-                        thanks: `Пожалуйста! Спасибо, что пользуетесь Phoenix Dental. Если у вас есть еще вопросы, пожалуйста, обращайтесь в любое время 😊`,
-                        hello: `Здравствуйте! Я консультант ИИ стоматологии Phoenix. Если у вас есть вопросы, пожалуйста, обращайтесь в любое время 😊`
+                        thanks: `Пожалуйста! Спасибо, что пользуетесь Tax-Agent. Если у вас есть еще вопросы о налоге на прирост капитала, пожалуйста, обращайтесь в любое время 😊`,
+                        hello: `Здравствуйте! Я специалист по налогу на прирост капитала Tax-Agent. Если у вас есть вопросы по налогам, пожалуйста, обращайтесь в любое время 😊`
                     },
                     ja: {
-                        thanks: `どういたしまして！フェニックス歯科をご利用いただき、ありがとうございます。他にご質問がございましたら、いつでもお気軽にお聞かせください 😊`,
-                        hello: `こんにちは！フェニックス歯科AIコンサルタントです。ご質問がございましたら、いつでもお気軽にお聞かせください 😊`
+                        thanks: `どういたしまして！Tax-Agentをご利用いただき、ありがとうございます。他に譲渡税に関するご質問がございましたら、いつでもお気軽にお聞かせください 😊`,
+                        hello: `こんにちは！Tax-Agent譲渡税専門相談員です。譲渡税に関するご質問がございましたら、いつでもお気軽にお聞かせください 😊`
                     }
                 };
                 
@@ -1081,17 +1081,17 @@
                         // 동적으로 콘텐츠 생성
                         let content;
                         switch (group.type) {
-                            case 'clinicHours':
-                                content = this.createClinicHoursContent(this.currentLanguage);
+                            case 'capitalGainsTax':
+                                content = this.createCapitalGainsTaxContent(this.currentLanguage);
                                 break;
-                            case 'treatmentCost':
-                                content = this.createTreatmentCostContent(this.currentLanguage);
+                            case 'taxCalculation':
+                                content = this.createTaxCalculationContent(this.currentLanguage);
                                 break;
-                            case 'reservationInquiry':
-                                content = this.createReservationContent(this.currentLanguage);
+                            case 'taxFiling':
+                                content = this.createTaxFilingContent(this.currentLanguage);
                                 break;
-                            case 'directions':
-                                content = this.createDirectionsContent(this.currentLanguage);
+                            case 'taxExemption':
+                                content = this.createTaxExemptionContent(this.currentLanguage);
                                 break;
                             default:
                                 content = '';
@@ -1107,60 +1107,60 @@
                 return null;
             }
             
-            // 키워드 그룹 정의 (균형잡힌 다국어 키워드)
+            // 키워드 그룹 정의 (양도세 관련 키워드)
             getKeywordGroups() {
                 return {
-                    clinicHours: {
+                    capitalGainsTax: {
                         keywords: [
                             // 한국어 (7개)
-                            '진료시간', '운영시간', '문여는', '열어', '닫는', '휴무', '휴진',
+                            '양도세', '양도소득세', '양도소득', '양도', '양도세율', '양도세계산', '양도세신고',
                             // 영어 (7개)
-                            'clinic hours', 'hours', 'operating hours', 'open', 'close', 'closed', 'holiday',
+                            'capital gains tax', 'capital gains', 'gains tax', 'tax on gains', 'capital gains rate', 'tax calculation',
                             // 러시아어 (7개)
-                            'часы работы', 'рабочие часы', 'открыто', 'закрыто', 'выходной',
+                            'налог на прирост капитала', 'прирост капитала', 'налог на доходы', 'налоговая ставка',
                             // 일본어 (7개)
-                            '診療時間', '営業時間', '開く', '閉じる', '休診', '休み'
+                            '譲渡税', '譲渡所得税', '譲渡所得', '譲渡', '譲渡税率', '譲渡税計算'
                         ],
-                        type: 'clinicHours'
+                        type: 'capitalGainsTax'
                     },
-                    treatmentCost: {
+                    taxCalculation: {
                         keywords: [
                             // 한국어 (7개)
-                            '치료비용', '진료비', '비용', '가격', '얼마', '요금', '금액',
+                            '세금계산', '양도세계산', '세율', '과세표준', '세액', '공제', '감면',
                             // 영어 (7개)
-                            'treatment cost', 'cost', 'price', 'fee', 'charge', 'amount',
+                            'tax calculation', 'tax rate', 'taxable income', 'tax amount', 'deduction', 'exemption',
                             // 러시아어 (7개)
-                            'стоимость лечения', 'стоимость', 'цена', 'плата', 'сумма',
+                            'расчет налога', 'налоговая ставка', 'налогооблагаемый доход', 'налоговая сумма',
                             // 일본어 (7개)
-                            '治療費', '料金', '価格', '費用', '金額'
+                            '税金計算', '譲渡税計算', '税率', '課税標準', '税額', '控除', '減免'
                         ],
-                        type: 'treatmentCost'
+                        type: 'taxCalculation'
                     },
-                    reservation: {
+                    taxFiling: {
                         keywords: [
                             // 한국어 (6개)
-                            '예약', '예약문의', '신청', '접수', '상담', '문의',
+                            '세금신고', '양도세신고', '신고', '신고기한', '신고서', '신고방법',
                             // 영어 (6개)
-                            'reservation', 'booking', 'appointment', 'consultation', 'inquiry',
+                            'tax filing', 'tax return', 'filing', 'deadline', 'tax form', 'filing method',
                             // 러시아어 (6개)
-                            'запись', 'бронирование', 'консультация', 'запрос',
+                            'налоговая декларация', 'декларация', 'срок подачи', 'налоговая форма',
                             // 일본어 (6개)
-                            '予約', '申し込み', '相談', '問い合わせ'
+                            '税金申告', '譲渡税申告', '申告', '申告期限', '申告書', '申告方法'
                         ],
-                        type: 'reservationInquiry'
+                        type: 'taxFiling'
                     },
-                    directions: {
+                    taxExemption: {
                         keywords: [
                             // 한국어 (8개)
-                            '오시는길', '주소', '위치', '어디', '찾아', '교통', '지하철', '버스',
+                            '비과세', '면세', '공제', '감면', '비과세요건', '면세요건', '공제요건', '감면요건',
                             // 영어 (8개)
-                            'directions', 'location', 'address', 'where', 'find', 'transport', 'subway', 'bus',
+                            'tax exemption', 'exemption', 'deduction', 'non-taxable', 'exemption requirements', 'deduction requirements',
                             // 러시아어 (8개)
-                            'как добраться', 'адрес', 'местоположение', 'где', 'найти', 'транспорт', 'метро', 'автобус',
+                            'налоговые льготы', 'освобождение', 'вычет', 'необлагаемый', 'льготные требования',
                             // 일본어 (8개)
-                            'アクセス', '住所', '場所', 'どこ', '見つける', '交通', '地下鉄', 'バス'
+                            '非課税', '免税', '控除', '減免', '非課税要件', '免税要件', '控除要件', '減免要件'
                         ],
-                        type: 'directions'
+                        type: 'taxExemption'
                     }
                 };
             }
@@ -1193,29 +1193,29 @@
                 return detailedPatterns.some(pattern => pattern.test(normalized));
             }
             
-            // 특정 치료비용 질문 감지 함수 추가
-            isSpecificTreatmentCostQuery(message) {
-                const costKeywords = [
-                    // 치료 종류별 키워드
-                    '스케일링', '임플란트', '교정', '미백', '충치', '발치', '보철', '치근관', '잇몸',
-                    'scaling', 'implant', 'orthodontics', 'whitening', 'cavity', 'extraction', 'prosthesis', 'root canal', 'gum',
-                    'чистка', 'имплант', 'ортодонтия', 'отбеливание', 'кариес', 'удаление', 'протезирование', 'канал', 'десна',
-                    'スケーリング', 'インプラント', '矯正', 'ホワイトニング', '虫歯', '抜歯', '補綴', '根管', '歯茎'
+            // 특정 양도세 계산 질문 감지 함수 추가
+            isSpecificTaxCalculationQuery(message) {
+                const taxKeywords = [
+                    // 양도세 종류별 키워드
+                    '부동산', '주식', '토지', '건물', '아파트', '빌라', '상가', '토지양도', '부동산양도', '주식양도',
+                    'real estate', 'stock', 'land', 'building', 'apartment', 'villa', 'commercial property', 'land transfer', 'real estate transfer', 'stock transfer',
+                    'недвижимость', 'акции', 'земля', 'здание', 'квартира', 'вилла', 'коммерческая недвижимость',
+                    '不動産', '株式', '土地', '建物', 'アパート', 'マンション', '商業施設', '土地譲渡', '不動産譲渡', '株式譲渡'
                 ];
                 
-                const priceKeywords = [
-                    // 가격 관련 키워드
-                    '얼마', '비용', '가격', '요금', '금액', '돈', '원',
-                    'cost', 'price', 'fee', 'amount', 'money',
-                    'стоимость', 'цена', 'плата', 'сумма', 'деньги',
-                    '料金', '価格', '費用', '金額', 'お金', '円'
+                const calculationKeywords = [
+                    // 계산 관련 키워드
+                    '계산', '세율', '세금', '양도세', '얼마', '금액', '원',
+                    'calculation', 'tax rate', 'tax', 'capital gains tax', 'amount', 'money',
+                    'расчет', 'налоговая ставка', 'налог', 'сумма', 'деньги',
+                    '計算', '税率', '税金', '譲渡税', '金額', 'お金', '円'
                 ];
                 
                 const normalized = message.toLowerCase().trim();
-                const hasCostKeyword = costKeywords.some(keyword => normalized.includes(keyword));
-                const hasPriceKeyword = priceKeywords.some(keyword => normalized.includes(keyword));
+                const hasTaxKeyword = taxKeywords.some(keyword => normalized.includes(keyword));
+                const hasCalculationKeyword = calculationKeywords.some(keyword => normalized.includes(keyword));
                 
-                return hasCostKeyword && hasPriceKeyword;
+                return hasTaxKeyword && hasCalculationKeyword;
             }
             
             // 스마트 대화 이력 필터링 함수 추가
@@ -1223,9 +1223,9 @@
                 const recentHistory = this.chatHistory.slice(-this.MAX_HISTORY);
                 
                 // 질문 유형에 따른 필터링
-                if (this.isSpecificTreatmentCostQuery(message)) {
-                    // 치료비용 질문: 이력 제외 (정확한 답변을 위해)
-                    console.log('💰 치료비용 질문 감지: 대화 이력 제외');
+                if (this.isSpecificTaxCalculationQuery(message)) {
+                    // 양도세 계산 질문: 이력 제외 (정확한 답변을 위해)
+                    console.log('💰 양도세 계산 질문 감지: 대화 이력 제외');
                     return [];
                 } else if (this.isDetailedQuestion(message)) {
                     // 상세 질문: 최근 5개 메시지만 포함 (관련성 높은 컨텍스트만)
@@ -1362,7 +1362,7 @@
                 }
                 
                 // 모든 Q&A를 컨텍스트로 정리
-                let context = '\n\n=== 병원 전문 지식 정보 ===\n';
+                let context = '\n\n=== 양도세 전문 지식 정보 ===\n';
                 this.knowledgeBase.parsedData.forEach((qa, index) => {
                     context += `${index + 1}. Q: ${qa.question}\n   A: ${qa.answer}\n`;
                 });
@@ -1374,20 +1374,20 @@
             getReservationText() {
                 const texts = {
                     ko: {
-                        message: '자세한 문의는 방문 상담을 받아보세요!',
-                        button: '📅 예약하기'
+                        message: '자세한 양도세 상담은 전문 세무사와 상담하세요!',
+                        button: '📞 세무사 상담'
                     },
                     en: {
-                        message: 'For detailed inquiries, please visit for consultation!',
-                        button: '📅 Make Reservation'
+                        message: 'For detailed capital gains tax consultation, please consult with a tax professional!',
+                        button: '📞 Tax Professional Consultation'
                     },
                     ru: {
-                        message: 'Для подробных консультаций, пожалуйста, посетите нас!',
-                        button: '📅 Записаться'
+                        message: 'Для подробной консультации по налогу на прирост капитала, пожалуйста, обратитесь к налоговому специалисту!',
+                        button: '📞 Консультация налогового специалиста'
                     },
                     ja: {
-                        message: '詳細なお問い合わせは来院相談をお受けください！',
-                        button: '📅 予約する'
+                        message: '詳細な譲渡税相談は専門税理士にご相談ください！',
+                        button: '📞 税理士相談'
                     }
                 };
                 
@@ -1398,20 +1398,20 @@
             getConsultantText() {
                 const texts = {
                     ko: {
-                        message: '전문가 상담원에게 1:1 상담 받아보세요!<br><br>(<strong>가능언어</strong> 한국어, 영어, 러시아어, 일본어)<br><br>(<strong>운영시간</strong> 오전9-오후9시, 점심 12시-13시)',
-                        button: '💬 전문가 상담원 1:1'
+                        message: '전문 세무사에게 1:1 양도세 상담 받아보세요!<br><br>(<strong>가능언어</strong> 한국어, 영어, 러시아어, 일본어)<br><br>(<strong>운영시간</strong> 오전9-오후9시, 점심 12시-13시)',
+                        button: '💬 전문 세무사 1:1'
                     },
                     en: {
-                        message: 'Get 1:1 consultation with a professional consultant!<br><br>(<strong>Available Languages</strong> Korean, English, Russian, Japanese)<br><br>(<strong>Operating Hours</strong> 9AM-9PM, Lunch 12PM-1PM)',
-                        button: '💬 Professional Consultant 1:1'
+                        message: 'Get 1:1 capital gains tax consultation with a professional tax consultant!<br><br>(<strong>Available Languages</strong> Korean, English, Russian, Japanese)<br><br>(<strong>Operating Hours</strong> 9AM-9PM, Lunch 12PM-1PM)',
+                        button: '💬 Professional Tax Consultant 1:1'
                     },
                     ru: {
-                        message: 'Получите индивидуальную консультацию профессионального консультанта!<br><br>(<strong>Доступные языки</strong> корейский, английский, русский, японский)<br><br>(<strong>Часы работы</strong> 9:00-21:00, Обед 12:00-13:00)',
-                        button: '💬 Профессиональный консультант 1:1'
+                        message: 'Получите индивидуальную консультацию по налогу на прирост капитала у профессионального налогового консультанта!<br><br>(<strong>Доступные языки</strong> корейский, английский, русский, японский)<br><br>(<strong>Часы работы</strong> 9:00-21:00, Обед 12:00-13:00)',
+                        button: '💬 Профессиональный налоговый консультант 1:1'
                     },
                     ja: {
-                        message: '専門家相談員に1対1相談を受けてください！<br><br>（<strong>対応言語</strong> 韓国語、英語、ロシア語、日本語）<br><br>（<strong>営業時間</strong> 午前9時-午後9時、昼休み 12時-13時）',
-                        button: '💬 専門家相談員 1:1'
+                        message: '専門税理士に1対1譲渡税相談を受けてください！<br><br>（<strong>対応言語</strong> 韓国語、英語、ロシア語、日本語）<br><br>（<strong>営業時間</strong> 午前9時-午後9時、昼休み 12時-13時）',
+                        button: '💬 専門税理士 1:1'
                     }
                 };
                 
@@ -1436,36 +1436,36 @@
             
             // ChatGPT API 호출
             async callChatGPTAPI(message, settings, contextInfo, useSmartFiltering = false) {
-                const systemPrompt = `당신은 피닉스 치과 병원의 전문 AI 상담사입니다. 
+                const systemPrompt = `당신은 Tax-Agent의 전문 양도세 상담사입니다. 
                 매우 친절하고 전문적으로 답변해주세요.
 
-                병원 기본 정보:
-                • 병원명: 피닉스 치과 병원
-                • 원장: 홍길동 (25년 경력 치주질환 전문의)
-                • 진료시간: 평일 09:00-18:00, 토요일 09:00-15:00, 점심시간 12:30-13:30
-                • 휴진: 일요일, 공휴일
-                • 전화: 070-1234-1234 (24시간 응급상담 가능)
-                • 주소: 피닉스시 피닉스로 11길 11, 피닉스타워 11층 11호
-                • 교통: 지하철 2호선 강남역 3번 출구 도보 5분
-                • 주차: 건물 지하 1-3층 무료 주차 (3시간)
-                • 진료과목: 일반진료, 미백치료, 교정치료, 임플란트, 보철치료, 소아치과
+                양도세 기본 정보:
+                • 양도소득세: 자산을 양도할 때 발생하는 소득에 대한 세금
+                • 과세대상: 부동산, 주식, 토지, 건물, 기타 자산의 양도
+                • 과세표준: 양도가액 - 취득가액 - 필요경비
+                • 세율: 과세표준에 따라 6%~45% (누진세율)
+                • 신고기한: 양도일이 속하는 연도의 다음 연도 5월 31일까지
+                • 신고방법: 국세청 홈택스 또는 세무서 방문
 
-                치료비 안내:
-                • 일반진료: 초진 15,000원, 재진 10,000원
-                • 스케일링: 50,000원 (건강보험 적용 시 연 1회 무료)
-                • 미백치료: 200,000-300,000원
-                • 교정치료: 1,500,000-6,000,000원
-                • 임플란트: 1,200,000-1,500,000원
+                주요 양도세 종류:
+                • 부동산양도소득세: 부동산, 토지, 건물 양도 시
+                • 주식양도소득세: 주식, 지분 양도 시
+                • 기타자산양도소득세: 기타 자산 양도 시
+
+                비과세 요건:
+                • 1세대 1주택 비과세: 조건 충족 시 최대 12억원까지 비과세
+                • 장기보유특별공제: 보유기간에 따라 공제율 적용
+                • 기본공제: 연간 250만원 기본공제
 
                 ${contextInfo}
 
                 답변 작성 원칙:
                 1. 매우 친절하고 따뜻한 말투를 사용하세요
                 2. 전문적이면서도 이해하기 쉽게 설명하세요
-                3. 구체적인 정보를 제공하되, 정확하지 않은 의료 진단은 피하세요
-                4. 예약이나 상담이 필요한 경우 적극 안내하세요
+                3. 구체적인 정보를 제공하되, 정확하지 않은 세무 조언은 피하세요
+                4. 전문 세무사 상담이 필요한 경우 적극 안내하세요
                 5. 답변을 구조화하여 읽기 쉽게 정리해주세요
-                6. 진료시간, 치료비용, 예약문의, 오시는길 등 주요 질문에 대해서는 자연스럽고 상세한 설명을 제공하세요
+                6. 양도세율, 양도세계산, 양도세신고, 비과세요건 등 주요 질문에 대해서는 자연스럽고 상세한 설명을 제공하세요
                 7. 사용자의 편의를 고려한 실용적인 조언을 포함해주세요
                 8. 고객이 보기 편하게 정리되어서 나가야 합니다
                 9. 단어와 문장에 적합한 이모티콘도 적절히 사용하세요
@@ -1854,10 +1854,10 @@
             // AI 응답 생성
             async generateAIResponse(message, useSmartFiltering = false) {
                 const loadingMessages = {
-                    ko: '👩‍⚕️ 피닉스 치과 AI 상담사가 답변을 준비 중 입니다...⏰<span class="loading-dots"></span>',
-                    en: '👩‍⚕️ Phoenix Dental AI consultant is preparing an answer...⏰<span class="loading-dots"></span>',
-                    ru: '👩‍⚕️ Консультант ИИ Phoenix Dental готовит ответ...⏰<span class="loading-dots"></span>',
-                    ja: '👩‍⚕️ フェニックス歯科AIコンサルタントが回答を準備中です...⏰<span class="loading-dots"></span>'
+                    ko: '💰 Tax-Agent 양도세 전문 상담사가 답변을 준비 중 입니다...⏰<span class="loading-dots"></span>',
+                    en: '💰 Tax-Agent capital gains tax specialist is preparing an answer...⏰<span class="loading-dots"></span>',
+                    ru: '💰 Специалист по налогу на прирост капитала Tax-Agent готовит ответ...⏰<span class="loading-dots"></span>',
+                    ja: '💰 Tax-Agent譲渡税専門相談員が回答を準備中です...⏰<span class="loading-dots"></span>'
                 };
                 
                 const loadingMessage = this.addBotMessage(loadingMessages[this.currentLanguage] || loadingMessages['ko']);
@@ -1893,57 +1893,57 @@
                 const responses = {
                     ko: [
                         `안녕하세요! "${message}"에 대한 답변을 도와드리겠습니다.`,
-                        '피닉스치과 AI 상담사입니다. 더 자세한 상담이 필요하시면 언제든 연락주세요!',
-                        '궁금한 점이 있으시면 진료시간, 치료비용, 예약, 오시는길 등을 입력해보세요.'
+                        'Tax-Agent 양도세 전문 상담사입니다. 더 자세한 상담이 필요하시면 언제든 연락주세요!',
+                        '궁금한 점이 있으시면 양도세율, 양도세계산, 양도세신고, 비과세요건 등을 입력해보세요.'
                     ],
                     en: [
                         `Hello! I'll help you with an answer about "${message}".`,
-                        'I am Phoenix Dental AI consultant. Please contact us anytime if you need more detailed consultation!',
-                        'If you have any questions, please try entering clinic hours, treatment costs, reservation, directions, etc.'
+                        'I am Tax-Agent capital gains tax specialist. Please contact us anytime if you need more detailed consultation!',
+                        'If you have any questions, please try entering capital gains tax rates, tax calculation, tax filing, exemption requirements, etc.'
                     ],
                     ru: [
                         `Здравствуйте! Я помогу вам с ответом на "${message}".`,
-                        'Я консультант ИИ стоматологии Phoenix. Пожалуйста, обращайтесь в любое время, если вам нужна более подробная консультация!',
-                        'Если у вас есть вопросы, попробуйте ввести часы работы, стоимость лечения, запись, как добраться и т.д.'
+                        'Я специалист по налогу на прирост капитала Tax-Agent. Пожалуйста, обращайтесь в любое время, если вам нужна более подробная консультация!',
+                        'Если у вас есть вопросы, попробуйте ввести ставки налога на прирост капитала, расчет налога, подачу декларации, требования к льготам и т.д.'
                     ],
                     ja: [
                         `こんにちは！"${message}"についての回答をお手伝いします。`,
-                        'フェニックス歯科AIコンサルタントです。より詳細な相談が必要でしたら、いつでもご連絡ください！',
-                        'ご質問がございましたら、診療時間、治療費、予約、アクセスなどを入力してみてください。'
+                        'Tax-Agent譲渡税専門相談員です。より詳細な相談が必要でしたら、いつでもご連絡ください！',
+                        'ご質問がございましたら、譲渡税率、譲渡税計算、譲渡税申告、非課税要件などを入力してみてください。'
                     ]
                 };
                 
                 const quickMenu = {
                     ko: {
-                        title: '💡 <strong>빠른 문의 메뉴</strong>',
-                        clinicHours: '• "진료시간" - 병원 운영시간 안내',
-                        treatmentCost: '• "치료비용" - 치료비 정보',
-                        reservation: '• "예약" - 예약 및 상담 문의',
-                        directions: '• "오시는길" - 병원 위치 안내',
+                        title: '💡 <strong>빠른 양도세 문의 메뉴</strong>',
+                        capitalGainsTax: '• "양도세" - 양도소득세 기본 정보',
+                        taxCalculation: '• "양도세계산" - 양도세 계산 방법',
+                        taxFiling: '• "양도세신고" - 양도세 신고 방법',
+                        taxExemption: '• "비과세요건" - 양도세 비과세 요건',
                         directInquiry: '📞 <strong>직접 문의:</strong> 070-1234-1234'
                     },
                     en: {
-                        title: '💡 <strong>Quick Inquiry Menu</strong>',
-                        clinicHours: '• "Clinic Hours" - Hospital operating hours',
-                        treatmentCost: '• "Treatment Cost" - Treatment cost information',
-                        reservation: '• "Reservation" - Reservation and consultation inquiry',
-                        directions: '• "Directions" - Hospital location guide',
+                        title: '💡 <strong>Quick Capital Gains Tax Inquiry Menu</strong>',
+                        capitalGainsTax: '• "Capital Gains Tax" - Basic capital gains tax information',
+                        taxCalculation: '• "Tax Calculation" - How to calculate capital gains tax',
+                        taxFiling: '• "Tax Filing" - How to file capital gains tax',
+                        taxExemption: '• "Exemption Requirements" - Capital gains tax exemption requirements',
                         directInquiry: '📞 <strong>Direct Inquiry:</strong> 070-1234-1234'
                     },
                     ru: {
-                        title: '💡 <strong>Быстрое меню запросов</strong>',
-                        clinicHours: '• "Часы работы" - Часы работы больницы',
-                        treatmentCost: '• "Стоимость лечения" - Информация о стоимости лечения',
-                        reservation: '• "Запись" - Запись и консультация',
-                        directions: '• "Как добраться" - Как найти больницу',
+                        title: '💡 <strong>Быстрое меню запросов по налогу на прирост капитала</strong>',
+                        capitalGainsTax: '• "Налог на прирост капитала" - Основная информация о налоге',
+                        taxCalculation: '• "Расчет налога" - Как рассчитать налог на прирост капитала',
+                        taxFiling: '• "Подача декларации" - Как подать декларацию по налогу',
+                        taxExemption: '• "Требования к льготам" - Требования к освобождению от налога',
                         directInquiry: '📞 <strong>Прямой запрос:</strong> 070-1234-1234'
                     },
                     ja: {
-                        title: '💡 <strong>クイック問い合わせメニュー</strong>',
-                        clinicHours: '• "診療時間" - 病院営業時間案内',
-                        treatmentCost: '• "治療費" - 治療費情報',
-                        reservation: '• "予約" - 予約・相談問い合わせ',
-                        directions: '• "アクセス" - 病院所在地案内',
+                        title: '💡 <strong>クイック譲渡税問い合わせメニュー</strong>',
+                        capitalGainsTax: '• "譲渡税" - 譲渡所得税基本情報',
+                        taxCalculation: '• "譲渡税計算" - 譲渡税計算方法',
+                        taxFiling: '• "譲渡税申告" - 譲渡税申告方法',
+                        taxExemption: '• "非課税要件" - 譲渡税非課税要件',
                         directInquiry: '📞 <strong>直接問い合わせ:</strong> 070-1234-1234'
                     }
                 };
@@ -1975,10 +1975,10 @@ ${currentQuickMenu.title}
 </div>
 
 <div style="margin: 10px 0;">
-${currentQuickMenu.clinicHours}
-${currentQuickMenu.treatmentCost}
-${currentQuickMenu.reservation}
-${currentQuickMenu.directions}
+${currentQuickMenu.capitalGainsTax}
+${currentQuickMenu.taxCalculation}
+${currentQuickMenu.taxFiling}
+${currentQuickMenu.taxExemption}
 </div>
 
 <div style="margin: 15px 0; padding: 10px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #4facfe;">
@@ -2017,7 +2017,7 @@ ${currentQuickMenu.directInquiry}
                 const messageDiv = document.createElement('div');
                 messageDiv.className = 'message bot';
                 messageDiv.innerHTML = `
-                    <div class="message-avatar">👩‍⚕️</div>
+                    <div class="message-avatar">💰</div>
                     <div class="message-content">${message}</div>
                 `;
                 messagesContainer.appendChild(messageDiv);
@@ -2097,28 +2097,28 @@ ${currentQuickMenu.directInquiry}
                 
                 const quickButtons = {
                     ko: {
-                        clinicHours: { text: '🕘 진료시간', message: '진료시간 알려주세요' },
-                        treatmentCost: { text: '💰 치료비용', message: '치료비용 궁금해요' },
-                        reservation: { text: '📞 예약문의', message: '예약문의 하고싶어요' },
-                        directions: { text: '🗺️ 오시는길', message: '오시는길 알려주세요' }
+                        capitalGainsTax: { text: '💰 양도세', message: '양도세 기본 정보 알려주세요' },
+                        taxCalculation: { text: '🧮 양도세계산', message: '양도세 계산 방법 궁금해요' },
+                        taxFiling: { text: '📋 양도세신고', message: '양도세 신고 방법 알려주세요' },
+                        taxExemption: { text: '✅ 비과세요건', message: '양도세 비과세 요건 궁금해요' }
                     },
                     en: {
-                        clinicHours: { text: '🕘 Clinic Hours', message: 'Tell me about clinic hours' },
-                        treatmentCost: { text: '💰 Treatment Cost', message: 'I want to know about treatment costs' },
-                        reservation: { text: '📞 Reservation', message: 'I want to make a reservation inquiry' },
-                        directions: { text: '🗺️ Directions', message: 'Tell me how to get there' }
+                        capitalGainsTax: { text: '💰 Capital Gains Tax', message: 'Tell me about capital gains tax basics' },
+                        taxCalculation: { text: '🧮 Tax Calculation', message: 'I want to know how to calculate capital gains tax' },
+                        taxFiling: { text: '📋 Tax Filing', message: 'Tell me how to file capital gains tax' },
+                        taxExemption: { text: '✅ Exemption Requirements', message: 'I want to know about exemption requirements' }
                     },
                     ru: {
-                        clinicHours: { text: '🕘 Часы работы', message: 'Расскажите о часах работы' },
-                        treatmentCost: { text: '💰 Стоимость лечения', message: 'Хочу узнать о стоимости лечения' },
-                        reservation: { text: '📞 Запись', message: 'Хочу записаться на консультацию' },
-                        directions: { text: '🗺️ Как добраться', message: 'Расскажите как добраться' }
+                        capitalGainsTax: { text: '💰 Налог на прирост капитала', message: 'Расскажите об основах налога на прирост капитала' },
+                        taxCalculation: { text: '🧮 Расчет налога', message: 'Хочу узнать как рассчитать налог на прирост капитала' },
+                        taxFiling: { text: '📋 Подача декларации', message: 'Расскажите как подать декларацию по налогу' },
+                        taxExemption: { text: '✅ Требования к льготам', message: 'Хочу узнать о требованиях к освобождению от налога' }
                     },
                     ja: {
-                        clinicHours: { text: '🕘 診療時間', message: '診療時間を教えてください' },
-                        treatmentCost: { text: '💰 治療費', message: '治療費について知りたいです' },
-                        reservation: { text: '📞 予約', message: '予約相談をしたいです' },
-                        directions: { text: '🗺️ アクセス', message: 'アクセス方法を教えてください' }
+                        capitalGainsTax: { text: '💰 譲渡税', message: '譲渡税の基本情報を教えてください' },
+                        taxCalculation: { text: '🧮 譲渡税計算', message: '譲渡税の計算方法を知りたいです' },
+                        taxFiling: { text: '📋 譲渡税申告', message: '譲渡税の申告方法を教えてください' },
+                        taxExemption: { text: '✅ 非課税要件', message: '譲渡税の非課税要件を知りたいです' }
                     }
                 };
                 
@@ -2133,17 +2133,17 @@ ${currentQuickMenu.directInquiry}
                             ${t.welcomeSubMessage}
                         </div>
                         <div class="quick-buttons">
-                            <button class="quick-button clinic-hours-btn" onclick="chatbot.handleQuickMessage('${currentButtons.clinicHours.message}')">
-                                ${currentButtons.clinicHours.text}
+                            <button class="quick-button clinic-hours-btn" onclick="chatbot.handleQuickMessage('${currentButtons.capitalGainsTax.message}')">
+                                ${currentButtons.capitalGainsTax.text}
                             </button>
-                            <button class="quick-button treatment-cost-btn" onclick="chatbot.handleQuickMessage('${currentButtons.treatmentCost.message}')">
-                                ${currentButtons.treatmentCost.text}
+                            <button class="quick-button treatment-cost-btn" onclick="chatbot.handleQuickMessage('${currentButtons.taxCalculation.message}')">
+                                ${currentButtons.taxCalculation.text}
                             </button>
-                            <button class="quick-button reservation-btn" onclick="chatbot.handleQuickMessage('${currentButtons.reservation.message}')">
-                                ${currentButtons.reservation.text}
+                            <button class="quick-button reservation-btn" onclick="chatbot.handleQuickMessage('${currentButtons.taxFiling.message}')">
+                                ${currentButtons.taxFiling.text}
                             </button>
-                            <button class="quick-button directions-btn" onclick="chatbot.handleQuickMessage('${currentButtons.directions.message}')">
-                                ${currentButtons.directions.text}
+                            <button class="quick-button directions-btn" onclick="chatbot.handleQuickMessage('${currentButtons.taxExemption.message}')">
+                                ${currentButtons.taxExemption.text}
                             </button>
                         </div>
                     </div>
@@ -2708,12 +2708,12 @@ ${currentQuickMenu.directInquiry}
             }
             
             // 콘텐츠 생성 메서드들
-            createClinicHoursContent(lang) {
+            createCapitalGainsTaxContent(lang) {
                 const content = {
-                    ko: '🕘 <strong>피닉스 치과 진료시간 안내</strong><br><br>📅 <strong>평일:</strong> 09:00 ~ 18:00<br>📅 <strong>토요일:</strong> 09:00 ~ 15:00<br>🍽️ <strong>점심시간:</strong> 12:30 ~ 13:30<br>🚫 <strong>휴진:</strong> 일요일, 공휴일<br><br>📞 <strong>예약 문의:</strong> 070-1234-1234',
-                    en: '🕘 <strong>Phoenix Dental Clinic Hours</strong><br><br>📅 <strong>Weekdays:</strong> 09:00 ~ 18:00<br>📅 <strong>Saturday:</strong> 09:00 ~ 15:00<br>🍽️ <strong>Lunch Break:</strong> 12:30 ~ 13:30<br>🚫 <strong>Closed:</strong> Sunday, Holidays<br><br>📞 <strong>Reservation:</strong> 070-1234-1234',
-                    ru: '🕘 <strong>Часы работы стоматологии Phoenix</strong><br><br>📅 <strong>Будни:</strong> 09:00 ~ 18:00<br>📅 <strong>Суббота:</strong> 09:00 ~ 15:00<br>🍽️ <strong>Обед:</strong> 12:30 ~ 13:30<br>🚫 <strong>Выходные:</strong> Воскресенье, праздники<br><br>📞 <strong>Запись:</strong> 070-1234-1234',
-                    ja: '🕘 <strong>フェニックス歯科診療時間案内</strong><br><br>📅 <strong>平日:</strong> 09:00 ~ 18:00<br>📅 <strong>土曜日:</strong> 09:00 ~ 15:00<br>🍽️ <strong>昼休み:</strong> 12:30 ~ 13:30<br>🚫 <strong>休診:</strong> 日曜日、祝日<br><br>📞 <strong>予約問い合わせ:</strong> 070-1234-1234'
+                    ko: '💰 <strong>양도소득세 기본 정보</strong><br><br>📋 <strong>정의:</strong> 자산을 양도할 때 발생하는 소득에 대한 세금<br>📋 <strong>과세대상:</strong> 부동산, 주식, 토지, 건물, 기타 자산의 양도<br>📋 <strong>과세표준:</strong> 양도가액 - 취득가액 - 필요경비<br>📋 <strong>세율:</strong> 과세표준에 따라 6%~45% (누진세율)<br>📋 <strong>신고기한:</strong> 양도일이 속하는 연도의 다음 연도 5월 31일까지<br><br>💡 <strong>정확한 계산은 전문 세무사와 상담하세요!</strong>',
+                    en: '💰 <strong>Capital Gains Tax Basic Information</strong><br><br>📋 <strong>Definition:</strong> Tax on income from asset transfers<br>📋 <strong>Taxable Items:</strong> Real estate, stocks, land, buildings, other assets<br>📋 <strong>Tax Base:</strong> Transfer amount - Acquisition cost - Necessary expenses<br>📋 <strong>Tax Rate:</strong> 6%~45% based on tax base (progressive rate)<br>📋 <strong>Filing Deadline:</strong> May 31st of the year following the transfer<br><br>💡 <strong>For accurate calculation, consult with a tax professional!</strong>',
+                    ru: '💰 <strong>Основная информация о налоге на прирост капитала</strong><br><br>📋 <strong>Определение:</strong> Налог на доход от передачи активов<br>📋 <strong>Облагаемые объекты:</strong> Недвижимость, акции, земля, здания, другие активы<br>📋 <strong>Налоговая база:</strong> Сумма передачи - Стоимость приобретения - Необходимые расходы<br>📋 <strong>Налоговая ставка:</strong> 6%~45% в зависимости от налоговой базы (прогрессивная ставка)<br>📋 <strong>Срок подачи:</strong> 31 мая года, следующего за передачей<br><br>💡 <strong>Для точного расчета обратитесь к налоговому специалисту!</strong>',
+                    ja: '💰 <strong>譲渡所得税基本情報</strong><br><br>📋 <strong>定義:</strong> 資産譲渡時に発生する所得に対する税金<br>📋 <strong>課税対象:</strong> 不動産、株式、土地、建物、その他資産の譲渡<br>📋 <strong>課税標準:</strong> 譲渡価額 - 取得価額 - 必要経費<br>📋 <strong>税率:</strong> 課税標準に応じて6%~45%（累進税率）<br>📋 <strong>申告期限:</strong> 譲渡日が属する年の翌年5月31日まで<br><br>💡 <strong>正確な計算は専門税理士にご相談ください！</strong>'
                 };
                 
                 // 현재 언어를 사용하여 예약 텍스트 가져오기
@@ -2726,12 +2726,12 @@ ${currentQuickMenu.directInquiry}
                 </div>`;
             }
             
-            createTreatmentCostContent(lang) {
+            createTaxCalculationContent(lang) {
                 const content = {
-                    ko: '💰 <strong>피닉스 치과 치료비용 안내</strong><br><br>🦷 <strong>일반 진료:</strong> 상담 후 안내<br>🦷 <strong>스케일링:</strong> 30,000원 ~ 50,000원<br>🦷 <strong>임플란트:</strong> 상담 후 개별 견적<br>🦷 <strong>교정:</strong> 상담 후 개별 견적<br><br>💡 <strong>정확한 비용은 진료 후 안내드립니다!</strong>',
-                    en: '💰 <strong>Phoenix Dental Treatment Costs</strong><br><br>🦷 <strong>General Treatment:</strong> Consultation required<br>🦷 <strong>Scaling:</strong> 30,000 ~ 50,000 KRW<br>🦷 <strong>Implant:</strong> Individual estimate<br>🦷 <strong>Orthodontics:</strong> Individual estimate<br><br>💡 <strong>Exact costs provided after examination!</strong>',
-                    ru: '💰 <strong>Стоимость лечения Phoenix</strong><br><br>🦷 <strong>Общее лечение:</strong> Требуется консультация<br>🦷 <strong>Чистка:</strong> 30,000 ~ 50,000 вон<br>🦷 <strong>Имплант:</strong> Индивидуальная оценка<br>🦷 <strong>Ортодонтия:</strong> Индивидуальная оценка<br><br>💡 <strong>Точная стоимость после обследования!</strong>',
-                    ja: '💰 <strong>フェニックス歯科治療費案内</strong><br><br>🦷 <strong>一般診療:</strong> 相談後ご案内<br>🦷 <strong>スケーリング:</strong> 30,000円 ~ 50,000円<br>🦷 <strong>インプラント:</strong> 相談後個別見積もり<br>🦷 <strong>矯正:</strong> 相談後個別見積もり<br><br>💡 <strong>正確な費用は診療後にご案内！</strong>'
+                    ko: '🧮 <strong>양도세 계산 방법</strong><br><br>📊 <strong>과세표준 계산:</strong><br>• 양도가액 - 취득가액 - 필요경비<br><br>📊 <strong>세율 적용:</strong><br>• 1,200만원 이하: 6%<br>• 1,200만원 초과 ~ 4,600만원: 15%<br>• 4,600만원 초과 ~ 8,800만원: 24%<br>• 8,800만원 초과 ~ 1.5억원: 35%<br>• 1.5억원 초과 ~ 3억원: 38%<br>• 3억원 초과 ~ 5억원: 40%<br>• 5억원 초과: 42%<br><br>💡 <strong>정확한 계산은 전문 세무사와 상담하세요!</strong>',
+                    en: '🧮 <strong>Capital Gains Tax Calculation Method</strong><br><br>📊 <strong>Tax Base Calculation:</strong><br>• Transfer amount - Acquisition cost - Necessary expenses<br><br>📊 <strong>Tax Rate Application:</strong><br>• Up to 12 million KRW: 6%<br>• 12-46 million KRW: 15%<br>• 46-88 million KRW: 24%<br>• 88-150 million KRW: 35%<br>• 150-300 million KRW: 38%<br>• 300-500 million KRW: 40%<br>• Over 500 million KRW: 42%<br><br>💡 <strong>For accurate calculation, consult with a tax professional!</strong>',
+                    ru: '🧮 <strong>Метод расчета налога на прирост капитала</strong><br><br>📊 <strong>Расчет налоговой базы:</strong><br>• Сумма передачи - Стоимость приобретения - Необходимые расходы<br><br>📊 <strong>Применение налоговой ставки:</strong><br>• До 12 млн вон: 6%<br>• 12-46 млн вон: 15%<br>• 46-88 млн вон: 24%<br>• 88-150 млн вон: 35%<br>• 150-300 млн вон: 38%<br>• 300-500 млн вон: 40%<br>• Свыше 500 млн вон: 42%<br><br>💡 <strong>Для точного расчета обратитесь к налоговому специалисту!</strong>',
+                    ja: '🧮 <strong>譲渡税計算方法</strong><br><br>📊 <strong>課税標準計算:</strong><br>• 譲渡価額 - 取得価額 - 必要経費<br><br>📊 <strong>税率適用:</strong><br>• 1,200万円以下: 6%<br>• 1,200万円超～4,600万円: 15%<br>• 4,600万円超～8,800万円: 24%<br>• 8,800万円超～1.5億円: 35%<br>• 1.5億円超～3億円: 38%<br>• 3億円超～5億円: 40%<br>• 5億円超: 42%<br><br>💡 <strong>正確な計算は専門税理士にご相談ください！</strong>'
                 };
                 
                 // 현재 언어를 사용하여 예약 텍스트 가져오기
@@ -2744,11 +2744,11 @@ ${currentQuickMenu.directInquiry}
                 </div>`;
             }
             
-            createReservationContent(lang) {
+            createTaxFilingContent(lang) {
                 const content = {
-                    ko: '📞 <strong>피닉스 치과 예약 문의</strong><br><br>🏥 <strong>병원명:</strong> 피닉스 치과<br>📞 <strong>전화번호:</strong> 070-1234-1234<br>💬 <strong>카카오톡:</strong> 피닉스치과<br>🌐 <strong>온라인 예약:</strong> 홈페이지 예약 시스템<br><br>💡 <strong>온라인 예약이 가장 편리합니다!</strong>',
-                    en: '📞 <strong>Phoenix Dental Reservation</strong><br><br>🏥 <strong>Clinic:</strong> Phoenix Dental<br>📞 <strong>Phone:</strong> 070-1234-1234<br>💬 <strong>KakaoTalk:</strong> Phoenix Dental<br>🌐 <strong>Online:</strong> Website reservation system<br><br>💡 <strong>Online booking is most convenient!</strong>',
-                    ru: '📞 <strong>Запись Phoenix Dental</strong><br><br>🏥 <strong>Клиника:</strong> Phoenix Dental<br>📞 <strong>Телефон:</strong> 070-1234-1234<br>💬 <strong>KakaoTalk:</strong> Phoenix Dental<br>🌐 <strong>Онлайн:</strong> Система записи на сайте<br><br>💡 <strong>Онлайн запись наиболее удобна!</strong>',
+                    ko: '📋 <strong>양도세 신고 방법</strong><br><br>📅 <strong>신고기한:</strong> 양도일이 속하는 연도의 다음 연도 5월 31일까지<br>📅 <strong>신고방법:</strong> 국세청 홈택스 또는 세무서 방문<br>📅 <strong>필요서류:</strong> 양도계약서, 취득증빙서류, 양도가액 증빙서류<br>📅 <strong>신고절차:</strong> 홈택스 접속 → 양도소득세 신고 → 서류 업로드 → 신고서 제출<br><br>💡 <strong>정확한 신고는 전문 세무사와 상담하세요!</strong>',
+                    en: '📋 <strong>Capital Gains Tax Filing Method</strong><br><br>📅 <strong>Filing Deadline:</strong> May 31st of the year following the transfer<br>📅 <strong>Filing Method:</strong> National Tax Service HomeTax or visit tax office<br>📅 <strong>Required Documents:</strong> Transfer contract, acquisition documents, transfer amount documents<br>📅 <strong>Filing Procedure:</strong> Access HomeTax → File capital gains tax → Upload documents → Submit return<br><br>💡 <strong>For accurate filing, consult with a tax professional!</strong>',
+                    ru: '📋 <strong>Метод подачи декларации по налогу на прирост капитала</strong><br><br>📅 <strong>Срок подачи:</strong> 31 мая года, следующего за передачей<br>📅 <strong>Способ подачи:</strong> Национальная налоговая служба HomeTax или посещение налоговой инспекции<br>📅 <strong>Необходимые документы:</strong> Договор передачи, документы о приобретении, документы о сумме передачи<br>📅 <strong>Процедура подачи:</strong> Доступ к HomeTax → Подача декларации по налогу → Загрузка документов → Подача декларации<br><br>💡 <strong>Для точной подачи обратитесь к налоговому специалисту!</strong>',
                     ja: '📞 <strong>フェニックス歯科予約</strong><br><br>🏥 <strong>病院名:</strong> フェニックス歯科<br>📞 <strong>電話番号:</strong> 070-1234-1234<br>💬 <strong>カカオトーク:</strong> フェニックス歯科<br>🌐 <strong>オンライン:</strong> ホーム페이지予約システム<br><br>💡 <strong>オンライン予約が最も便利です!</strong>'
                 };
                 
@@ -2762,12 +2762,12 @@ ${currentQuickMenu.directInquiry}
                 </div>`;
             }
             
-            createDirectionsContent(lang) {
+            createTaxExemptionContent(lang) {
                 const content = {
-                    ko: '🗺️ <strong>피닉스 치과 오시는길</strong><br><br>📍 <strong>주소:</strong> 서울특별시 강남구 테헤란로 123<br>🚇 <strong>지하철:</strong> 2호선 강남역 3번 출구 도보 5분<br>🚌 <strong>버스:</strong> 강남역 정류장 하차<br>🚗 <strong>주차:</strong> 건물 지하 1층 (2시간 무료)',
-                    en: '🗺️ <strong>Directions to Phoenix Dental</strong><br><br>📍 <strong>Address:</strong> 123 Teheran-ro, Gangnam-gu, Seoul<br>🚇 <strong>Subway:</strong> Line 2 Gangnam Station Exit 3, 5 min walk<br>🚌 <strong>Bus:</strong> Gangnam Station<br>🚗 <strong>Parking:</strong> Building B1 (2 hours free)',
-                    ru: '🗺️ <strong>Как добраться до Phoenix Dental</strong><br><br>📍 <strong>Адрес:</strong> Сеул, Каннам-гу, Техеран-ро 123<br>🚇 <strong>Метро:</strong> Линия 2, станция Каннам, выход 3, 5 мин пешком<br>🚌 <strong>Автобус:</strong> Остановка Каннам<br>🚗 <strong>Парковка:</strong> Подземный этаж (2 часа бесплатно)',
-                    ja: '🗺️ <strong>フェニックス歯科へのアクセス</strong><br><br>📍 <strong>住所:</strong> ソウル特別市江南区テヘラン路123<br>🚇 <strong>地下鉄:</strong> 2号線江南駅3番出口徒歩5分<br>🚌 <strong>バス:</strong> 江南駅停留所下車<br>🚗 <strong>駐車場:</strong> 建物地下1階（2時間無料）'
+                    ko: '✅ <strong>양도세 비과세 요건</strong><br><br>🏠 <strong>1세대 1주택 비과세:</strong> 조건 충족 시 최대 12억원까지 비과세<br>🏠 <strong>장기보유특별공제:</strong> 보유기간에 따라 공제율 적용<br>🏠 <strong>기본공제:</strong> 연간 250만원 기본공제<br>🏠 <strong>공제요건:</strong> 보유기간, 거주기간, 소유주택 수 등 확인 필요<br><br>💡 <strong>정확한 비과세 요건은 전문 세무사와 상담하세요!</strong>',
+                    en: '✅ <strong>Capital Gains Tax Exemption Requirements</strong><br><br>🏠 <strong>1st Generation 1 House Exemption:</strong> Up to 1.2 billion KRW tax-free when conditions are met<br>🏠 <strong>Long-term Holding Special Deduction:</strong> Deduction rate applied based on holding period<br>🏠 <strong>Basic Deduction:</strong> 2.5 million KRW annual basic deduction<br>🏠 <strong>Deduction Requirements:</strong> Holding period, residence period, number of owned houses, etc. need to be verified<br><br>💡 <strong>For accurate exemption requirements, consult with a tax professional!</strong>',
+                    ru: '✅ <strong>Требования к освобождению от налога на прирост капитала</strong><br><br>🏠 <strong>Освобождение 1 поколения 1 дома:</strong> До 1.2 млрд вон без налога при выполнении условий<br>🏠 <strong>Специальный вычет за долгосрочное владение:</strong> Ставка вычета применяется в зависимости от периода владения<br>🏠 <strong>Базовый вычет:</strong> 2.5 млн вон годовой базовый вычет<br>🏠 <strong>Требования к вычету:</strong> Период владения, период проживания, количество принадлежащих домов и т.д. необходимо проверить<br><br>💡 <strong>Для точных требований к освобождению обратитесь к налоговому специалисту!</strong>',
+                                          ja: '✅ <strong>譲渡税非課税要件</strong><br><br>🏠 <strong>1世帯1住宅非課税:</strong> 条件充足時最大12億円まで非課税<br>🏠 <strong>長期保有特別控除:</strong> 保有期間に応じて控除率適用<br>🏠 <strong>基本控除:</strong> 年間250万円基本控除<br>🏠 <strong>控除要件:</strong> 保有期間、居住期間、所有住宅数など確認必要<br><br>💡 <strong>正確な非課税要件は専門税理士にご相談ください！</strong>'
                 };
                 
                 // 현재 언어를 사용하여 예약 텍스트 가져오기
@@ -2881,7 +2881,7 @@ ${currentQuickMenu.directInquiry}
             });
             
             // 챗봇 인스턴스 생성 및 초기화
-            chatbot = new PhoenixChatbot();
+            chatbot = new TaxAgentChatbot();
             window.chatbot = chatbot; // 전역으로 설정
         });
 
