@@ -1882,14 +1882,39 @@
                     console.error('AI API 호출 실패:', error);
                     this.removeMessage(loadingMessage);
                     
-                    const apiErrorMessages = {
-                        ko: '🤖 AI API 호출 중 오류가 발생했습니다. 기본 답변을 제공합니다.',
-                        en: '🤖 An error occurred while calling AI API. Providing default answer.',
-                        ru: '🤖 Произошла ошибка при вызове ИИ API. Предоставляется базовый ответ.',
-                        ja: '🤖 AI API呼び出し中にエラーが発生しました。デフォルト回答を提供します。'
-                    };
+                    // 오류 유형별 상세 메시지
+                    let errorMessage = '';
+                    if (error.message.includes('API key not configured')) {
+                        errorMessage = {
+                            ko: '🔑 API 키가 설정되지 않았습니다. 관리자 페이지에서 API 키를 설정해주세요.',
+                            en: '🔑 API key is not configured. Please set up API key in admin page.',
+                            ru: '🔑 Ключ API не настроен. Пожалуйста, настройте ключ API на странице администратора.',
+                            ja: '🔑 APIキーが設定されていません。管理者ページでAPIキーを設定してください。'
+                        };
+                    } else if (error.message.includes('rate limit') || error.message.includes('quota')) {
+                        errorMessage = {
+                            ko: '⏰ API 사용 한도를 초과했습니다. 잠시 후 다시 시도해주세요.',
+                            en: '⏰ API rate limit exceeded. Please try again later.',
+                            ru: '⏰ Превышен лимит использования API. Пожалуйста, попробуйте позже.',
+                            ja: '⏰ API使用制限を超過しました。しばらくしてから再試行してください。'
+                        };
+                    } else if (error.message.includes('network') || error.message.includes('fetch')) {
+                        errorMessage = {
+                            ko: '🌐 네트워크 연결 오류입니다. 인터넷 연결을 확인해주세요.',
+                            en: '🌐 Network connection error. Please check your internet connection.',
+                            ru: '🌐 Ошибка сетевого подключения. Пожалуйста, проверьте подключение к интернету.',
+                            ja: '🌐 ネットワーク接続エラーです。インターネット接続を確認してください。'
+                        };
+                    } else {
+                        errorMessage = {
+                            ko: '🤖 AI API 호출 중 오류가 발생했습니다. 기본 답변을 제공합니다.',
+                            en: '🤖 An error occurred while calling AI API. Providing default answer.',
+                            ru: '🤖 Произошла ошибка при вызове ИИ API. Предоставляется базовый ответ.',
+                            ja: '🤖 AI API呼び出し中にエラーが発生しました。デフォルト回答を提供します。'
+                        };
+                    }
                     
-                    this.addBotMessage(apiErrorMessages[this.currentLanguage] || apiErrorMessages['ko']);
+                    this.addBotMessage(errorMessage[this.currentLanguage] || errorMessage['ko']);
                     const fallbackResponse = this.generateSimulatedResponse(message);
                     this.addBotMessage(fallbackResponse);
                 }
@@ -2060,16 +2085,31 @@ ${currentQuickMenu.directInquiry}
                 return div.textContent || div.innerText || '';
             }
             
-            // AI API용 대화 이력 가져오기
+            // AI API용 대화 이력 가져오기 (토큰 한도 최적화)
             getChatHistoryForAPI() {
-                // 최근 N개 메시지만 반환 (토큰 한도 고려)
-                const recentHistory = this.chatHistory.slice(-this.MAX_HISTORY);
+                // 토큰 한도를 고려하여 대화 이력 제한
+                const maxHistoryForAPI = Math.min(this.MAX_HISTORY, 10); // 최대 10개로 제한
+                const recentHistory = this.chatHistory.slice(-maxHistoryForAPI);
                 
-                // AI API 형식으로 변환
-                return recentHistory.map(msg => ({
-                    role: msg.role,
-                    content: msg.content
-                }));
+                // 각 메시지의 길이를 확인하고 너무 긴 메시지는 축약
+                const optimizedHistory = recentHistory.map(msg => {
+                    let content = msg.content;
+                    
+                    // 메시지가 너무 길면 축약 (HTML 태그 제거 후 길이 확인)
+                    const plainText = this.stripHtmlTags(content);
+                    if (plainText.length > 500) {
+                        content = plainText.substring(0, 500) + '...';
+                    }
+                    
+                    return {
+                        role: msg.role,
+                        content: content
+                    };
+                });
+                
+                console.log(`📝 API용 대화 이력 최적화: ${recentHistory.length}개 → ${optimizedHistory.length}개`);
+                
+                return optimizedHistory;
             }
             
             // 대화 이력 초기화

@@ -40,15 +40,50 @@ exports.handler = async function(event, context) {
       };
     }
 
-    // OpenAI API 키 확인 (기본 키 사용)
+    // OpenAI API 키 확인 (개선된 오류 처리)
     let apiKey = process.env.OPENAI_API_KEY;
     
     // 환경변수에 API 키가 없으면 기본 키 사용
     if (!apiKey) {
-      // 기본 API 키 (실제 배포 시에는 유효한 키로 교체 필요)
-      apiKey = process.env.DEFAULT_OPENAI_API_KEY || 'sk-proj-your-default-openai-api-key-here';
+      apiKey = process.env.DEFAULT_OPENAI_API_KEY;
+      if (!apiKey) {
+        console.log('❌ OpenAI API 키가 설정되지 않음');
+        return {
+          statusCode: 500,
+          headers,
+          body: JSON.stringify({ 
+            error: 'OpenAI API key not configured',
+            message: '관리자에게 API 키 설정을 요청하세요.'
+          })
+        };
+      }
       console.log('⚠️ 기본 OpenAI API 키 사용 중');
     }
+
+    // 메시지 배열 검증 및 정리
+    const validatedMessages = messages.filter(msg => 
+      msg && typeof msg === 'object' && 
+      msg.role && typeof msg.role === 'string' && 
+      msg.content && typeof msg.content === 'string'
+    );
+
+    if (validatedMessages.length === 0) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({ error: '유효한 메시지가 없습니다.' })
+      };
+    }
+
+    // 토큰 한도 계산 (안전한 한도 설정)
+    const safeMaxTokens = Math.min(max_tokens || 1000, 1500);
+    
+    console.log('🤖 OpenAI API 호출 정보:', {
+      model: model || 'gpt-4o',
+      messageCount: validatedMessages.length,
+      maxTokens: safeMaxTokens,
+      temperature: temperature || 0.7
+    });
 
     // OpenAI API 호출
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -59,8 +94,8 @@ exports.handler = async function(event, context) {
       },
       body: JSON.stringify({
         model: model || 'gpt-4o',
-        messages: messages,
-        max_tokens: max_tokens || 800,
+        messages: validatedMessages,
+        max_tokens: safeMaxTokens,
         temperature: temperature || 0.7
       })
     });

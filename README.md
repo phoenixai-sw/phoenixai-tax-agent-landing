@@ -115,6 +115,21 @@ ANTHROPIC_API_KEY=sk-ant-your-anthropic-api-key
 DEFAULT_OPENAI_API_KEY=sk-proj-your-default-openai-api-key
 ```
 
+### ⚠️ 중요: API 키 설정 필요
+현재 기본 API 키가 설정되지 않아 일부 질문에서 오류가 발생할 수 있습니다. 
+다음 중 하나의 방법으로 해결하세요:
+
+1. **Netlify 환경변수 설정** (권장):
+   - Netlify 대시보드 → Site settings → Environment variables
+   - `DEFAULT_OPENAI_API_KEY`에 유효한 OpenAI API 키 설정
+
+2. **관리자 페이지에서 개인 API 키 설정**:
+   - 챗봇 우측 상단 ⚙️ 버튼 클릭
+   - OpenAI 섹션에서 API 키 입력 및 활성화
+
+3. **개발자용 테스트 키 사용**:
+   - OpenAI에서 무료 크레딧으로 테스트 가능
+
 ## 🌐 브라우저 호환성
 
 - ✅ Chrome 90+
@@ -140,10 +155,22 @@ DEFAULT_OPENAI_API_KEY=sk-proj-your-default-openai-api-key
 ## 🐛 문제 해결
 
 ### API 연결 오류
-1. API 키가 올바른지 확인
-2. 관리자 페이지에서 연결 테스트 실행
-3. 브라우저 콘솔에서 오류 메시지 확인
-4. 다른 브라우저로 시도
+1. **API 키 설정 확인**:
+   - 관리자 페이지에서 API 키가 설정되어 있는지 확인
+   - Netlify 환경변수에 `DEFAULT_OPENAI_API_KEY` 설정
+   
+2. **오류 유형별 해결방법**:
+   - `API key not configured`: API 키 설정 필요
+   - `rate limit exceeded`: 잠시 후 다시 시도
+   - `network error`: 인터넷 연결 확인
+   
+3. **관리자 페이지에서 연결 테스트 실행**
+4. **브라우저 콘솔에서 오류 메시지 확인**
+5. **다른 브라우저로 시도**
+
+### 일부 질문에서만 오류 발생
+- **원인**: API 키 미설정, 토큰 한도 초과, 네트워크 문제
+- **해결**: API 키 설정, 대화 이력 초기화, 네트워크 재연결
 
 ### 브라우저별 문제
 - **Chrome**: 캐시 문제일 수 있으니 시크릿 모드로 테스트
