@@ -1552,13 +1552,49 @@
                 }
 
                 try {
-                    const response = await fetch('/.netlify/functions/ask-ai', fetchOptions);
+                    // 타임아웃 설정 (30초)
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 30000);
+                    
+                    const response = await fetch('/.netlify/functions/ask-ai', {
+                        ...fetchOptions,
+                        signal: controller.signal
+                    });
+                    
+                    clearTimeout(timeoutId);
 
                     if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                        const errorText = await response.text();
+                        console.error('❌ API 응답 오류:', {
+                            status: response.status,
+                            statusText: response.statusText,
+                            errorText: errorText
+                        });
+                        
+                        // HTTP 상태 코드별 구체적인 오류 메시지
+                        let specificError = '';
+                        if (response.status === 500) {
+                            specificError = '서버 내부 오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+                        } else if (response.status === 429) {
+                            specificError = 'API 호출 한도를 초과했습니다. 잠시 후 다시 시도해주세요.';
+                        } else if (response.status === 401) {
+                            specificError = 'API 인증 오류입니다. 관리자에게 문의해주세요.';
+                        } else if (response.status === 403) {
+                            specificError = 'API 접근이 거부되었습니다. 관리자에게 문의해주세요.';
+                        } else {
+                            specificError = `API 호출 실패 (${response.status}): ${response.statusText}`;
+                        }
+                        
+                        throw new Error(specificError);
                     }
 
                     const data = await response.json();
+                    
+                    // 응답 데이터 검증
+                    if (!data || !data.choices || !data.choices[0] || !data.choices[0].message) {
+                        console.error('❌ API 응답 형식 오류:', data);
+                        throw new Error('API 응답 형식이 올바르지 않습니다.');
+                    }
                     
                     // Edge 브라우저에서 마지막 단어 중복 문제 해결
                     let content = data.choices[0].message.content;
@@ -1579,6 +1615,23 @@
                     return content;
                 } catch (error) {
                     console.error('❌ ChatGPT API 호출 실패:', error);
+                    
+                    // 네트워크 오류인지 API 오류인지 구분
+                    if (error.name === 'AbortError') {
+                        throw new Error('⏰ API 호출 시간이 초과되었습니다. 잠시 후 다시 시도해주세요.');
+                    } else if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                        throw new Error('🌐 네트워크 연결 오류입니다. 인터넷 연결을 확인해주세요.');
+                    }
+                    
+                    // 이미 구체적인 오류 메시지가 있으면 그대로 사용
+                    if (error.message.includes('API 호출 실패') || 
+                        error.message.includes('서버 내부 오류') ||
+                        error.message.includes('API 호출 한도') ||
+                        error.message.includes('API 인증 오류') ||
+                        error.message.includes('API 접근이 거부') ||
+                        error.message.includes('API 응답 형식')) {
+                        throw error;
+                    }
                     
                     // 브라우저별 오류 메시지
                     const browserErrorMessages = {
@@ -1858,7 +1911,7 @@
                 return formatted;
             }
             
-            // AI 응답 생성
+            // AI 응답 생성 (재시도 로직 포함)
             async generateAIResponse(message, useSmartFiltering = false) {
                 const loadingMessages = {
                     ko: '💰 Tax-Agent 양도세 전문 상담사가 답변을 준비 중 입니다...⏰<span class="loading-dots"></span>',
@@ -1869,55 +1922,97 @@
                 
                 const loadingMessage = this.addBotMessage(loadingMessages[this.currentLanguage] || loadingMessages['ko']);
                 
-                try {
-                    // API 호출 로직
-                    const activeProvider = this.getActiveProvider();
-                    const contextInfo = this.getContextFromKnowledgeBase();
-                    
-                    // 스마트 필터링 옵션 전달
-                    const response = await this.callAPI(activeProvider, message, contextInfo, useSmartFiltering);
-                    this.removeMessage(loadingMessage);
-                    this.addBotMessage(this.formatAIResponse(response, activeProvider));
-                } catch (error) {
-                    console.error('AI API 호출 실패:', error);
-                    this.removeMessage(loadingMessage);
-                    
-                    // 오류 유형별 상세 메시지
-                    let errorMessage = '';
-                    if (error.message.includes('API key not configured')) {
-                        errorMessage = {
-                            ko: '🔑 API 키가 설정되지 않았습니다. 관리자 페이지에서 API 키를 설정해주세요.',
-                            en: '🔑 API key is not configured. Please set up API key in admin page.',
-                            ru: '🔑 Ключ API не настроен. Пожалуйста, настройте ключ API на странице администратора.',
-                            ja: '🔑 APIキーが設定されていません。管理者ページでAPIキーを設定してください。'
-                        };
-                    } else if (error.message.includes('rate limit') || error.message.includes('quota')) {
-                        errorMessage = {
-                            ko: '⏰ API 사용 한도를 초과했습니다. 잠시 후 다시 시도해주세요.',
-                            en: '⏰ API rate limit exceeded. Please try again later.',
-                            ru: '⏰ Превышен лимит использования API. Пожалуйста, попробуйте позже.',
-                            ja: '⏰ API使用制限を超過しました。しばらくしてから再試行してください。'
-                        };
-                    } else if (error.message.includes('network') || error.message.includes('fetch')) {
-                        errorMessage = {
-                            ko: '🌐 네트워크 연결 오류입니다. 인터넷 연결을 확인해주세요.',
-                            en: '🌐 Network connection error. Please check your internet connection.',
-                            ru: '🌐 Ошибка сетевого подключения. Пожалуйста, проверьте подключение к интернету.',
-                            ja: '🌐 ネットワーク接続エラーです。インターネット接続を確認してください。'
-                        };
-                    } else {
-                        errorMessage = {
-                            ko: '🤖 AI API 호출 중 오류가 발생했습니다. 기본 답변을 제공합니다.',
-                            en: '🤖 An error occurred while calling AI API. Providing default answer.',
-                            ru: '🤖 Произошла ошибка при вызове ИИ API. Предоставляется базовый ответ.',
-                            ja: '🤖 AI API呼び出し中にエラーが発生しました。デフォルト回答を提供します。'
-                        };
+                // 재시도 로직
+                const maxRetries = 2;
+                let lastError = null;
+                
+                for (let attempt = 1; attempt <= maxRetries; attempt++) {
+                    try {
+                        console.log(`🔄 API 호출 시도 ${attempt}/${maxRetries}`);
+                        
+                        // API 호출 로직
+                        const activeProvider = this.getActiveProvider();
+                        const contextInfo = this.getContextFromKnowledgeBase();
+                        
+                        // 스마트 필터링 옵션 전달
+                        const response = await this.callAPI(activeProvider, message, contextInfo, useSmartFiltering);
+                        this.removeMessage(loadingMessage);
+                        this.addBotMessage(this.formatAIResponse(response, activeProvider));
+                        return; // 성공하면 함수 종료
+                        
+                    } catch (error) {
+                        console.error(`❌ API 호출 실패 (시도 ${attempt}/${maxRetries}):`, error);
+                        lastError = error;
+                        
+                        // 마지막 시도가 아니면 잠시 대기 후 재시도
+                        if (attempt < maxRetries) {
+                            console.log(`⏳ ${attempt}초 후 재시도합니다...`);
+                            await new Promise(resolve => setTimeout(resolve, attempt * 1000));
+                            continue;
+                        }
                     }
-                    
-                    this.addBotMessage(errorMessage[this.currentLanguage] || errorMessage['ko']);
-                    const fallbackResponse = this.generateSimulatedResponse(message);
-                    this.addBotMessage(fallbackResponse);
                 }
+                
+                // 모든 재시도 실패
+                this.removeMessage(loadingMessage);
+                console.error('❌ 모든 API 호출 시도 실패:', lastError);
+                
+                // 오류 유형별 상세 메시지
+                let errorMessage = '';
+                if (lastError.message.includes('API key not configured')) {
+                    errorMessage = {
+                        ko: '🔑 API 키가 설정되지 않았습니다. 관리자 페이지에서 API 키를 설정해주세요.',
+                        en: '🔑 API key is not configured. Please set up API key in admin page.',
+                        ru: '🔑 Ключ API не настроен. Пожалуйста, настройте ключ API на странице администратора.',
+                        ja: '🔑 APIキーが設定されていません。管理者ページでAPIキーを設定してください。'
+                    };
+                } else if (lastError.message.includes('rate limit') || lastError.message.includes('quota')) {
+                    errorMessage = {
+                        ko: '⏰ API 사용 한도를 초과했습니다. 잠시 후 다시 시도해주세요.',
+                        en: '⏰ API rate limit exceeded. Please try again later.',
+                        ru: '⏰ Превышен лимит использования API. Пожалуйста, попробуйте позже.',
+                        ja: '⏰ API使用制限を超過しました。しばらくしてから再試行してください。'
+                    };
+                } else if (lastError.message.includes('network') || lastError.message.includes('fetch')) {
+                    errorMessage = {
+                        ko: '🌐 네트워크 연결 오류입니다. 인터넷 연결을 확인해주세요.',
+                        en: '🌐 Network connection error. Please check your internet connection.',
+                        ru: '🌐 Ошибка сетевого подключения. Пожалуйста, проверьте подключение к интернету.',
+                        ja: '🌐 ネットワーク接続エラーです。インターネット接続を確認してください。'
+                    };
+                } else if (lastError.message.includes('서버 내부 오류')) {
+                    errorMessage = {
+                        ko: '🔧 서버 내부 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
+                        en: '🔧 Internal server error occurred. Please try again later.',
+                        ru: '🔧 Произошла внутренняя ошибка сервера. Пожалуйста, попробуйте позже.',
+                        ja: '🔧 サーバー内部エラーが発生しました。しばらくしてから再試行してください。'
+                    };
+                } else if (lastError.message.includes('API 호출 한도')) {
+                    errorMessage = {
+                        ko: '⏰ API 호출 한도를 초과했습니다. 잠시 후 다시 시도해주세요.',
+                        en: '⏰ API call limit exceeded. Please try again later.',
+                        ru: '⏰ Превышен лимит вызовов API. Пожалуйста, попробуйте позже.',
+                        ja: '⏰ API呼び出し制限を超過しました。しばらくしてから再試行してください。'
+                    };
+                } else if (lastError.message.includes('API 호출 시간이 초과')) {
+                    errorMessage = {
+                        ko: '⏰ API 호출 시간이 초과되었습니다. 잠시 후 다시 시도해주세요.',
+                        en: '⏰ API call timeout. Please try again later.',
+                        ru: '⏰ Время ожидания вызова API истекло. Пожалуйста, попробуйте позже.',
+                        ja: '⏰ API呼び出し時間が超過しました。しばらくしてから再試行してください。'
+                    };
+                } else {
+                    errorMessage = {
+                        ko: `🤖 AI API 호출 중 오류가 발생했습니다. (${lastError.message}) 기본 답변을 제공합니다.`,
+                        en: `🤖 An error occurred while calling AI API. (${lastError.message}) Providing default answer.`,
+                        ru: `🤖 Произошла ошибка при вызове ИИ API. (${lastError.message}) Предоставляется базовый ответ.`,
+                        ja: `🤖 AI API呼び出し中にエラーが発生しました。(${lastError.message}) デフォルト回答を提供します。`
+                    };
+                }
+                
+                this.addBotMessage(errorMessage[this.currentLanguage] || errorMessage['ko']);
+                const fallbackResponse = this.generateSimulatedResponse(message);
+                this.addBotMessage(fallbackResponse);
             }
             
             // 시뮬레이션된 응답 생성 (더 자연스럽게)
