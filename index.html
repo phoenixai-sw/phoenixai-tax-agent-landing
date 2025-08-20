@@ -135,7 +135,7 @@
             z-index: 1001;
         }
 
-        /* AI ON 상태 애니메이션 */
+        /* n8n 엔진 On 상태 애니메이션 */
         .ai-on {
             background: #d4edda !important;
             color: #155724 !important;
@@ -2595,7 +2595,7 @@ ${currentQuickMenu.directInquiry}
                 if (this.apiSettings?.google?.enabled) activeApis.push('Google');
                 
                 // 브라우저별 상태 메시지
-                let statusText = `<span class="blink">🟢</span> AI ON`;
+                let statusText = `<span class="blink">🟢</span> n8n 엔진 On`;
                 let statusTitle = `활성화된 API: ${activeApis.join(', ')}`;
                 
                 if (isChrome) {
@@ -2888,7 +2888,7 @@ ${currentQuickMenu.directInquiry}
             const currentStatus = statusDiv.textContent;
             
             if (currentStatus.includes('❌')) {
-                alert('🤖 AI API 설정이 필요합니다!\n\n' +
+                alert('🤖 n8n 엔진 설정이 필요합니다!\n\n' +
                       '1. 좌측 상단 설정 아이콘(⚙️) 클릭\n' +
                       '2. 로그인: tax004050 / tax004050\n' +
                       '3. "🌐 전역 설정 로드" 버튼 클릭\n' +
@@ -2896,11 +2896,11 @@ ${currentQuickMenu.directInquiry}
                       '또는 관리자가 환경변수를 설정했다면\n' +
                       '페이지를 새로고침해보세요!');
             } else if (currentStatus.includes('🟢')) {
-                alert('✅ AI API가 정상적으로 설정되어 있습니다!\n\n' +
+                alert('✅ n8n 엔진이 정상적으로 설정되어 있습니다!\n\n' +
                       '양도세 관련 질문을 자유롭게 물어보세요!');
             } else {
-                alert('🔄 AI API 상태를 확인 중입니다...\n\n' +
-                      '잠시 후 다시 시도해주세요.');
+                alert('🔄 n8n 엔진 상태를 확인 중입니다...\n\n' +
+                      '잠시 후 다시 시도해보세요.');
             }
         }
         });
@@ -3037,9 +3037,9 @@ ${currentQuickMenu.directInquiry}
                         const hasShownAutoSetup = localStorage.getItem('hasShownAutoSetup');
                         if (!hasShownAutoSetup) {
                             setTimeout(() => {
-                                alert('🎉 자동으로 AI API가 설정되었습니다!\n\n' +
+                                alert('🎉 자동으로 n8n 엔진이 설정되었습니다!\n\n' +
                                       '이제 양도세 관련 질문을 자유롭게 물어보세요!\n\n' +
-                                      '💡 우측 상단의 API 상태를 클릭하면\n' +
+                                      '💡 우측 상단의 n8n 엔진 상태를 클릭하면\n' +
                                       '현재 설정 상태를 확인할 수 있습니다.');
                                 localStorage.setItem('hasShownAutoSetup', 'true');
                             }, 2000);
