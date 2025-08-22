@@ -1270,7 +1270,7 @@
                 
                 위 형식에서 [사이트명]은 실제 사이트 이름으로, URL은 실제 웹 주소로 작성하세요.
 
-                12. 그 다음에 반드시 다음 문구를 포함하세요: "\n\n\n\n\n💡 **Tax Agent 안내 말씀**\n\n'Tax Agent'는 언제나 최상의 답변을 제공하지만, 실제 양도세 업무를 진행하실 때는 전문가에게 문의 하는것도 필요합니다.\n\n🏢 **"국세청 33년 경력"의 믿고 맡길 수 있는 신승세무법인**\n\n🔗 http://www.sostax.co.kr/"
+                12. 그 다음에 반드시 다음 문구를 포함하세요: "\n\n\n\n\n💡 **Tax Agent 안내 말씀**\n\n'Tax Agent'는 언제나 최상의 답변을 제공하지만, 실제 양도세 업무를 진행하실 때는 전문가에게 문의 하는것도 필요합니다.\n\n🏢 **"국세청 33년 경력"의 믿고 맡길 수 있는 신승세무법인**\n🔗 http://www.sostax.co.kr/"
 
                 13. 답변 내용에서 웹 검색으로 확인한 정보를 언급할 때는 반드시 참고 번호를 표시하세요:
                    - 첫 번째 참고 사이트: [1]
@@ -1789,6 +1789,9 @@
             // 참고 자료 섹션 스타일링
             message = message.replace(/\*\*참고 자료\*\*/g, '<h3 style="color: #667eea; margin: 25px 0 15px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 8px;">📚 참고 자료</h3>');
             
+            // Tax Agent 안내 말씀 섹션 스타일링 (참고 자료와 3칸 간격 유지)
+            message = message.replace(/\*\*Tax Agent 안내 말씀\*\*/g, '<div style="margin-top: 60px; padding: 25px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 15px; border-left: 5px solid #667eea; box-shadow: 0 4px 15px rgba(0,0,0,0.1);"><h3 style="color: #667eea; margin: 0 0 15px 0; font-size: 18px;">💡 Tax Agent 안내 말씀</h3>');
+            
             // 🔗 링크 스타일링 (참고 자료 섹션 내)
             message = message.replace(/🔗 \[(.*?)\] - (https?:\/\/[^\s]+)/g, '<div style="margin: 12px 0; padding: 15px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 10px; border-left: 4px solid #667eea; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"><a href="$2" target="_blank" style="color: #667eea; text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 8px;"><span style="margin-right: 8px; background: #667eea; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold;">🔗</span><span style="flex: 1;">$1</span><span style="font-size: 12px; color: #666; word-break: break-all;">$2</span></a></div>');
             
@@ -1803,6 +1806,9 @@
                 // URL을 찾을 수 없는 경우 기본 스타일
                 return `<span style="background: #667eea; color: white; border-radius: 50%; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; margin: 0 2px; vertical-align: middle;">${number}</span>`;
             });
+            
+            // 인사말 섹션 닫기 태그 추가
+            message = message.replace(/🔗 http:\/\/www\.sostax\.co\.kr\/$/, '🔗 <a href="http://www.sostax.co.kr/" target="_blank" style="color: #667eea; text-decoration: none; font-weight: bold;">http://www.sostax.co.kr/</a></div>');
             
             return message;
         }
