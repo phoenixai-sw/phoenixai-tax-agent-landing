@@ -1149,7 +1149,14 @@
 🔗 [사이트명] - URL
 🔗 [사이트명] - URL
 
-위 형식에서 [사이트명]은 실제 사이트 이름으로, URL은 실제 웹 주소로 작성하세요.`;
+위 형식에서 [사이트명]은 실제 사이트 이름으로, URL은 실제 웹 주소로 작성하세요.
+
+13. 답변 내용에서 웹 검색으로 확인한 정보를 언급할 때는 반드시 참고 번호를 표시하세요:
+   - 첫 번째 참고 사이트: [1]
+   - 두 번째 참고 사이트: [2]
+   - 세 번째 참고 사이트: [3]
+   
+   예시: "국세청에 따르면 [1], 2024년 양도소득세 세율은...", "대법원 판례 [2]에 따르면..."`;
 
             const response = await fetch('https://api.perplexity.ai/chat/completions', {
                 method: 'POST',
@@ -1529,7 +1536,10 @@
             message = message.replace(/\*\*참고 자료\*\*/g, '<h3 style="color: #667eea; margin: 25px 0 15px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 8px;">📚 참고 자료</h3>');
             
             // 🔗 링크 스타일링 (참고 자료 섹션 내)
-            message = message.replace(/🔗 \[(.*?)\] - (https?:\/\/[^\s]+)/g, '<div style="margin: 12px 0; padding: 15px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 10px; border-left: 4px solid #667eea; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"><a href="$2" target="_blank" style="color: #667eea; text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 8px;"><span style="font-size: 16px;">🔗</span><span style="flex: 1;">$1</span><span style="font-size: 12px; color: #666; word-break: break-all;">$2</span></a></div>');
+            message = message.replace(/🔗 \[(.*?)\] - (https?:\/\/[^\s]+)/g, '<div style="margin: 12px 0; padding: 15px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 10px; border-left: 4px solid #667eea; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"><a href="$2" target="_blank" style="color: #667eea; text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 8px;"><span style="margin-right: 8px; background: #667eea; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold;">🔗</span><span style="flex: 1;">$1</span><span style="font-size: 12px; color: #666; word-break: break-all;">$2</span></a></div>');
+            
+            // 참고 번호 스타일링 [1], [2], [3] 등
+            message = message.replace(/\[(\d+)\]/g, '<span style="background: #667eea; color: white; border-radius: 50%; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; margin: 0 2px; vertical-align: middle;">$1</span>');
             
             return message;
         }
