@@ -1284,7 +1284,10 @@
                    - "검색 결과 분석:", "검색 결과에서 확인한 내용:" 등의 문구를 사용하지 마세요
                    - "1. 첫 번째 검색 결과:", "2. 두 번째 검색 결과:" 등의 형태로 나열하지 마세요
                    - 웹 검색 과정이나 방법을 설명하지 마세요
-                   - 단순히 정보를 나열하지 말고, 질문에 대한 직접적이고 구체적인 답변을 제공하세요`;
+                   - 단순히 정보를 나열하지 말고, 질문에 대한 직접적이고 구체적인 답변을 제공하세요
+                   - 추론 과정이나 사고 과정을 설명하지 마세요
+                   - "검색 결과를 보면서", "정리하면:", "구체적인 예시들:" 등의 추론 과정 표현을 사용하지 마세요
+                   - 최종 답변만 제공하고, 중간 과정은 생략하세요`;
 
             const response = await fetch('https://api.perplexity.ai/chat/completions', {
                 method: 'POST',
@@ -1320,6 +1323,22 @@
                 }
             }
             
+            // 추론 과정 제거 (모델이 스스로 생각하는 과정)
+            if (content.includes('검색 결과를 보면서') || content.includes('검색 결과에서')) {
+                // 추론 과정이 포함된 경우, 실제 답변 부분만 추출
+                const reasoningPatterns = [
+                    /사용자가.*?묻고 있다.*?검색 결과를 보면서.*?정리하면:/s,
+                    /검색 결과에서.*?정리하면:/s,
+                    /구체적인 예시들:/s,
+                    /실무적으로 주의해야 할 점은/s,
+                    /다양한 정보원의 신뢰성을 확인하고/s
+                ];
+                
+                for (let pattern of reasoningPatterns) {
+                    content = content.replace(pattern, '');
+                }
+            }
+            
             // 추가 정리: 검색 결과 관련 텍스트 제거
             content = content.replace(/검색 결과를 확인해보겠습니다.*?양도소득세 계산 시/s, '');
             content = content.replace(/검색 결과에서.*?필요경비로 인정된다고 명시되어 있으며/s, '');
@@ -1330,6 +1349,13 @@
             content = content.replace(/\d+\.\s*세 번째 검색 결과:.*?(?=\n\n|\*\*)/s, '');
             content = content.replace(/\d+\.\s*네 번째 검색 결과:.*?(?=\n\n|\*\*)/s, '');
             content = content.replace(/\d+\.\s*다섯 번째 검색 결과:.*?(?=\n\n|\*\*)/s, '');
+            
+            // 추론 과정 패턴 추가 제거
+            content = content.replace(/사용자가.*?묻고 있다.*?검색 결과를 보면서.*?정리하면:.*?(?=\n\n|\*\*)/s, '');
+            content = content.replace(/검색 결과에서.*?정리하면:.*?(?=\n\n|\*\*)/s, '');
+            content = content.replace(/구체적인 예시들:.*?(?=\n\n|\*\*)/s, '');
+            content = content.replace(/실무적으로 주의해야 할 점은.*?(?=\n\n|\*\*)/s, '');
+            content = content.replace(/다양한 정보원의 신뢰성을 확인하고.*?(?=\n\n|\*\*)/s, '');
             
             // 더 강력한 정리: 중복된 내용 제거
             content = cleanDuplicateContent(content);
