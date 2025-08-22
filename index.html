@@ -1538,8 +1538,17 @@
             // 🔗 링크 스타일링 (참고 자료 섹션 내)
             message = message.replace(/🔗 \[(.*?)\] - (https?:\/\/[^\s]+)/g, '<div style="margin: 12px 0; padding: 15px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 10px; border-left: 4px solid #667eea; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"><a href="$2" target="_blank" style="color: #667eea; text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 8px;"><span style="margin-right: 8px; background: #667eea; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold;">🔗</span><span style="flex: 1;">$1</span><span style="font-size: 12px; color: #666; word-break: break-all;">$2</span></a></div>');
             
-            // 참고 번호 스타일링 [1], [2], [3] 등
-            message = message.replace(/\[(\d+)\]/g, '<span style="background: #667eea; color: white; border-radius: 50%; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; margin: 0 2px; vertical-align: middle;">$1</span>');
+            // 참고 번호를 클릭 가능한 링크로 변환 (참고 자료 섹션의 URL과 연결)
+            message = message.replace(/\[(\d+)\]/g, function(match, number) {
+                // 참고 자료 섹션에서 해당 번호의 URL 찾기
+                const referenceMatch = message.match(new RegExp(`🔗 \\[.*?\\] - (https?://[^\\s]+)`, 'g'));
+                if (referenceMatch && referenceMatch[number - 1]) {
+                    const url = referenceMatch[number - 1].match(/🔗 \[.*?\] - (https?:\/\/[^\s]+)/)[1];
+                    return `<a href="${url}" target="_blank" style="background: #667eea; color: white; border-radius: 50%; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; margin: 0 2px; vertical-align: middle; text-decoration: none; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='scale(1.1)'; this.style.boxShadow='0 4px 8px rgba(102, 126, 234, 0.3)'" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'" title="참고 자료 ${number}로 이동">${number}</a>`;
+                }
+                // URL을 찾을 수 없는 경우 기본 스타일
+                return `<span style="background: #667eea; color: white; border-radius: 50%; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; margin: 0 2px; vertical-align: middle;">${number}</span>`;
+            });
             
             return message;
         }
