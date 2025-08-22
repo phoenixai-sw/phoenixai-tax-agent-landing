@@ -1273,6 +1273,8 @@
                    (질문에 대한 명확한 결론이나 요약 - 반드시 포함)
                    
                    중요: "결론"이라는 제목 자체를 절대 생략하지 마세요. 답변 마지막에 반드시 "**결론**" 제목과 함께 결론 내용을 작성하세요.
+                   
+                   절대 금지: "5." 다음에 바로 내용을 쓰지 마세요. 반드시 "**5. 결론**" 제목을 먼저 쓰고 그 다음에 내용을 작성하세요.
 
                 10. 필요에 따라 다음 항목들을 선택적으로 포함할 수 있습니다 (해당 항목에 적절한 내용이 있을 때만 포함하고, 내용이 없다면 절대 만들어내거나 추정하지 마세요):
 
@@ -1867,16 +1869,16 @@
             message = message.replace(/\n/g, '<br>');
             
             // 결론 섹션 스타일링 (넘버링 포함) - 먼저 처리
-            message = message.replace(/\*\*(\d+\.\s*)?결론\*\*/g, '<h3 style="color: #333; margin: 2px 0 1px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 8px;">📋 $1결론</h3>');
+            message = message.replace(/\*\*(\d+\.\s*)?결론\*\*/g, '<h3 style="color: #333; margin: 15px 0 2px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 8px;">📋 $1결론</h3>');
             
             // 참고 자료 섹션 스타일링 (넘버링 포함) - 먼저 처리
-            message = message.replace(/\*\*(\d+\.\s*)?참고 자료\*\*/g, '<h3 style="color: #667eea; margin: 2px 0 1px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 8px;">📚 $1참고 자료</h3>');
+            message = message.replace(/\*\*(\d+\.\s*)?참고 자료\*\*/g, '<h3 style="color: #667eea; margin: 15px 0 2px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 8px;">📚 $1참고 자료</h3>');
             
             // Tax Agent 안내 말씀 섹션 스타일링 - 먼저 처리
             message = message.replace(/\*\*Tax Agent 안내 말씀\*\*/g, '<div style="margin-top: 80px; padding: 25px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 15px; border-left: 5px solid #667eea; box-shadow: 0 4px 15px rgba(0,0,0,0.1);"><h3 style="color: #333; margin: 0 0 15px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 8px;">💡 Tax Agent 안내 말씀</h3>');
             
             // **텍스트** -> <strong>텍스트</strong> (제목 넘버링 스타일링 포함) - 간격 조정
-            message = message.replace(/\*\*(\d+\.\s*.*?)\*\*/g, '<h3 style="color: #333; margin: 2px 0 1px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 8px;">$1</h3>');
+            message = message.replace(/\*\*(\d+\.\s*.*?)\*\*/g, '<h3 style="color: #333; margin: 15px 0 2px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 8px;">$1</h3>');
             message = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             
             // *텍스트* -> <em>텍스트</em>
