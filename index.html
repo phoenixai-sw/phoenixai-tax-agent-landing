@@ -665,6 +665,39 @@
             transform: none;
         }
 
+        .stop-button, .restart-button {
+            background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 55px;
+            height: 55px;
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+            margin-left: 10px;
+        }
+
+        .stop-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.6);
+        }
+
+        .restart-button {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+        }
+
+        .restart-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.6);
+        }
+
         .loading-dots {
             display: inline-block;
         }
@@ -815,6 +848,12 @@
             <button class="send-button" id="sendButton" onclick="sendMessage()">
                 ➤
             </button>
+            <button class="stop-button" id="stopButton" onclick="stopResponse()" style="display: none;">
+                ⏹️
+            </button>
+            <button class="restart-button" id="restartButton" onclick="restartResponse()" style="display: none;">
+                🔄
+            </button>
         </div>
     </div>
 
@@ -870,6 +909,20 @@
     <div class="admin-modal" id="adminModal">
         <div class="admin-content">
             <h3>👨‍💼 관리자 모드</h3>
+            
+            <!-- AI 모델 선택 섹션 -->
+            <div class="n8n-control-section">
+                <div class="n8n-status-display">
+                    <span style="color: #667eea; font-weight: bold;">🤖 AI 모델 선택</span>
+                </div>
+                <div class="n8n-control-buttons">
+                    <button class="n8n-control-btn n8n-on" onclick="selectModel('sonar-medium-online')" id="model-medium-btn">sonar-medium-online</button>
+                    <button class="n8n-control-btn n8n-off" onclick="selectModel('sonar-deep-research')" id="model-deep-btn">sonar-deep-research</button>
+                </div>
+                <div style="text-align: center; margin-top: 10px; font-size: 12px; color: #666;">
+                    현재 선택된 모델: <span id="currentModelDisplay" style="font-weight: bold; color: #667eea;">sonar-medium-online</span>
+                </div>
+            </div>
             
             <!-- n8n 엔진 제어 섹션 -->
             <div class="n8n-control-section">
@@ -931,6 +984,7 @@
             
             loadApiKeys();
             loadFeedbackHistory();
+            loadSelectedModel();
             setupEventListeners();
             
             // n8n 엔진 상태 복원
@@ -1060,6 +1114,16 @@
             document.getElementById('apiKey').value = apiKey || '';
         }
 
+        // 선택된 모델 로드
+        function loadSelectedModel() {
+            const savedModel = localStorage.getItem('tax_chatbot_selected_model');
+            if (savedModel) {
+                window.selectedModel = savedModel;
+            } else {
+                window.selectedModel = 'sonar-medium-online'; // 기본값
+            }
+        }
+
         // 메시지 전송
         function sendMessage() {
             const input = document.getElementById('messageInput');
@@ -1102,6 +1166,43 @@
             } finally {
                 setLoading(false);
             }
+        }
+
+        // 답변 중단
+        function stopResponse() {
+            if (isLoading) {
+                isLoading = false;
+                setLoading(false);
+                
+                // 중단된 답변 메시지 추가
+                addBotMessage('답변이 중단되었습니다. "다시 답변" 버튼을 클릭하여 계속할 수 있습니다.', '');
+                
+                // 버튼 상태 변경
+                document.getElementById('stopButton').style.display = 'none';
+                document.getElementById('restartButton').style.display = 'flex';
+            }
+        }
+
+        // 답변 재시작
+        function restartResponse() {
+            const lastUserMessage = getLastUserMessage();
+            if (lastUserMessage) {
+                // 재시작 버튼 숨기고 중단 버튼 표시
+                document.getElementById('restartButton').style.display = 'none';
+                document.getElementById('stopButton').style.display = 'flex';
+                
+                // 마지막 사용자 질문으로 다시 답변
+                processMessage(lastUserMessage);
+            }
+        }
+
+        // 마지막 사용자 메시지 가져오기
+        function getLastUserMessage() {
+            const userMessages = document.querySelectorAll('.message.user .message-content');
+            if (userMessages.length > 0) {
+                return userMessages[userMessages.length - 1].textContent;
+            }
+            return null;
         }
 
         // Perplexity API 호출
@@ -1169,7 +1270,7 @@
                     'Authorization': `Bearer ${apiKey}`
                 },
                 body: JSON.stringify({
-                    model: 'sonar-deep-research',
+                    model: window.selectedModel || 'sonar-medium-online',
                     messages: [
                         { role: 'system', content: systemPrompt },
                         { role: 'user', content: message }
@@ -1325,6 +1426,7 @@
             if (adminId === '004050' && adminPw === '004050') {
                 displayFeedbackList();
                 updateN8nStatusDisplay();
+                updateModelSelectionDisplay();
                 document.getElementById('adminModal').style.display = 'flex';
             } else {
                 alert('아이디 또는 비밀번호가 잘못되었습니다.');
@@ -1334,6 +1436,33 @@
         // 관리자 모드 모달 닫기
         function closeAdminModal() {
             document.getElementById('adminModal').style.display = 'none';
+        }
+
+        // AI 모델 선택
+        function selectModel(modelName) {
+            // 전역 변수에 선택된 모델 저장
+            window.selectedModel = modelName;
+            
+            // 로컬 스토리지에 저장
+            localStorage.setItem('tax_chatbot_selected_model', modelName);
+            
+            // 버튼 스타일 업데이트
+            const mediumBtn = document.getElementById('model-medium-btn');
+            const deepBtn = document.getElementById('model-deep-btn');
+            const currentModelDisplay = document.getElementById('currentModelDisplay');
+            
+            if (modelName === 'sonar-medium-online') {
+                mediumBtn.style.background = 'linear-gradient(135deg, #28a745 0%, #20c997 100%)';
+                deepBtn.style.background = 'linear-gradient(135deg, #dc3545 0%, #fd7e14 100%)';
+                currentModelDisplay.textContent = 'sonar-medium-online';
+            } else {
+                mediumBtn.style.background = 'linear-gradient(135deg, #dc3545 0%, #fd7e14 100%)';
+                deepBtn.style.background = 'linear-gradient(135deg, #28a745 0%, #20c997 100%)';
+                currentModelDisplay.textContent = 'sonar-deep-research';
+            }
+            
+            // 성공 메시지 표시
+            alert(`AI 모델이 ${modelName}로 변경되었습니다.`);
         }
 
         // n8n 엔진 상태 토글
@@ -1392,6 +1521,12 @@
         function updateN8nStatusDisplay() {
             const savedStatus = localStorage.getItem('n8n_engine_status') || 'on';
             toggleN8nEngine(savedStatus);
+        }
+
+        // 모델 선택 상태 표시 업데이트
+        function updateModelSelectionDisplay() {
+            const currentModel = window.selectedModel || 'sonar-medium-online';
+            selectModel(currentModel);
         }
 
         // 피드백 목록 표시
@@ -1561,10 +1696,14 @@
         function setLoading(loading) {
             isLoading = loading;
             const sendButton = document.getElementById('sendButton');
+            const stopButton = document.getElementById('stopButton');
+            const restartButton = document.getElementById('restartButton');
             
             if (loading) {
                 sendButton.disabled = true;
                 sendButton.innerHTML = '<span class="loading-dots"></span>';
+                stopButton.style.display = 'flex';
+                restartButton.style.display = 'none';
                 
                 // 로딩 메시지 표시
                 const messagesEl = document.getElementById('messages');
@@ -1580,6 +1719,8 @@
             } else {
                 sendButton.disabled = false;
                 sendButton.innerHTML = '➤';
+                stopButton.style.display = 'none';
+                restartButton.style.display = 'none';
                 
                 // 로딩 메시지 제거
                 const loadingEl = document.getElementById('loadingMessage');
