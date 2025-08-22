@@ -944,16 +944,27 @@
                 </div>
             </div>
             
+
+            
+            <button class="comment-btn comment-cancel" onclick="closeAdminModal()" style="margin-top: 20px;">닫기</button>
+        </div>
+    </div>
+
+    <!-- 데이터 모드 모달 -->
+    <div class="admin-modal" id="dataModal">
+        <div class="admin-content">
+            <h3>📊 데이터 모드</h3>
+            
             <!-- 피드백 관리 섹션 -->
             <div class="feedback-section">
                 <h4>📊 피드백 관리</h4>
-                <div id="feedbackList" class="feedback-list">
+                <div id="dataFeedbackList" class="feedback-list">
                     <!-- 피드백 목록이 여기에 표시됩니다 -->
                 </div>
                 <button class="download-btn" onclick="downloadFeedback()">📥 피드백 데이터 다운로드</button>
             </div>
             
-            <button class="comment-btn comment-cancel" onclick="closeAdminModal()" style="margin-top: 20px;">닫기</button>
+            <button class="comment-btn comment-cancel" onclick="closeDataModal()" style="margin-top: 20px;">닫기</button>
         </div>
     </div>
 
@@ -1150,6 +1161,14 @@
             // 관리자 모드 체크
             if (message.toLowerCase() === '관리자 모드') {
                 openAdminModal();
+                input.value = '';
+                input.style.height = 'auto';
+                return;
+            }
+            
+            // 데이터 모드 체크
+            if (message.toLowerCase() === '데이터 모드') {
+                openDataModal();
                 input.value = '';
                 input.style.height = 'auto';
                 return;
@@ -1530,7 +1549,6 @@
                 // 모델 상태 확실히 로드
                 loadSelectedModel();
                 
-                displayFeedbackList();
                 updateN8nStatusDisplay();
                 updateModelSelectionDisplay();
                 document.getElementById('adminModal').style.display = 'flex';
@@ -1539,9 +1557,62 @@
             }
         }
 
+        // 데이터 모드 모달 열기
+        function openDataModal() {
+            // 데이터 모드 로그인 체크
+            const dataId = prompt('데이터 모드 아이디를 입력하세요:');
+            if (!dataId) return;
+            
+            const dataPw = prompt('데이터 모드 비밀번호를 입력하세요:');
+            if (!dataPw) return;
+            
+            if (dataId === '004050' && dataPw === '004050') {
+                displayDataFeedbackList();
+                document.getElementById('dataModal').style.display = 'flex';
+            } else {
+                alert('아이디 또는 비밀번호가 잘못되었습니다.');
+            }
+        }
+
         // 관리자 모드 모달 닫기
         function closeAdminModal() {
             document.getElementById('adminModal').style.display = 'none';
+        }
+
+        // 데이터 모드 모달 닫기
+        function closeDataModal() {
+            document.getElementById('dataModal').style.display = 'none';
+        }
+
+        // 데이터 모드 피드백 목록 표시
+        function displayDataFeedbackList() {
+            const feedbackListEl = document.getElementById('dataFeedbackList');
+            
+            if (feedbackHistory.length === 0) {
+                feedbackListEl.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">저장된 피드백이 없습니다.</p>';
+                return;
+            }
+            
+            let html = '';
+            feedbackHistory.forEach((feedback, index) => {
+                const date = new Date(feedback.timestamp).toLocaleString('ko-KR');
+                const typeClass = feedback.type === 'positive' ? 'positive' : 'negative';
+                const typeText = feedback.type === 'positive' ? '좋은답변' : '나쁜답변';
+                
+                html += `
+                    <div class="feedback-item">
+                        <div class="feedback-header">
+                            <span class="feedback-type ${typeClass}">${typeText}</span>
+                            <span class="feedback-date">${date}</span>
+                        </div>
+                        <div class="feedback-question">질문: ${feedback.question}</div>
+                        <div class="feedback-answer">답변: ${feedback.answer.substring(0, 100)}${feedback.answer.length > 100 ? '...' : ''}</div>
+                        <div class="feedback-comment">코멘트: ${feedback.comment}</div>
+                    </div>
+                `;
+            });
+            
+            feedbackListEl.innerHTML = html;
         }
 
         // AI 모델 선택 (사용자 선택 시)
