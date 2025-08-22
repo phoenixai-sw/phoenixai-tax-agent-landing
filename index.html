@@ -1128,7 +1128,12 @@
         // 선택된 모델 로드
         function loadSelectedModel() {
             const savedModel = localStorage.getItem('tax_chatbot_selected_model');
-            if (savedModel) {
+            
+            // 이전 모델명 정리 (sonar-medium-online 등 잘못된 모델명 제거)
+            if (savedModel && (savedModel === 'sonar-medium-online' || !savedModel.includes('sonar'))) {
+                localStorage.removeItem('tax_chatbot_selected_model');
+                window.selectedModel = 'sonar-reasoning'; // 기본값으로 재설정
+            } else if (savedModel) {
                 window.selectedModel = savedModel;
             } else {
                 window.selectedModel = 'sonar-reasoning'; // 기본값
@@ -1296,7 +1301,26 @@
             }
 
             const data = await response.json();
-            return data.choices[0].message.content;
+            let content = data.choices[0].message.content;
+            
+            // 원문 중복 제거 (검색 결과와 정리된 답변이 섞여 있는 경우)
+            if (content.includes('사용자가') && content.includes('묻고 있습니다')) {
+                // 검색 결과 부분을 제거하고 정리된 답변만 추출
+                const parts = content.split('사용자가');
+                if (parts.length > 1) {
+                    // 첫 번째 부분(정리된 답변)만 사용
+                    content = parts[0].trim();
+                }
+            }
+            
+            // 추가 정리: 검색 결과 관련 텍스트 제거
+            content = content.replace(/검색 결과를 확인해보겠습니다.*?양도소득세 계산 시/s, '');
+            content = content.replace(/검색 결과에서.*?필요경비로 인정된다고 명시되어 있으며/s, '');
+            
+            // 더 강력한 정리: 중복된 내용 제거
+            content = cleanDuplicateContent(content);
+            
+            return content;
         }
 
         // 사용자 메시지 추가
@@ -1435,6 +1459,9 @@
             if (!adminPw) return;
             
             if (adminId === '4050' && adminPw === '4050') {
+                // 모델 상태 확실히 로드
+                loadSelectedModel();
+                
                 displayFeedbackList();
                 updateN8nStatusDisplay();
                 updateModelSelectionDisplay();
@@ -1763,6 +1790,43 @@
         function scrollToBottom() {
             const messagesEl = document.getElementById('messages');
             messagesEl.scrollTop = messagesEl.scrollHeight;
+        }
+
+        // 중복 내용 정리 함수
+        function cleanDuplicateContent(content) {
+            if (!content) return content;
+            
+            // 중복된 섹션 제거
+            const sections = content.split('##');
+            if (sections.length > 2) {
+                // 첫 번째 섹션만 유지하고 중복 제거
+                const uniqueSections = [];
+                const seenSections = new Set();
+                
+                for (let section of sections) {
+                    const cleanSection = section.trim();
+                    if (cleanSection && !seenSections.has(cleanSection)) {
+                        seenSections.add(cleanSection);
+                        uniqueSections.push(section);
+                    }
+                }
+                
+                content = uniqueSections.join('##');
+            }
+            
+            // 중복된 결론 제거
+            const conclusions = content.split('**결론**');
+            if (conclusions.length > 2) {
+                content = conclusions[0] + '**결론**' + conclusions[1];
+            }
+            
+            // 중복된 참고 자료 제거
+            const references = content.split('**참고 자료**');
+            if (references.length > 2) {
+                content = references[0] + '**참고 자료**' + references[1];
+            }
+            
+            return content;
         }
 
         // HTML 이스케이프
