@@ -1282,18 +1282,26 @@
                 14. 답변 스타일 및 구조:
                    - 모든 제목은 굵은 글씨(**제목**)로 작성하세요
                    - 제목 앞에 번호를 붙여서 넘버링하세요 (예: **1. 제목**, **2. 제목**)
+                   - 모든 제목 항목(관련 법령 및 근거, 결론, 참고 자료 등)도 넘버링하세요
+                   - 제목 항목들 사이에는 2칸 간격을 두어 명확히 구분하세요
+                   - 표가 필요한 경우 HTML 테이블 형식으로 작성하세요
                    - 답변 구조는 다음과 같이 작성하세요:
                      **1. [첫 번째 제목]**
                      (내용)
                      
+                     
                      **2. [두 번째 제목]**
                      (내용)
                      
-                     **결론**
+                     
+                     **3. 결론**
                      (결론 내용)
                      
-                     **참고 자료**
+                     
+                     **4. 참고 자료**
                      🔗 [사이트명] - URL
+                     
+                     
                      
                      💡 **Tax Agent 안내 말씀**
                      (인사말)
@@ -1756,7 +1764,8 @@
             // 줄바꿈을 <br>로 변환
             message = message.replace(/\n/g, '<br>');
             
-            // **텍스트** -> <strong>텍스트</strong>
+            // **텍스트** -> <strong>텍스트</strong> (제목 넘버링 스타일링 포함)
+            message = message.replace(/\*\*(\d+\.\s*.*?)\*\*/g, '<h3 style="color: #333; margin: 40px 0 20px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 8px;">$1</h3>');
             message = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             
             // *텍스트* -> <em>텍스트</em>
@@ -1770,6 +1779,21 @@
             
             // # 제목 -> h1 스타일
             message = message.replace(/^# (.*?)$/gm, '<h1 style="color: #333; margin: 30px 0 15px 0; font-size: 22px;">$1</h1>');
+            
+            // 표 스타일링 (마크다운 테이블을 HTML 테이블로 변환)
+            message = message.replace(/\|(.+)\|/g, function(match, content) {
+                const cells = content.split('|').map(cell => cell.trim());
+                const isHeader = match.includes('---') || match.includes('구분') || match.includes('필요경비');
+                
+                if (isHeader) {
+                    return `<tr>${cells.map(cell => `<th style="border: 1px solid #ddd; padding: 12px; background: #f8f9fa; font-weight: bold; text-align: center;">${cell}</th>`).join('')}</tr>`;
+                } else {
+                    return `<tr>${cells.map(cell => `<td style="border: 1px solid #ddd; padding: 12px; text-align: center;">${cell}</td>`).join('')}</tr>`;
+                }
+            });
+            
+            // 표 전체를 감싸는 테이블 태그 추가
+            message = message.replace(/(<tr>.*?<\/tr>)/gs, '<table style="border-collapse: collapse; width: 100%; margin: 20px 0; font-size: 14px;">$1</table>');
             
             // --- 구분선 (Tax Agent 안내 문구 구분용)
             message = message.replace(/^---$/gm, '<div style="margin: 30px 0; padding: 20px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 15px; border-left: 5px solid #667eea; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">');
@@ -1786,11 +1810,11 @@
             // URL을 클릭 가능한 링크로 변환
             message = message.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color: #667eea; text-decoration: none; font-weight: bold; padding: 2px 4px; background: rgba(102, 126, 234, 0.1); border-radius: 4px; transition: all 0.3s ease;">$1</a>');
             
-            // 참고 자료 섹션 스타일링
-            message = message.replace(/\*\*참고 자료\*\*/g, '<h3 style="color: #667eea; margin: 25px 0 15px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 8px;">📚 참고 자료</h3>');
+            // 참고 자료 섹션 스타일링 (넘버링 포함)
+            message = message.replace(/\*\*(\d+\.\s*)?참고 자료\*\*/g, '<h3 style="color: #667eea; margin: 40px 0 15px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 8px;">📚 $1참고 자료</h3>');
             
-            // Tax Agent 안내 말씀 섹션 스타일링 (참고 자료와 3칸 간격 유지)
-            message = message.replace(/\*\*Tax Agent 안내 말씀\*\*/g, '<div style="margin-top: 60px; padding: 25px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 15px; border-left: 5px solid #667eea; box-shadow: 0 4px 15px rgba(0,0,0,0.1);"><h3 style="color: #667eea; margin: 0 0 15px 0; font-size: 18px;">💡 Tax Agent 안내 말씀</h3>');
+            // Tax Agent 안내 말씀 섹션 스타일링 (참고 자료와 명확한 간격 유지)
+            message = message.replace(/\*\*Tax Agent 안내 말씀\*\*/g, '<div style="margin-top: 80px; padding: 25px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 15px; border-left: 5px solid #667eea; box-shadow: 0 4px 15px rgba(0,0,0,0.1);"><h3 style="color: #667eea; margin: 0 0 15px 0; font-size: 18px;">💡 Tax Agent 안내 말씀</h3>');
             
             // 🔗 링크 스타일링 (참고 자료 섹션 내)
             message = message.replace(/🔗 \[(.*?)\] - (https?:\/\/[^\s]+)/g, '<div style="margin: 12px 0; padding: 15px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 10px; border-left: 4px solid #667eea; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"><a href="$2" target="_blank" style="color: #667eea; text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 8px;"><span style="margin-right: 8px; background: #667eea; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold;">🔗</span><span style="flex: 1;">$1</span><span style="font-size: 12px; color: #666; word-break: break-all;">$2</span></a></div>');
