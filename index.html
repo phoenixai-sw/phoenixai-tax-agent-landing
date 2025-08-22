@@ -1926,7 +1926,7 @@
 
             
             // 🔗 링크 스타일링 (참고 자료 섹션 내) - "참고자료 클릭"으로 변경
-            message = message.replace(/🔗 \[(.*?)\] - 🔗 참고자료 클릭/g, '<div style="margin: 12px 0; padding: 15px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 10px; border-left: 4px solid #667eea; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"><a href="#" onclick="openReferenceLink(\'$1\'); return false;" style="color: #667eea; text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 8px;"><span style="margin-right: 8px; background: #667eea; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold;">📄</span><span style="flex: 1;">$1</span><span style="font-size: 12px; color: #666;">🔗 참고자료 클릭</span></a></div>');
+            message = message.replace(/🔗 \[(.*?)\] - 🔗 참고자료 클릭/g, '<div style="margin: 12px 0; padding: 15px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 10px; border-left: 4px solid #667eea; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"><a href="#" onclick="openReferenceLink(\'$1\'); return false;" style="color: #667eea; text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 8px;"><span style="flex: 1;">$1</span><span style="font-size: 12px; color: #666;">🔗 참고자료 클릭</span></a></div>');
             
             // 참고 번호를 클릭 가능한 링크로 변환 (참고 자료 섹션의 URL과 연결)
             message = message.replace(/\[(\d+)\]/g, function(match, number) {
