@@ -1835,8 +1835,8 @@
             message = message.replace(/\n/g, '<br>');
             
             // 제목 스타일링 (넘버링 포함)
-            const titleStyle = 'color: #333; margin: 30px 0 0px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 0px;';
-            const referenceStyle = 'color: #667eea; margin: 30px 0 0px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 0px;';
+            const titleStyle = 'color: #333; margin: 30px 0 2px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 0px;';
+            const referenceStyle = 'color: #667eea; margin: 30px 0 2px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 0px;';
             
             // 결론 섹션 스타일링
             message = message.replace(/\*\*(\d+\.\s*)?결론\*\*/g, `<h3 style="${titleStyle}">$1결론</h3>`);
@@ -1886,10 +1886,76 @@
             // URL을 클릭 가능한 링크로 변환
             message = message.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color: #667eea; text-decoration: none; font-weight: bold; padding: 2px 4px; background: rgba(102, 126, 234, 0.1); border-radius: 4px; transition: all 0.3s ease;">$1</a>');
             
-            // 참고 자료 링크 스타일링
+            // 참고 자료 링크 스타일링 - 실제 URL 표시
             const referenceLinkStyle = 'margin: 12px 0; padding: 15px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 10px; border-left: 4px solid #667eea; box-shadow: 0 2px 8px rgba(0,0,0,0.1);';
             const referenceLinkTextStyle = 'color: #667eea; text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 8px;';
-            message = message.replace(/🔗 \[(.*?)\] - 🔗 참고자료 클릭/g, `<div style="${referenceLinkStyle}"><a href="#" onclick="openReferenceLink('$1'); return false;" style="${referenceLinkTextStyle}"><span style="flex: 1;">$1</span><span style="font-size: 12px; color: #666;">🔗 참고자료 클릭</span></a></div>`);
+            message = message.replace(/🔗 \[(.*?)\] - 🔗 참고자료 클릭/g, function(match, siteName) {
+                // 사이트명에 따른 URL 가져오기
+                let url = '';
+                
+                // 공공기관 사이트 URL 매핑
+                const publicInstitutionMap = {
+                    '국가법령정보센터': 'https://www.law.go.kr',
+                    '국세청': 'https://www.nts.go.kr',
+                    '국세청 양도소득세': 'https://www.nts.go.kr/tax/yangdo_2.html',
+                    '국세청 양도소득세 법령·상담': 'https://www.nts.go.kr/tax/yangdo_2.html',
+                    '찾기쉬운 생활법령정보': 'https://lnp.nanet.go.kr',
+                    '대법원 종합법률정보': 'https://glaw.scourt.go.kr',
+                    '헌법재판소': 'https://www.ccourt.go.kr',
+                    '행정안전부': 'https://www.mois.go.kr',
+                    '기획재정부': 'https://www.moef.go.kr'
+                };
+                
+                // 민간 사이트 URL 매핑
+                const privateSiteMap = {
+                    '브런치': 'https://brunch.co.kr/@@4AQs/2703',
+                    '브런치(양도세 필요경비)': 'https://brunch.co.kr/@@4AQs/2703',
+                    '세무법인 혜움': 'https://www.heumtax.com/contents/posts/capital-gains-tax-deductions',
+                    '다음 카페': 'https://m.cafe.daum.net/transtax/6vQ1/549',
+                    '다음 카페(세무상담)': 'https://m.cafe.daum.net/transtax/6vQ1/549',
+                    '신승세무법인': 'http://www.sostax.co.kr/'
+                };
+                
+                // 정확한 매칭 먼저 시도
+                url = publicInstitutionMap[siteName] || privateSiteMap[siteName];
+                
+                // 정확한 매칭이 없으면 키워드 매칭 시도
+                if (!url) {
+                    if (siteName.includes('국세청')) {
+                        if (siteName.includes('양도소득세') || siteName.includes('양도세')) {
+                            url = 'https://www.nts.go.kr/tax/yangdo_2.html';
+                        } else {
+                            url = 'https://www.nts.go.kr';
+                        }
+                    } else if (siteName.includes('국가법령') || siteName.includes('법령정보')) {
+                        url = 'https://www.law.go.kr';
+                    } else if (siteName.includes('생활법령') || siteName.includes('찾기쉬운')) {
+                        url = 'https://lnp.nanet.go.kr';
+                    } else if (siteName.includes('대법원') || siteName.includes('종합법률')) {
+                        url = 'https://glaw.scourt.go.kr';
+                    } else if (siteName.includes('헌법재판소')) {
+                        url = 'https://www.ccourt.go.kr';
+                    } else if (siteName.includes('행정안전부')) {
+                        url = 'https://www.mois.go.kr';
+                    } else if (siteName.includes('기획재정부')) {
+                        url = 'https://www.moef.go.kr';
+                    } else if (siteName.includes('브런치')) {
+                        url = 'https://brunch.co.kr/@@4AQs/2703';
+                    } else if (siteName.includes('세무법인 혜움') || siteName.includes('혜움')) {
+                        url = 'https://www.heumtax.com/contents/posts/capital-gains-tax-deductions';
+                    } else if (siteName.includes('다음 카페') || siteName.includes('카페')) {
+                        url = 'https://m.cafe.daum.net/transtax/6vQ1/549';
+                    } else if (siteName.includes('신승세무법인') || siteName.includes('신승')) {
+                        url = 'http://www.sostax.co.kr/';
+                    }
+                }
+                
+                if (url) {
+                    return `<div style="${referenceLinkStyle}"><a href="${url}" target="_blank" style="${referenceLinkTextStyle}"><span style="flex: 1;">${siteName}</span><span style="font-size: 12px; color: #666;">${url}</span></a></div>`;
+                } else {
+                    return `<div style="${referenceLinkStyle}"><a href="#" onclick="openReferenceLink('${siteName}'); return false;" style="${referenceLinkTextStyle}"><span style="flex: 1;">${siteName}</span><span style="font-size: 12px; color: #666;">🔗 참고자료 클릭</span></a></div>`;
+                }
+            });
             
             // 참고 번호를 클릭 가능한 링크로 변환 (개선된 버전)
             message = message.replace(/\[(\d+)\]/g, function(match, number) {
