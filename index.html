@@ -1423,7 +1423,9 @@
             content = content.replace(/이상.*?(?=\n\n|\*\*|💡)/s, '');
             content = content.replace(/종합.*?(?=\n\n|\*\*|💡)/s, '');
             content = content.replace(/요약.*?(?=\n\n|\*\*|💡)/s, '');
-            content = content.replace(/결론.*?(?=\n\n|\*\*|💡)/s, '');
+            // 결론 제목은 보존하고 결론 내용만 제거 (제목 다음 줄부터)
+            content = content.replace(/(?<=\*\*결론\*\*\n).*?(?=\n\n|\*\*|💡)/s, '');
+            content = content.replace(/(?<=\*\*\d+\.\s*결론\*\*\n).*?(?=\n\n|\*\*|💡)/s, '');
             content = content.replace(/따라서.*?(?=\n\n|\*\*|💡)/s, '');
             content = content.replace(/이러한.*?(?=\n\n|\*\*|💡)/s, '');
             content = content.replace(/위의.*?(?=\n\n|\*\*|💡)/s, '');
