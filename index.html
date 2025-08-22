@@ -1869,16 +1869,16 @@
             message = message.replace(/\n/g, '<br>');
             
             // 결론 섹션 스타일링 (넘버링 포함) - 먼저 처리
-            message = message.replace(/\*\*(\d+\.\s*)?결론\*\*/g, '<h3 style="color: #333; margin: 20px 0 0px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 8px;">📋 $1결론</h3>');
+            message = message.replace(/\*\*(\d+\.\s*)?결론\*\*/g, '<h3 style="color: #333; margin: 30px 0 0px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 2px;">📋 $1결론</h3>');
             
             // 참고 자료 섹션 스타일링 (넘버링 포함) - 먼저 처리
-            message = message.replace(/\*\*(\d+\.\s*)?참고 자료\*\*/g, '<h3 style="color: #667eea; margin: 20px 0 0px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 8px;">📚 $1참고 자료</h3>');
+            message = message.replace(/\*\*(\d+\.\s*)?참고 자료\*\*/g, '<h3 style="color: #667eea; margin: 30px 0 0px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 2px;">📚 $1참고 자료</h3>');
             
             // Tax Agent 안내 말씀 섹션 스타일링 - 먼저 처리
-            message = message.replace(/\*\*Tax Agent 안내 말씀\*\*/g, '<div style="margin-top: 80px; padding: 25px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 15px; border-left: 5px solid #667eea; box-shadow: 0 4px 15px rgba(0,0,0,0.1);"><h3 style="color: #333; margin: 0 0 15px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 8px;">💡 Tax Agent 안내 말씀</h3>');
+            message = message.replace(/\*\*Tax Agent 안내 말씀\*\*/g, '<div style="margin-top: 80px; padding: 10px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 15px; border-left: 5px solid #667eea; box-shadow: 0 4px 15px rgba(0,0,0,0.1);"><h3 style="color: #333; margin: 0 0 15px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 2px;">💡 Tax Agent 안내 말씀</h3>');
             
             // **텍스트** -> <strong>텍스트</strong> (제목 넘버링 스타일링 포함) - 간격 조정
-            message = message.replace(/\*\*(\d+\.\s*.*?)\*\*/g, '<h3 style="color: #333; margin: 20px 0 0px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 8px;">$1</h3>');
+            message = message.replace(/\*\*(\d+\.\s*.*?)\*\*/g, '<h3 style="color: #333; margin: 30px 0 0px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 2px;">$1</h3>');
             message = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             
             // *텍스트* -> <em>텍스트</em>
