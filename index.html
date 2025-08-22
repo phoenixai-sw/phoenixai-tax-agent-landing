@@ -1334,7 +1334,9 @@
                    - 단순히 정보를 나열하지 말고, 질문에 대한 직접적이고 구체적인 답변을 제공하세요
                    - 추론 과정이나 사고 과정을 설명하지 마세요
                    - "검색 결과를 보면서", "정리하면:", "구체적인 예시들:" 등의 추론 과정 표현을 사용하지 마세요
-                   - 최종 답변만 제공하고, 중간 과정은 생략하세요`;
+                   - 최종 답변만 제공하고, 중간 과정은 생략하세요
+                   - "이러한 분석을 통해", "결론적으로", "따라서", "요약하면" 등의 중복 결론 표현을 사용하지 마세요
+                   - 답변 마지막에 추가적인 요약이나 결론을 덧붙이지 마세요`;
 
             const response = await fetch('https://api.perplexity.ai/chat/completions', {
                 method: 'POST',
@@ -1403,6 +1405,18 @@
             content = content.replace(/구체적인 예시들:.*?(?=\n\n|\*\*)/s, '');
             content = content.replace(/실무적으로 주의해야 할 점은.*?(?=\n\n|\*\*)/s, '');
             content = content.replace(/다양한 정보원의 신뢰성을 확인하고.*?(?=\n\n|\*\*)/s, '');
+            
+            // reasoning/deep-research 모델 특화 정리
+            content = content.replace(/이러한 분석을 통해.*?(?=\n\n|\*\*)/s, '');
+            content = content.replace(/결론적으로.*?(?=\n\n|\*\*)/s, '');
+            content = content.replace(/따라서.*?(?=\n\n|\*\*)/s, '');
+            content = content.replace(/요약하면.*?(?=\n\n|\*\*)/s, '');
+            content = content.replace(/위의 내용을 종합하면.*?(?=\n\n|\*\*)/s, '');
+            content = content.replace(/이상의 분석 결과.*?(?=\n\n|\*\*)/s, '');
+            content = content.replace(/이러한 관점에서.*?(?=\n\n|\*\*)/s, '');
+            content = content.replace(/실무적 관점에서.*?(?=\n\n|\*\*)/s, '');
+            content = content.replace(/세무적 관점에서.*?(?=\n\n|\*\*)/s, '');
+            content = content.replace(/법적 관점에서.*?(?=\n\n|\*\*)/s, '');
             
             // 더 강력한 정리: 중복된 내용 제거
             content = cleanDuplicateContent(content);
@@ -1953,42 +1967,60 @@
             messagesEl.scrollTop = messagesEl.scrollHeight;
         }
 
-        // 중복 내용 정리 함수
-        function cleanDuplicateContent(content) {
-            if (!content) return content;
-            
-            // 중복된 섹션 제거
-            const sections = content.split('##');
-            if (sections.length > 2) {
-                // 첫 번째 섹션만 유지하고 중복 제거
-                const uniqueSections = [];
-                const seenSections = new Set();
+                    // 중복 내용 정리 함수
+            function cleanDuplicateContent(content) {
+                if (!content) return content;
                 
-                for (let section of sections) {
-                    const cleanSection = section.trim();
-                    if (cleanSection && !seenSections.has(cleanSection)) {
-                        seenSections.add(cleanSection);
-                        uniqueSections.push(section);
+                // 중복된 섹션 제거
+                const sections = content.split('##');
+                if (sections.length > 2) {
+                    // 첫 번째 섹션만 유지하고 중복 제거
+                    const uniqueSections = [];
+                    const seenSections = new Set();
+                    
+                    for (let section of sections) {
+                        const cleanSection = section.trim();
+                        if (cleanSection && !seenSections.has(cleanSection)) {
+                            seenSections.add(cleanSection);
+                            uniqueSections.push(section);
+                        }
                     }
+                    
+                    content = uniqueSections.join('##');
                 }
                 
-                content = uniqueSections.join('##');
+                // 중복된 결론 제거
+                const conclusions = content.split('**결론**');
+                if (conclusions.length > 2) {
+                    content = conclusions[0] + '**결론**' + conclusions[1];
+                }
+                
+                // 중복된 참고 자료 제거
+                const references = content.split('**참고 자료**');
+                if (references.length > 2) {
+                    content = references[0] + '**참고 자료**' + references[1];
+                }
+                
+                // reasoning/deep-research 모델의 추가 결론 제거
+                const additionalConclusions = [
+                    /이러한 분석을 통해.*$/s,
+                    /결론적으로.*$/s,
+                    /따라서.*$/s,
+                    /요약하면.*$/s,
+                    /위의 내용을 종합하면.*$/s,
+                    /이상의 분석 결과.*$/s,
+                    /이러한 관점에서.*$/s,
+                    /실무적 관점에서.*$/s,
+                    /세무적 관점에서.*$/s,
+                    /법적 관점에서.*$/s
+                ];
+                
+                additionalConclusions.forEach(pattern => {
+                    content = content.replace(pattern, '');
+                });
+                
+                return content;
             }
-            
-            // 중복된 결론 제거
-            const conclusions = content.split('**결론**');
-            if (conclusions.length > 2) {
-                content = conclusions[0] + '**결론**' + conclusions[1];
-            }
-            
-            // 중복된 참고 자료 제거
-            const references = content.split('**참고 자료**');
-            if (references.length > 2) {
-                content = references[0] + '**참고 자료**' + references[1];
-            }
-            
-            return content;
-        }
 
         // HTML 이스케이프
         function escapeHtml(text) {
