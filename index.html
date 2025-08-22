@@ -1910,7 +1910,7 @@
             
             // Tax Agent 안내 말씀 섹션 스타일링
             const noticeStyle = 'margin-top: 80px; padding: 10px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 15px; border-left: 5px solid #667eea; box-shadow: 0 4px 15px rgba(0,0,0,0.1);';
-            const noticeTitleStyle = 'color: #333; margin: 0 0 15px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 0px;';
+            const noticeTitleStyle = 'color: #333; margin: 50px 0 -20px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 0px;';
             message = message.replace(/\*\*Tax Agent 안내 말씀\*\*/g, `<div style="${noticeStyle}"><h3 style="${noticeTitleStyle}">Tax Agent 안내 말씀</h3>`);
             
             // 제목 넘버링 스타일링
@@ -1976,7 +1976,9 @@
                     '세무법인 혜움': 'https://www.heumtax.com/contents/posts/capital-gains-tax-deductions',
                     '다음 카페': 'https://m.cafe.daum.net/transtax/6vQ1/549',
                     '다음 카페(세무상담)': 'https://m.cafe.daum.net/transtax/6vQ1/549',
-                    '신승세무법인': 'http://www.sostax.co.kr/'
+                    '신승세무법인': 'http://www.sostax.co.kr/',
+                    '키움인베스트': 'https://www.kiwoominvest.com',
+                    'ULEX': 'https://www.ulex.or.kr'
                 };
                 
                 // 정확한 매칭 먼저 시도
@@ -2010,6 +2012,10 @@
                         url = 'https://m.cafe.daum.net/transtax/6vQ1/549';
                     } else if (siteName.includes('신승세무법인') || siteName.includes('신승')) {
                         url = 'http://www.sostax.co.kr/';
+                    } else if (siteName.includes('키움인베스트') || siteName.includes('키움')) {
+                        url = 'https://www.kiwoominvest.com';
+                    } else if (siteName.includes('ULEX') || siteName.includes('ulex')) {
+                        url = 'https://www.ulex.or.kr';
                     }
                 }
                 
