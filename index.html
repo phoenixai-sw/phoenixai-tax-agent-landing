@@ -916,11 +916,19 @@
                     <span style="color: #667eea; font-weight: bold;">🤖 AI 모델 선택</span>
                 </div>
                 <div class="n8n-control-buttons">
-                    <button class="n8n-control-btn n8n-on" onclick="selectModel('sonar-medium-online')" id="model-medium-btn">sonar-medium-online</button>
-                    <button class="n8n-control-btn n8n-off" onclick="selectModel('sonar-deep-research')" id="model-deep-btn">sonar-deep-research</button>
+                    <button class="n8n-control-btn n8n-on" onclick="selectModel('sonar')" id="model-sonar-btn">sonar</button>
+                    <button class="n8n-control-btn n8n-off" onclick="selectModel('sonar-pro')" id="model-sonar-pro-btn">sonar-pro</button>
+                    <button class="n8n-control-btn n8n-off" onclick="selectModel('sonar-reasoning')" id="model-sonar-reasoning-btn">sonar-reasoning</button>
+                </div>
+                <div class="n8n-control-buttons" style="margin-top: 10px;">
+                    <button class="n8n-control-btn n8n-off" onclick="selectModel('sonar-reasoning-pro')" id="model-sonar-reasoning-pro-btn">sonar-reasoning-pro</button>
+                    <button class="n8n-control-btn n8n-off" onclick="selectModel('sonar-deep-research')" id="model-sonar-deep-research-btn">sonar-deep-research</button>
                 </div>
                 <div style="text-align: center; margin-top: 10px; font-size: 12px; color: #666;">
-                    현재 선택된 모델: <span id="currentModelDisplay" style="font-weight: bold; color: #667eea;">sonar-medium-online</span>
+                    현재 선택된 모델: <span id="currentModelDisplay" style="font-weight: bold; color: #667eea;">sonar</span>
+                </div>
+                <div style="text-align: center; margin-top: 5px; font-size: 11px; color: #888;">
+                    💡 모든 모델은 웹 검색 기능을 포함합니다
                 </div>
             </div>
             
@@ -1120,7 +1128,7 @@
             if (savedModel) {
                 window.selectedModel = savedModel;
             } else {
-                window.selectedModel = 'sonar-medium-online'; // 기본값
+                window.selectedModel = 'sonar'; // 기본값
             }
         }
 
@@ -1446,20 +1454,32 @@
             // 로컬 스토리지에 저장
             localStorage.setItem('tax_chatbot_selected_model', modelName);
             
-            // 버튼 스타일 업데이트
-            const mediumBtn = document.getElementById('model-medium-btn');
-            const deepBtn = document.getElementById('model-deep-btn');
-            const currentModelDisplay = document.getElementById('currentModelDisplay');
+            // 모든 모델 버튼 초기화 (비활성 스타일)
+            const allModelBtns = [
+                'model-sonar-btn',
+                'model-sonar-pro-btn',
+                'model-sonar-reasoning-btn',
+                'model-sonar-reasoning-pro-btn',
+                'model-sonar-deep-research-btn'
+            ];
             
-            if (modelName === 'sonar-medium-online') {
-                mediumBtn.style.background = 'linear-gradient(135deg, #28a745 0%, #20c997 100%)';
-                deepBtn.style.background = 'linear-gradient(135deg, #dc3545 0%, #fd7e14 100%)';
-                currentModelDisplay.textContent = 'sonar-medium-online';
-            } else {
-                mediumBtn.style.background = 'linear-gradient(135deg, #dc3545 0%, #fd7e14 100%)';
-                deepBtn.style.background = 'linear-gradient(135deg, #28a745 0%, #20c997 100%)';
-                currentModelDisplay.textContent = 'sonar-deep-research';
+            allModelBtns.forEach(btnId => {
+                const btn = document.getElementById(btnId);
+                if (btn) {
+                    btn.style.background = 'linear-gradient(135deg, #dc3545 0%, #fd7e14 100%)';
+                }
+            });
+            
+            // 선택된 모델 버튼 활성화 (녹색 스타일)
+            const selectedBtnId = `model-${modelName.replace(/-/g, '-')}-btn`;
+            const selectedBtn = document.getElementById(selectedBtnId);
+            if (selectedBtn) {
+                selectedBtn.style.background = 'linear-gradient(135deg, #28a745 0%, #20c997 100%)';
             }
+            
+            // 현재 모델 표시 업데이트
+            const currentModelDisplay = document.getElementById('currentModelDisplay');
+            currentModelDisplay.textContent = modelName;
             
             // 성공 메시지 표시
             alert(`AI 모델이 ${modelName}로 변경되었습니다.`);
@@ -1525,7 +1545,7 @@
 
         // 모델 선택 상태 표시 업데이트
         function updateModelSelectionDisplay() {
-            const currentModel = window.selectedModel || 'sonar-medium-online';
+            const currentModel = window.selectedModel || 'sonar';
             selectModel(currentModel);
         }
 
