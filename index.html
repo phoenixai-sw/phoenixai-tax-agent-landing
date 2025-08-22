@@ -1835,8 +1835,8 @@
             message = message.replace(/\n/g, '<br>');
             
             // 제목 스타일링 (넘버링 포함)
-            const titleStyle = 'color: #333; margin: 30px 0 2px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 0px;';
-            const referenceStyle = 'color: #667eea; margin: 30px 0 2px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 0px;';
+            const titleStyle = 'color: #333; margin: 30px 0 -5px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 0px;';
+            const referenceStyle = 'color: #667eea; margin: 30px 0 -5px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 0px;';
             
             // 결론 섹션 스타일링
             message = message.replace(/\*\*(\d+\.\s*)?결론\*\*/g, `<h3 style="${titleStyle}">$1결론</h3>`);
