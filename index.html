@@ -916,16 +916,16 @@
                     <span style="color: #667eea; font-weight: bold;">🤖 AI 모델 선택</span>
                 </div>
                 <div class="n8n-control-buttons">
-                    <button class="n8n-control-btn n8n-on" onclick="selectModel('sonar')" id="model-sonar-btn">sonar</button>
+                    <button class="n8n-control-btn n8n-off" onclick="selectModel('sonar')" id="model-sonar-btn">sonar</button>
                     <button class="n8n-control-btn n8n-off" onclick="selectModel('sonar-pro')" id="model-sonar-pro-btn">sonar-pro</button>
-                    <button class="n8n-control-btn n8n-off" onclick="selectModel('sonar-reasoning')" id="model-sonar-reasoning-btn">sonar-reasoning</button>
+                    <button class="n8n-control-btn n8n-on" onclick="selectModel('sonar-reasoning')" id="model-sonar-reasoning-btn">sonar-reasoning</button>
                 </div>
                 <div class="n8n-control-buttons" style="margin-top: 10px;">
                     <button class="n8n-control-btn n8n-off" onclick="selectModel('sonar-reasoning-pro')" id="model-sonar-reasoning-pro-btn">sonar-reasoning-pro</button>
                     <button class="n8n-control-btn n8n-off" onclick="selectModel('sonar-deep-research')" id="model-sonar-deep-research-btn">sonar-deep-research</button>
                 </div>
                 <div style="text-align: center; margin-top: 10px; font-size: 12px; color: #666;">
-                    현재 선택된 모델: <span id="currentModelDisplay" style="font-weight: bold; color: #667eea;">sonar</span>
+                    현재 선택된 모델: <span id="currentModelDisplay" style="font-weight: bold; color: #667eea;">sonar-reasoning</span>
                 </div>
                 <div style="text-align: center; margin-top: 5px; font-size: 11px; color: #888;">
                     💡 모든 모델은 웹 검색 기능을 포함합니다
@@ -994,6 +994,9 @@
             loadFeedbackHistory();
             loadSelectedModel();
             setupEventListeners();
+            
+            // 기본 모델 설정 및 UI 업데이트
+            updateModelSelectionDisplay();
             
             // n8n 엔진 상태 복원
             const savedStatus = localStorage.getItem('n8n_engine_status') || 'on';
@@ -1128,7 +1131,7 @@
             if (savedModel) {
                 window.selectedModel = savedModel;
             } else {
-                window.selectedModel = 'sonar'; // 기본값
+                window.selectedModel = 'sonar-reasoning'; // 기본값
             }
         }
 
@@ -1545,7 +1548,7 @@
 
         // 모델 선택 상태 표시 업데이트
         function updateModelSelectionDisplay() {
-            const currentModel = window.selectedModel || 'sonar';
+            const currentModel = window.selectedModel || 'sonar-reasoning';
             selectModel(currentModel);
         }
 
