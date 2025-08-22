@@ -1870,6 +1870,7 @@
             
             // 결론 섹션 스타일링 (넘버링 포함) - 먼저 처리
             message = message.replace(/\*\*(\d+\.\s*)?결론\*\*/g, '<h3 style="color: #333; margin: 30px 0 0px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 2px;">$1결론</h3>');
+            message = message.replace(/\*\*결론\*\*/g, '<h3 style="color: #333; margin: 30px 0 0px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 2px;">결론</h3>');
             
             // 참고 자료 섹션 스타일링 (넘버링 포함) - 먼저 처리
             message = message.replace(/\*\*(\d+\.\s*)?참고 자료\*\*/g, '<h3 style="color: #667eea; margin: 30px 0 0px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 2px;">$1참고 자료</h3>');
