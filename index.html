@@ -1022,7 +1022,7 @@
             const loginPw = document.getElementById('loginPw').value;
             const errorEl = document.getElementById('loginError');
             
-            if (loginId === '004050' && loginPw === '004050') {
+            if (loginId === '004050' && loginPw === '005050') {
                 document.getElementById('loginSection').style.display = 'none';
                 document.getElementById('apiSettingsSection').style.display = 'block';
                 errorEl.textContent = '';
@@ -1423,7 +1423,7 @@
             const adminPw = prompt('관리자 비밀번호를 입력하세요:');
             if (!adminPw) return;
             
-            if (adminId === '004050' && adminPw === '004050') {
+            if (adminId === '004050' && adminPw === '005050') {
                 displayFeedbackList();
                 updateN8nStatusDisplay();
                 updateModelSelectionDisplay();
