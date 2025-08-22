@@ -2018,10 +2018,11 @@
 
         // 참고자료 링크 열기 함수
         function openReferenceLink(siteName) {
-            // 공공기관 사이트 URL 매핑 (고정 참고자료)
+            // 공공기관 사이트 URL 매핑 (고정 참고자료) - 키워드 매칭 포함
             const publicInstitutionMap = {
                 '국가법령정보센터': 'https://www.law.go.kr',
                 '국세청': 'https://www.nts.go.kr',
+                '국세청 양도소득세': 'https://www.nts.go.kr/tax/yangdo_2.html',
                 '국세청 양도소득세 법령·상담': 'https://www.nts.go.kr/tax/yangdo_2.html',
                 '찾기쉬운 생활법령정보': 'https://lnp.nanet.go.kr',
                 '대법원 종합법률정보': 'https://glaw.scourt.go.kr',
@@ -2030,26 +2031,57 @@
                 '기획재정부': 'https://www.moef.go.kr'
             };
             
-            // 민간 사이트 URL 매핑 (동적 참고자료)
+            // 민간 사이트 URL 매핑 (동적 참고자료) - 키워드 매칭 포함
             const privateSiteMap = {
                 '브런치': 'https://brunch.co.kr/@@4AQs/2703',
                 '브런치(양도세 필요경비)': 'https://brunch.co.kr/@@4AQs/2703',
                 '세무법인 혜움': 'https://www.heumtax.com/contents/posts/capital-gains-tax-deductions',
+                '다음 카페': 'https://m.cafe.daum.net/transtax/6vQ1/549',
                 '다음 카페(세무상담)': 'https://m.cafe.daum.net/transtax/6vQ1/549',
                 '신승세무법인': 'http://www.sostax.co.kr/'
             };
             
-            // 먼저 공공기관 사이트에서 찾기
-            let url = publicInstitutionMap[siteName];
+            // 정확한 매칭 먼저 시도
+            let url = publicInstitutionMap[siteName] || privateSiteMap[siteName];
             
-            // 공공기관 사이트에 없으면 민간 사이트에서 찾기
+            // 정확한 매칭이 없으면 키워드 매칭 시도
             if (!url) {
-                url = privateSiteMap[siteName];
+                // 공공기관 키워드 매칭
+                if (siteName.includes('국세청')) {
+                    if (siteName.includes('양도소득세') || siteName.includes('양도세')) {
+                        url = 'https://www.nts.go.kr/tax/yangdo_2.html';
+                    } else {
+                        url = 'https://www.nts.go.kr';
+                    }
+                } else if (siteName.includes('국가법령') || siteName.includes('법령정보')) {
+                    url = 'https://www.law.go.kr';
+                } else if (siteName.includes('생활법령') || siteName.includes('찾기쉬운')) {
+                    url = 'https://lnp.nanet.go.kr';
+                } else if (siteName.includes('대법원') || siteName.includes('종합법률')) {
+                    url = 'https://glaw.scourt.go.kr';
+                } else if (siteName.includes('헌법재판소')) {
+                    url = 'https://www.ccourt.go.kr';
+                } else if (siteName.includes('행정안전부')) {
+                    url = 'https://www.mois.go.kr';
+                } else if (siteName.includes('기획재정부')) {
+                    url = 'https://www.moef.go.kr';
+                }
+                // 민간 사이트 키워드 매칭
+                else if (siteName.includes('브런치')) {
+                    url = 'https://brunch.co.kr/@@4AQs/2703';
+                } else if (siteName.includes('세무법인 혜움') || siteName.includes('혜움')) {
+                    url = 'https://www.heumtax.com/contents/posts/capital-gains-tax-deductions';
+                } else if (siteName.includes('다음 카페') || siteName.includes('카페')) {
+                    url = 'https://m.cafe.daum.net/transtax/6vQ1/549';
+                } else if (siteName.includes('신승세무법인') || siteName.includes('신승')) {
+                    url = 'http://www.sostax.co.kr/';
+                }
             }
             
             if (url) {
                 window.open(url, '_blank');
             } else {
+                console.log('찾을 수 없는 사이트명:', siteName);
                 alert('해당 참고자료의 링크를 찾을 수 없습니다. 사이트명: ' + siteName);
             }
         }
