@@ -228,11 +228,6 @@
             51%, 100% { opacity: 0.3; }
         }
 
-        @keyframes blinkRed {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0.3; }
-        }
-
         .messages {
             flex: 1;
             padding: 30px;
@@ -1618,33 +1613,7 @@
 
         // 데이터 모드 피드백 목록 표시
         function displayDataFeedbackList() {
-            const feedbackListEl = document.getElementById('dataFeedbackList');
-            
-            if (feedbackHistory.length === 0) {
-                feedbackListEl.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">저장된 피드백이 없습니다.</p>';
-                return;
-            }
-            
-            let html = '';
-            feedbackHistory.forEach((feedback, index) => {
-                const date = new Date(feedback.timestamp).toLocaleString('ko-KR');
-                const typeClass = feedback.type === 'positive' ? 'positive' : 'negative';
-                const typeText = feedback.type === 'positive' ? '좋은답변' : '나쁜답변';
-                
-                html += `
-                    <div class="feedback-item">
-                        <div class="feedback-header">
-                            <span class="feedback-type ${typeClass}">${typeText}</span>
-                            <span class="feedback-date">${date}</span>
-                        </div>
-                        <div class="feedback-question">질문: ${feedback.question}</div>
-                        <div class="feedback-answer">답변: ${feedback.answer.substring(0, 100)}${feedback.answer.length > 100 ? '...' : ''}</div>
-                        <div class="feedback-comment">코멘트: ${feedback.comment}</div>
-                    </div>
-                `;
-            });
-            
-            feedbackListEl.innerHTML = html;
+            displayFeedbackList('dataFeedbackList');
         }
 
         // AI 모델 선택 (사용자 선택 시)
@@ -1689,7 +1658,9 @@
             
             // 현재 모델 표시 업데이트
             const currentModelDisplay = document.getElementById('currentModelDisplay');
-            currentModelDisplay.textContent = modelName;
+            if (currentModelDisplay) {
+                currentModelDisplay.textContent = modelName;
+            }
         }
 
         // n8n 엔진 상태 토글
@@ -1699,49 +1670,38 @@
             const headerStatusLight = document.querySelector('.n8n-status .status-light');
             const headerN8nText = document.getElementById('headerN8nText');
             
-            if (status === 'on') {
-                // n8n 엔진 On
-                statusLight.style.background = '#00ff00';
-                statusLight.style.animation = 'blink 1.5s infinite';
-                statusText.textContent = 'n8n 엔진 On';
-                statusText.style.color = '#28a745';
-                
-                // 헤더의 상태 표시도 업데이트
-                if (headerStatusLight) {
-                    headerStatusLight.style.background = '#00ff00';
-                    headerStatusLight.style.animation = 'blink 1.5s infinite';
-                }
-                if (headerN8nText) {
-                    headerN8nText.textContent = 'n8n 엔진 On';
-                    headerN8nText.style.color = '#ffffff';
-                }
-                
-                // 로컬 스토리지에 상태 저장
-                localStorage.setItem('n8n_engine_status', 'on');
-                
-                alert('n8n 엔진이 활성화되었습니다.');
-            } else {
-                // n8n 엔진 Off
-                statusLight.style.background = '#dc3545';
-                statusLight.style.animation = 'blinkRed 1.5s infinite';
-                statusText.textContent = 'n8n 엔진 Off';
-                statusText.style.color = '#dc3545';
-                
-                // 헤더의 상태 표시도 업데이트
-                if (headerStatusLight) {
-                    headerStatusLight.style.background = '#dc3545';
-                    headerStatusLight.style.animation = 'blinkRed 1.5s infinite';
-                }
-                if (headerN8nText) {
-                    headerN8nText.textContent = 'n8n 엔진 Off';
-                    headerN8nText.style.color = '#dc3545';
-                }
-                
-                // 로컬 스토리지에 상태 저장
-                localStorage.setItem('n8n_engine_status', 'off');
-                
-                alert('n8n 엔진이 비활성화되었습니다.');
+            const isOn = status === 'on';
+            const color = isOn ? '#00ff00' : '#dc3545';
+            const textColor = isOn ? '#28a745' : '#dc3545';
+            const headerTextColor = isOn ? '#ffffff' : '#dc3545';
+            const animation = isOn ? 'blink 1.5s infinite' : 'blink 1.5s infinite';
+            const statusTextValue = isOn ? 'n8n 엔진 On' : 'n8n 엔진 Off';
+            const alertMessage = isOn ? 'n8n 엔진이 활성화되었습니다.' : 'n8n 엔진이 비활성화되었습니다.';
+            
+            // 관리자 모달 상태 업데이트
+            if (statusLight) {
+                statusLight.style.background = color;
+                statusLight.style.animation = animation;
             }
+            if (statusText) {
+                statusText.textContent = statusTextValue;
+                statusText.style.color = textColor;
+            }
+            
+            // 헤더 상태 업데이트
+            if (headerStatusLight) {
+                headerStatusLight.style.background = color;
+                headerStatusLight.style.animation = animation;
+            }
+            if (headerN8nText) {
+                headerN8nText.textContent = statusTextValue;
+                headerN8nText.style.color = headerTextColor;
+            }
+            
+            // 로컬 스토리지에 상태 저장
+            localStorage.setItem('n8n_engine_status', status);
+            
+            alert(alertMessage);
         }
 
         // n8n 상태 표시 업데이트
@@ -1756,9 +1716,9 @@
             updateModelSelectionUI(currentModel, false); // 알림 없이 UI만 업데이트
         }
 
-        // 피드백 목록 표시
-        function displayFeedbackList() {
-            const feedbackListEl = document.getElementById('feedbackList');
+        // 피드백 목록 표시 (공통 함수)
+        function displayFeedbackList(elementId = 'feedbackList') {
+            const feedbackListEl = document.getElementById(elementId);
             
             if (feedbackHistory.length === 0) {
                 feedbackListEl.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">저장된 피드백이 없습니다.</p>';
@@ -1865,36 +1825,40 @@
 
         // 메시지 포맷팅
         function formatMessage(message) {
+            if (!message) return '';
+            
             // 줄바꿈을 <br>로 변환
             message = message.replace(/\n/g, '<br>');
             
-            // 결론 섹션 스타일링 (넘버링 포함) - 먼저 처리
-            message = message.replace(/\*\*(\d+\.\s*)?결론\*\*/g, '<h3 style="color: #333; margin: 30px 0 0px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 2px;">$1결론</h3>');
-            message = message.replace(/\*\*결론\*\*/g, '<h3 style="color: #333; margin: 30px 0 0px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 2px;">결론</h3>');
+            // 제목 스타일링 (넘버링 포함)
+            const titleStyle = 'color: #333; margin: 30px 0 0px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 2px;';
+            const referenceStyle = 'color: #667eea; margin: 30px 0 0px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 2px;';
             
-            // 참고 자료 섹션 스타일링 (넘버링 포함) - 먼저 처리
-            message = message.replace(/\*\*(\d+\.\s*)?참고 자료\*\*/g, '<h3 style="color: #667eea; margin: 30px 0 0px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 2px;">$1참고 자료</h3>');
+            // 결론 섹션 스타일링
+            message = message.replace(/\*\*(\d+\.\s*)?결론\*\*/g, `<h3 style="${titleStyle}">$1결론</h3>`);
+            message = message.replace(/\*\*결론\*\*/g, `<h3 style="${titleStyle}">결론</h3>`);
             
-            // Tax Agent 안내 말씀 섹션 스타일링 - 먼저 처리
-            message = message.replace(/\*\*Tax Agent 안내 말씀\*\*/g, '<div style="margin-top: 80px; padding: 10px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 15px; border-left: 5px solid #667eea; box-shadow: 0 4px 15px rgba(0,0,0,0.1);"><h3 style="color: #333; margin: 0 0 15px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 2px;">Tax Agent 안내 말씀</h3>');
+            // 참고 자료 섹션 스타일링
+            message = message.replace(/\*\*(\d+\.\s*)?참고 자료\*\*/g, `<h3 style="${referenceStyle}">$1참고 자료</h3>`);
             
-            // **텍스트** -> <strong>텍스트</strong> (제목 넘버링 스타일링 포함) - 간격 조정
-            message = message.replace(/\*\*(\d+\.\s*.*?)\*\*/g, '<h3 style="color: #333; margin: 30px 0 0px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 2px;">$1</h3>');
+            // Tax Agent 안내 말씀 섹션 스타일링
+            const noticeStyle = 'margin-top: 80px; padding: 10px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 15px; border-left: 5px solid #667eea; box-shadow: 0 4px 15px rgba(0,0,0,0.1);';
+            const noticeTitleStyle = 'color: #333; margin: 0 0 15px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 2px;';
+            message = message.replace(/\*\*Tax Agent 안내 말씀\*\*/g, `<div style="${noticeStyle}"><h3 style="${noticeTitleStyle}">Tax Agent 안내 말씀</h3>`);
+            
+            // 제목 넘버링 스타일링
+            message = message.replace(/\*\*(\d+\.\s*.*?)\*\*/g, `<h3 style="${titleStyle}">$1</h3>`);
             message = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             
-            // *텍스트* -> <em>텍스트</em>
+            // 이탤릭체
             message = message.replace(/\*(.*?)\*/g, '<em>$1</em>');
             
-            // ### 제목 -> h3 스타일
+            // 마크다운 제목 스타일링
             message = message.replace(/^### (.*?)$/gm, '<h3 style="color: #667eea; margin: 20px 0 10px 0; font-size: 18px;">$1</h3>');
-            
-            // ## 제목 -> h2 스타일  
             message = message.replace(/^## (.*?)$/gm, '<h2 style="color: #333; margin: 25px 0 15px 0; font-size: 20px;">$1</h2>');
-            
-            // # 제목 -> h1 스타일
             message = message.replace(/^# (.*?)$/gm, '<h1 style="color: #333; margin: 30px 0 15px 0; font-size: 22px;">$1</h1>');
             
-            // 표 스타일링 (마크다운 테이블을 HTML 테이블로 변환)
+            // 표 스타일링
             message = message.replace(/\|(.+)\|/g, function(match, content) {
                 const cells = content.split('|').map(cell => cell.trim());
                 const isHeader = match.includes('---') || match.includes('구분') || match.includes('필요경비');
@@ -1909,35 +1873,27 @@
             // 표 전체를 감싸는 테이블 태그 추가
             message = message.replace(/(<tr>.*?<\/tr>)/gs, '<table style="border-collapse: collapse; width: 100%; margin: 20px 0; font-size: 14px;">$1</table>');
             
-            // --- 구분선 (Tax Agent 안내 문구 구분용)
+            // 구분선 및 특수 기호 스타일링
             message = message.replace(/^---$/gm, '<div style="margin: 30px 0; padding: 20px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 15px; border-left: 5px solid #667eea; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">');
-            
-            // ▶ 기호 스타일링
             message = message.replace(/▶ (.*?)$/gm, '<div style="margin: 15px 0; padding: 10px 15px; background: #f8f9fa; border-left: 4px solid #667eea; border-radius: 0 8px 8px 0;"><strong>▶ $1</strong></div>');
-            
-            // ✅ 체크마크 스타일링
             message = message.replace(/✅ (.*?)$/gm, '<div style="margin: 10px 0; padding: 8px 12px; background: #e8f5e8; border-left: 3px solid #28a745; border-radius: 0 5px 5px 0;">✅ $1</div>');
-            
-            // • 리스트 항목
             message = message.replace(/^• (.*?)$/gm, '<div style="margin: 8px 0; padding-left: 20px;">• $1</div>');
             
             // URL을 클릭 가능한 링크로 변환
             message = message.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color: #667eea; text-decoration: none; font-weight: bold; padding: 2px 4px; background: rgba(102, 126, 234, 0.1); border-radius: 4px; transition: all 0.3s ease;">$1</a>');
             
-
+            // 참고 자료 링크 스타일링
+            const referenceLinkStyle = 'margin: 12px 0; padding: 15px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 10px; border-left: 4px solid #667eea; box-shadow: 0 2px 8px rgba(0,0,0,0.1);';
+            const referenceLinkTextStyle = 'color: #667eea; text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 8px;';
+            message = message.replace(/🔗 \[(.*?)\] - 🔗 참고자료 클릭/g, `<div style="${referenceLinkStyle}"><a href="#" onclick="openReferenceLink('$1'); return false;" style="${referenceLinkTextStyle}"><span style="flex: 1;">$1</span><span style="font-size: 12px; color: #666;">🔗 참고자료 클릭</span></a></div>`);
             
-            // 🔗 링크 스타일링 (참고 자료 섹션 내) - "참고자료 클릭"으로 변경
-            message = message.replace(/🔗 \[(.*?)\] - 🔗 참고자료 클릭/g, '<div style="margin: 12px 0; padding: 15px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 10px; border-left: 4px solid #667eea; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"><a href="#" onclick="openReferenceLink(\'$1\'); return false;" style="color: #667eea; text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 8px;"><span style="flex: 1;">$1</span><span style="font-size: 12px; color: #666;">🔗 참고자료 클릭</span></a></div>');
-            
-            // 참고 번호를 클릭 가능한 링크로 변환 (참고 자료 섹션의 URL과 연결)
+            // 참고 번호를 클릭 가능한 링크로 변환
             message = message.replace(/\[(\d+)\]/g, function(match, number) {
-                // 참고 자료 섹션에서 해당 번호의 URL 찾기
                 const referenceMatch = message.match(new RegExp(`🔗 \\[.*?\\] - (https?://[^\\s]+)`, 'g'));
                 if (referenceMatch && referenceMatch[number - 1]) {
                     const url = referenceMatch[number - 1].match(/🔗 \[.*?\] - (https?:\/\/[^\s]+)/)[1];
                     return `<a href="${url}" target="_blank" style="background: #667eea; color: white; border-radius: 50%; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; margin: 0 2px; vertical-align: middle; text-decoration: none; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='scale(1.1)'; this.style.boxShadow='0 4px 8px rgba(102, 126, 234, 0.3)'" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'" title="참고 자료 ${number}로 이동">${number}</a>`;
                 }
-                // URL을 찾을 수 없는 경우 기본 스타일
                 return `<span style="background: #667eea; color: white; border-radius: 50%; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; margin: 0 2px; vertical-align: middle;">${number}</span>`;
             });
             
@@ -1991,60 +1947,56 @@
             messagesEl.scrollTop = messagesEl.scrollHeight;
         }
 
-                    // 중복 내용 정리 함수
-            function cleanDuplicateContent(content) {
-                if (!content) return content;
+        // 중복 내용 정리 함수
+        function cleanDuplicateContent(content) {
+            if (!content) return content;
+            
+            // 중복된 섹션 제거
+            const sections = content.split('##');
+            if (sections.length > 2) {
+                const uniqueSections = [];
+                const seenSections = new Set();
                 
-                // 중복된 섹션 제거
-                const sections = content.split('##');
-                if (sections.length > 2) {
-                    // 첫 번째 섹션만 유지하고 중복 제거
-                    const uniqueSections = [];
-                    const seenSections = new Set();
-                    
-                    for (let section of sections) {
-                        const cleanSection = section.trim();
-                        if (cleanSection && !seenSections.has(cleanSection)) {
-                            seenSections.add(cleanSection);
-                            uniqueSections.push(section);
-                        }
+                for (let section of sections) {
+                    const cleanSection = section.trim();
+                    if (cleanSection && !seenSections.has(cleanSection)) {
+                        seenSections.add(cleanSection);
+                        uniqueSections.push(section);
                     }
-                    
-                    content = uniqueSections.join('##');
                 }
                 
-                // 중복된 결론 제거
-                const conclusions = content.split('**결론**');
-                if (conclusions.length > 2) {
-                    content = conclusions[0] + '**결론**' + conclusions[1];
-                }
-                
-                // 중복된 참고 자료 제거
-                const references = content.split('**참고 자료**');
-                if (references.length > 2) {
-                    content = references[0] + '**참고 자료**' + references[1];
-                }
-                
-                // reasoning/deep-research 모델의 추가 결론 제거
-                const additionalConclusions = [
-                    /이러한 분석을 통해.*$/s,
-                    /결론적으로.*$/s,
-                    /따라서.*$/s,
-                    /요약하면.*$/s,
-                    /위의 내용을 종합하면.*$/s,
-                    /이상의 분석 결과.*$/s,
-                    /이러한 관점에서.*$/s,
-                    /실무적 관점에서.*$/s,
-                    /세무적 관점에서.*$/s,
-                    /법적 관점에서.*$/s
-                ];
-                
-                additionalConclusions.forEach(pattern => {
-                    content = content.replace(pattern, '');
-                });
-                
-                return content;
+                content = uniqueSections.join('##');
             }
+            
+            // 중복된 결론 및 참고 자료 제거
+            const sectionsToClean = ['**결론**', '**참고 자료**'];
+            sectionsToClean.forEach(section => {
+                const parts = content.split(section);
+                if (parts.length > 2) {
+                    content = parts[0] + section + parts[1];
+                }
+            });
+            
+            // reasoning/deep-research 모델의 추가 결론 제거
+            const additionalConclusions = [
+                /이러한 분석을 통해.*$/s,
+                /결론적으로.*$/s,
+                /따라서.*$/s,
+                /요약하면.*$/s,
+                /위의 내용을 종합하면.*$/s,
+                /이상의 분석 결과.*$/s,
+                /이러한 관점에서.*$/s,
+                /실무적 관점에서.*$/s,
+                /세무적 관점에서.*$/s,
+                /법적 관점에서.*$/s
+            ];
+            
+            additionalConclusions.forEach(pattern => {
+                content = content.replace(pattern, '');
+            });
+            
+            return content;
+        }
 
         // HTML 이스케이프
         function escapeHtml(text) {
