@@ -1281,7 +1281,7 @@
                     'Authorization': `Bearer ${apiKey}`
                 },
                 body: JSON.stringify({
-                    model: window.selectedModel || 'sonar-medium-online',
+                    model: window.selectedModel || 'sonar-reasoning',
                     messages: [
                         { role: 'system', content: systemPrompt },
                         { role: 'user', content: message }
@@ -1449,7 +1449,7 @@
             document.getElementById('adminModal').style.display = 'none';
         }
 
-        // AI 모델 선택
+        // AI 모델 선택 (사용자 선택 시)
         function selectModel(modelName) {
             // 전역 변수에 선택된 모델 저장
             window.selectedModel = modelName;
@@ -1457,6 +1457,15 @@
             // 로컬 스토리지에 저장
             localStorage.setItem('tax_chatbot_selected_model', modelName);
             
+            // UI 업데이트 (알림 포함)
+            updateModelSelectionUI(modelName, true);
+            
+            // 성공 메시지 표시
+            alert(`AI 모델이 ${modelName}로 변경되었습니다.`);
+        }
+
+        // AI 모델 선택 UI 업데이트 (알림 옵션 포함)
+        function updateModelSelectionUI(modelName, showAlert = false) {
             // 모든 모델 버튼 초기화 (비활성 스타일)
             const allModelBtns = [
                 'model-sonar-btn',
@@ -1483,9 +1492,6 @@
             // 현재 모델 표시 업데이트
             const currentModelDisplay = document.getElementById('currentModelDisplay');
             currentModelDisplay.textContent = modelName;
-            
-            // 성공 메시지 표시
-            alert(`AI 모델이 ${modelName}로 변경되었습니다.`);
         }
 
         // n8n 엔진 상태 토글
@@ -1546,10 +1552,10 @@
             toggleN8nEngine(savedStatus);
         }
 
-        // 모델 선택 상태 표시 업데이트
+        // 모델 선택 상태 표시 업데이트 (알림 없이)
         function updateModelSelectionDisplay() {
             const currentModel = window.selectedModel || 'sonar-reasoning';
-            selectModel(currentModel);
+            updateModelSelectionUI(currentModel, false); // 알림 없이 UI만 업데이트
         }
 
         // 피드백 목록 표시
