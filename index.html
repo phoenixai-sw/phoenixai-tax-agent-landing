@@ -1418,6 +1418,18 @@
             content = content.replace(/세무적 관점에서.*?(?=\n\n|\*\*)/s, '');
             content = content.replace(/법적 관점에서.*?(?=\n\n|\*\*)/s, '');
             
+            // 추가 중복 내용 제거 (답변 끝부분 정리)
+            content = content.replace(/이상.*?(?=\n\n|\*\*|💡)/s, '');
+            content = content.replace(/종합.*?(?=\n\n|\*\*|💡)/s, '');
+            content = content.replace(/요약.*?(?=\n\n|\*\*|💡)/s, '');
+            content = content.replace(/결론.*?(?=\n\n|\*\*|💡)/s, '');
+            content = content.replace(/따라서.*?(?=\n\n|\*\*|💡)/s, '');
+            content = content.replace(/이러한.*?(?=\n\n|\*\*|💡)/s, '');
+            content = content.replace(/위의.*?(?=\n\n|\*\*|💡)/s, '');
+            content = content.replace(/앞서.*?(?=\n\n|\*\*|💡)/s, '');
+            content = content.replace(/앞의.*?(?=\n\n|\*\*|💡)/s, '');
+            content = content.replace(/앞에서.*?(?=\n\n|\*\*|💡)/s, '');
+            
             // 더 강력한 정리: 중복된 내용 제거
             content = cleanDuplicateContent(content);
             
@@ -1851,7 +1863,7 @@
             message = message.replace(/\n/g, '<br>');
             
             // **텍스트** -> <strong>텍스트</strong> (제목 넘버링 스타일링 포함)
-            message = message.replace(/\*\*(\d+\.\s*.*?)\*\*/g, '<h3 style="color: #333; margin: 40px 0 5px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 8px;">$1</h3>');
+            message = message.replace(/\*\*(\d+\.\s*.*?)\*\*/g, '<h3 style="color: #333; margin: 40px 0 2px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 8px;">$1</h3>');
             message = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             
             // *텍스트* -> <em>텍스트</em>
@@ -1897,7 +1909,7 @@
             message = message.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color: #667eea; text-decoration: none; font-weight: bold; padding: 2px 4px; background: rgba(102, 126, 234, 0.1); border-radius: 4px; transition: all 0.3s ease;">$1</a>');
             
             // 참고 자료 섹션 스타일링 (넘버링 포함)
-            message = message.replace(/\*\*(\d+\.\s*)?참고 자료\*\*/g, '<h3 style="color: #667eea; margin: 40px 0 5px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 8px;">📚 $1참고 자료</h3>');
+            message = message.replace(/\*\*(\d+\.\s*)?참고 자료\*\*/g, '<h3 style="color: #667eea; margin: 40px 0 2px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 8px;">📚 $1참고 자료</h3>');
             
             // Tax Agent 안내 말씀 섹션 스타일링 (참고 자료와 명확한 간격 유지)
             message = message.replace(/\*\*Tax Agent 안내 말씀\*\*/g, '<div style="margin-top: 80px; padding: 25px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 15px; border-left: 5px solid #667eea; box-shadow: 0 4px 15px rgba(0,0,0,0.1);"><h3 style="color: #667eea; margin: 0 0 15px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 8px;">💡 Tax Agent 안내 말씀</h3>');
