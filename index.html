@@ -1862,8 +1862,17 @@
             // 줄바꿈을 <br>로 변환
             message = message.replace(/\n/g, '<br>');
             
+            // 결론 섹션 스타일링 (넘버링 포함) - 먼저 처리
+            message = message.replace(/\*\*(\d+\.\s*)?결론\*\*/g, '<h3 style="color: #333; margin: 5px 0 2px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 8px;">📋 $1결론</h3>');
+            
+            // 참고 자료 섹션 스타일링 (넘버링 포함) - 먼저 처리
+            message = message.replace(/\*\*(\d+\.\s*)?참고 자료\*\*/g, '<h3 style="color: #667eea; margin: 5px 0 2px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 8px;">📚 $1참고 자료</h3>');
+            
+            // Tax Agent 안내 말씀 섹션 스타일링 - 먼저 처리
+            message = message.replace(/\*\*Tax Agent 안내 말씀\*\*/g, '<div style="margin-top: 80px; padding: 25px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 15px; border-left: 5px solid #667eea; box-shadow: 0 4px 15px rgba(0,0,0,0.1);"><h3 style="color: #333; margin: 0 0 15px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 8px;">💡 Tax Agent 안내 말씀</h3>');
+            
             // **텍스트** -> <strong>텍스트</strong> (제목 넘버링 스타일링 포함)
-            message = message.replace(/\*\*(\d+\.\s*.*?)\*\*/g, '<h3 style="color: #333; margin: 20px 0 2px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 8px;">$1</h3>');
+            message = message.replace(/\*\*(\d+\.\s*.*?)\*\*/g, '<h3 style="color: #333; margin: 5px 0 2px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 8px;">$1</h3>');
             message = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             
             // *텍스트* -> <em>텍스트</em>
@@ -1908,14 +1917,10 @@
             // URL을 클릭 가능한 링크로 변환
             message = message.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color: #667eea; text-decoration: none; font-weight: bold; padding: 2px 4px; background: rgba(102, 126, 234, 0.1); border-radius: 4px; transition: all 0.3s ease;">$1</a>');
             
-            // 참고 자료 섹션 스타일링 (넘버링 포함)
-            message = message.replace(/\*\*(\d+\.\s*)?참고 자료\*\*/g, '<h3 style="color: #667eea; margin: 20px 0 2px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 8px;">📚 $1참고 자료</h3>');
-            
-            // Tax Agent 안내 말씀 섹션 스타일링 (참고 자료와 명확한 간격 유지)
-            message = message.replace(/\*\*Tax Agent 안내 말씀\*\*/g, '<div style="margin-top: 80px; padding: 25px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 15px; border-left: 5px solid #667eea; box-shadow: 0 4px 15px rgba(0,0,0,0.1);"><h3 style="color: #333; margin: 0 0 15px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 8px;">💡 Tax Agent 안내 말씀</h3>');
+
             
             // 🔗 링크 스타일링 (참고 자료 섹션 내) - "참고자료 클릭"으로 변경
-            message = message.replace(/🔗 \[(.*?)\] - (https?:\/\/[^\s]+)/g, '<div style="margin: 12px 0; padding: 15px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 10px; border-left: 4px solid #667eea; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"><a href="$2" target="_blank" style="color: #667eea; text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 8px;"><span style="margin-right: 8px; background: #667eea; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold;">📄</span><span style="flex: 1;">$1</span><span style="font-size: 12px; color: #666;">🔗 참고자료 클릭</span></a></div>');
+            message = message.replace(/🔗 \[(.*?)\] - 🔗 참고자료 클릭/g, '<div style="margin: 12px 0; padding: 15px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 10px; border-left: 4px solid #667eea; box-shadow: 0 2px 8px rgba(0,0,0,0.1);"><a href="#" onclick="openReferenceLink(\'$1\'); return false;" style="color: #667eea; text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 8px;"><span style="margin-right: 8px; background: #667eea; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold;">📄</span><span style="flex: 1;">$1</span><span style="font-size: 12px; color: #666;">🔗 참고자료 클릭</span></a></div>');
             
             // 참고 번호를 클릭 가능한 링크로 변환 (참고 자료 섹션의 URL과 연결)
             message = message.replace(/\[(\d+)\]/g, function(match, number) {
@@ -2040,6 +2045,26 @@
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
+        }
+
+        // 참고자료 링크 열기 함수
+        function openReferenceLink(siteName) {
+            // 사이트명에 따른 URL 매핑
+            const urlMap = {
+                '브런치(양도세 필요경비)': 'https://brunch.co.kr/@@4AQs/2703',
+                '세무법인 혜움': 'https://www.heumtax.com/contents/posts/capital-gains-tax-deductions',
+                '다음 카페(세무상담)': 'https://m.cafe.daum.net/transtax/6vQ1/549',
+                '국가법령정보센터': 'https://www.law.go.kr',
+                '국세청 양도소득세 법령·상담': 'https://www.nts.go.kr/tax/yangdo_2.html',
+                '찾기쉬운 생활법령정보': 'https://lnp.nanet.go.kr'
+            };
+            
+            const url = urlMap[siteName];
+            if (url) {
+                window.open(url, '_blank');
+            } else {
+                alert('해당 참고자료의 링크를 찾을 수 없습니다.');
+            }
         }
 
         // CSV 필드 이스케이프 (한글 및 특수문자 안전 처리)
