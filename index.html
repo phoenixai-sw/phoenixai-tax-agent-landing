@@ -913,14 +913,14 @@
                 <div class="n8n-control-buttons">
                     <button class="n8n-control-btn n8n-off" onclick="selectModel('sonar')" id="model-sonar-btn">sonar</button>
                     <button class="n8n-control-btn n8n-off" onclick="selectModel('sonar-pro')" id="model-sonar-pro-btn">sonar-pro</button>
-                    <button class="n8n-control-btn n8n-on" onclick="selectModel('sonar-reasoning')" id="model-sonar-reasoning-btn">sonar-reasoning</button>
+                    <button class="n8n-control-btn n8n-off" onclick="selectModel('sonar-reasoning')" id="model-sonar-reasoning-btn">sonar-reasoning</button>
                 </div>
                 <div class="n8n-control-buttons" style="margin-top: 10px;">
-                    <button class="n8n-control-btn n8n-off" onclick="selectModel('sonar-reasoning-pro')" id="model-sonar-reasoning-pro-btn">sonar-reasoning-pro</button>
+                    <button class="n8n-control-btn n8n-on" onclick="selectModel('sonar-reasoning-pro')" id="model-sonar-reasoning-pro-btn">sonar-reasoning-pro</button>
                     <button class="n8n-control-btn n8n-off" onclick="selectModel('sonar-deep-research')" id="model-sonar-deep-research-btn">sonar-deep-research</button>
                 </div>
                 <div style="text-align: center; margin-top: 10px; font-size: 12px; color: #666;">
-                    현재 선택된 모델: <span id="currentModelDisplay" style="font-weight: bold; color: #667eea;">sonar-reasoning</span>
+                    현재 선택된 모델: <span id="currentModelDisplay" style="font-weight: bold; color: #667eea;">sonar-reasoning-pro</span>
                 </div>
                 <div style="text-align: center; margin-top: 5px; font-size: 11px; color: #888;">
                     💡 모든 모델은 웹 검색 기능을 포함합니다
@@ -1039,7 +1039,7 @@
             const loginPw = document.getElementById('loginPw').value;
             const errorEl = document.getElementById('loginError');
             
-            if (loginId === '4050' && loginPw === '4050') {
+            if (loginId === '004050' && loginPw === '004050') {
                 document.getElementById('loginSection').style.display = 'none';
                 document.getElementById('apiSettingsSection').style.display = 'block';
                 errorEl.textContent = '';
@@ -1138,11 +1138,11 @@
             // 이전 모델명 정리 (sonar-medium-online 등 잘못된 모델명 제거)
             if (savedModel && (savedModel === 'sonar-medium-online' || !savedModel.includes('sonar'))) {
                 localStorage.removeItem('tax_chatbot_selected_model');
-                window.selectedModel = 'sonar-reasoning'; // 기본값으로 재설정
+                window.selectedModel = 'sonar-reasoning-pro'; // 기본값으로 재설정
             } else if (savedModel) {
                 window.selectedModel = savedModel;
             } else {
-                window.selectedModel = 'sonar-reasoning'; // 기본값
+                window.selectedModel = 'sonar-reasoning-pro'; // 기본값
             }
         }
 
@@ -1339,9 +1339,12 @@
                    - "검색 결과를 보면서", "정리하면:", "구체적인 예시들:" 등의 추론 과정 표현을 사용하지 마세요
                    - 최종 답변만 제공하고, 중간 과정은 생략하세요
                    - "이러한 분석을 통해", "결론적으로", "따라서", "요약하면" 등의 중복 결론 표현을 사용하지 마세요
-                   - 답변 마지막에 추가적인 요약이나 결론을 덧붙이지 마세요
+                   - 답변 마지막에 추가적인 요약이나 결론을 말붙이지 마세요
                    - 결론 섹션을 생략하지 마세요 (모든 답변에 반드시 포함)
-                   - "결론"이라는 제목 자체를 생략하지 마세요 (결론 내용만 쓰고 제목을 빼지 마세요)`;
+                   - "결론"이라는 제목 자체를 생략하지 마세요 (결론 내용만 쓰고 제목을 빼지 마세요)
+                   
+                   **추론 과정 완전 차단 (가장 중요):**
+                   모든 추론 과정과 분석 과정을 백그라운드에서 수행하되, 사용자에게는 최종 정리된 답변만 제공하세요. 중간 과정을 보여주거나 설명하지 마세요.`;
 
             const response = await fetch('https://api.perplexity.ai/chat/completions', {
                 method: 'POST',
@@ -1350,7 +1353,7 @@
                     'Authorization': `Bearer ${apiKey}`
                 },
                 body: JSON.stringify({
-                    model: window.selectedModel || 'sonar-reasoning',
+                    model: window.selectedModel || 'sonar-reasoning-pro',
                     messages: [
                         { role: 'system', content: systemPrompt },
                         { role: 'user', content: message }
@@ -1368,138 +1371,105 @@
             let content = data.choices[0].message.content;
             
             // 현재 모델 확인
-            const currentModel = window.selectedModel || 'sonar-reasoning';
+            const currentModel = window.selectedModel || 'sonar-reasoning-pro';
             
             // reasoning/deep-research 모델 특화 정리 (추론 과정 완전 차단)
             if (currentModel.includes('reasoning') || currentModel.includes('deep-research')) {
-                // 원문 중복 제거 (검색 결과와 정리된 답변이 섞여 있는 경우)
-                if (content.includes('사용자가') && content.includes('묻고 있습니다')) {
-                    // 검색 결과 부분을 제거하고 정리된 답변만 추출
-                    const parts = content.split('사용자가');
-                    if (parts.length > 1) {
-                        // 첫 번째 부분(정리된 답변)만 사용
-                        content = parts[0].trim();
-                    }
-                }
-                
-                // 추론 과정 완전 차단 (뭉텅이 답변 제거)
-                const reasoningBlockers = [
-                    // 검색 과정 차단
-                    /사용자가.*?묻고 있습니다.*?검색 결과를 확인해보겠습니다.*?정리하면:/s,
-                    /사용자가.*?묻고 있습니다.*?검색 결과를 분석해보겠습니다.*?정리하면:/s,
-                    /사용자가.*?묻고 있습니다.*?검색 결과를 종합해보겠습니다.*?정리하면:/s,
-                    /사용자가.*?묻고 있습니다.*?검색 결과를 보면서.*?정리하면:/s,
-                    /사용자가.*?묻고 있습니다.*?검색 결과에서.*?정리하면:/s,
-                    
-                    // 검색 결과 확인 과정 차단
-                    /검색 결과를 확인해보겠습니다.*?정리하면:/s,
-                    /검색 결과를 분석해보겠습니다.*?정리하면:/s,
-                    /검색 결과를 종합해보겠습니다.*?정리하면:/s,
-                    /검색 결과를 보면서.*?정리하면:/s,
-                    /검색 결과에서.*?정리하면:/s,
-                    /검색 결과를 확인한 결과.*?정리하면:/s,
-                    
-                    // 추론 과정 차단
-                    /검색 결과를 확인해보겠습니다.*?양도소득세 계산 시/s,
-                    /검색 결과에서.*?필요경비로 인정된다고 명시되어 있으며/s,
-                    /검색 결과 분석:.*?(?=\n\n|\*\*)/s,
-                    /검색 결과에서 확인한 내용:.*?(?=\n\n|\*\*)/s,
-                    /검색 결과를 확인한 결과:.*?(?=\n\n|\*\*)/s,
-                    
-                    // 검색 결과 번호별 나열 차단
-                    /\d+\.\s*첫 번째 검색 결과:.*?(?=\n\n|\*\*)/s,
-                    /\d+\.\s*두 번째 검색 결과:.*?(?=\n\n|\*\*)/s,
-                    /\d+\.\s*세 번째 검색 결과:.*?(?=\n\n|\*\*)/s,
-                    /\d+\.\s*네 번째 검색 결과:.*?(?=\n\n|\*\*)/s,
-                    /\d+\.\s*다섯 번째 검색 결과:.*?(?=\n\n|\*\*)/s,
-                    /\d+\.\s*[가-힣]+번째 검색 결과:.*?(?=\n\n|\*\*)/s,
-                    
-                    // 사고 과정 표현 차단
-                    /구체적인 예시들:.*?(?=\n\n|\*\*)/s,
-                    /실무적으로 주의해야 할 점은.*?(?=\n\n|\*\*)/s,
-                    /다양한 정보원의 신뢰성을 확인하고.*?(?=\n\n|\*\*)/s,
-                    /생각해보면.*?(?=\n\n|\*\*)/s,
-                    /고려해보면.*?(?=\n\n|\*\*)/s,
-                    /분석해보면.*?(?=\n\n|\*\*)/s,
-                    /검토해보면.*?(?=\n\n|\*\*)/s,
-                    /살펴보면.*?(?=\n\n|\*\*)/s,
-                    /확인해보면.*?(?=\n\n|\*\*)/s,
-                    
-                    // 관점 표현 차단
-                    /이러한 분석을 통해.*?(?=\n\n|\*\*)/s,
-                    /실무적 관점에서.*?(?=\n\n|\*\*)/s,
-                    /세무적 관점에서.*?(?=\n\n|\*\*)/s,
-                    /법적 관점에서.*?(?=\n\n|\*\*)/s,
-                    /관점에서.*?(?=\n\n|\*\*)/s,
-                    
-                    // 중복 결론 표현 차단 (뭉텅이 답변 제거)
-                    /이상.*?(?=\n\n|\*\*|💡)/s,
-                    /종합.*?(?=\n\n|\*\*|💡)/s,
-                    /요약.*?(?=\n\n|\*\*|💡)/s,
-                    /따라서.*?(?=\n\n|\*\*|💡)/s,
-                    /이러한.*?(?=\n\n|\*\*|💡)/s,
-                    /위의.*?(?=\n\n|\*\*|💡)/s,
-                    /앞서.*?(?=\n\n|\*\*|💡)/s,
-                    /앞의.*?(?=\n\n|\*\*|💡)/s,
-                    /앞에서.*?(?=\n\n|\*\*|💡)/s,
-                    /결론적으로.*?(?=\n\n|\*\*|💡)/s,
-                    /요약하면.*?(?=\n\n|\*\*|💡)/s,
-                    /종합하면.*?(?=\n\n|\*\*|💡)/s,
-                    /정리하면.*?(?=\n\n|\*\*|💡)/s,
-                    /위의 내용을 종합하면.*?(?=\n\n|\*\*|💡)/s,
-                    /이상의 분석 결과.*?(?=\n\n|\*\*|💡)/s,
-                    /이러한 관점에서.*?(?=\n\n|\*\*|💡)/s
-                ];
-                
-                reasoningBlockers.forEach(pattern => {
-                    content = content.replace(pattern, '');
-                });
-                
-                // 추가로 답변 끝부분의 뭉텅이 제거 (더 강력하게)
-                const endChunks = [
-                    /이상.*?(?=\n\n|\*\*|💡)/s,
-                    /종합.*?(?=\n\n|\*\*|💡)/s,
-                    /요약.*?(?=\n\n|\*\*|💡)/s,
-                    /따라서.*?(?=\n\n|\*\*|💡)/s,
-                    /이러한.*?(?=\n\n|\*\*|💡)/s,
-                    /위의.*?(?=\n\n|\*\*|💡)/s,
-                    /앞서.*?(?=\n\n|\*\*|💡)/s,
-                    /앞의.*?(?=\n\n|\*\*|💡)/s,
-                    /앞에서.*?(?=\n\n|\*\*|💡)/s,
-                    /결론적으로.*?(?=\n\n|\*\*|💡)/s,
-                    /요약하면.*?(?=\n\n|\*\*|💡)/s,
-                    /종합하면.*?(?=\n\n|\*\*|💡)/s,
-                    /정리하면.*?(?=\n\n|\*\*|💡)/s
-                ];
-                
-                endChunks.forEach(pattern => {
-                    content = content.replace(pattern, '');
-                });
-                
-                // 마지막으로 줄바꿈 정리 (과도한 공백 제거)
-                content = content.replace(/\n{3,}/g, '\n\n');
+                content = cleanReasoningResponse(content);
             } else {
                 // sonar, sonar-pro 모델은 기존 정리 방식 유지
-                // 원문 중복 제거 (검색 결과와 정리된 답변이 섞여 있는 경우)
-                if (content.includes('사용자가') && content.includes('묻고 있습니다')) {
-                    // 검색 결과 부분을 제거하고 정리된 답변만 추출
-                    const parts = content.split('사용자가');
-                    if (parts.length > 1) {
-                        // 첫 번째 부분(정리된 답변)만 사용
-                        content = parts[0].trim();
+                content = cleanBasicResponse(content);
+            }
+            
+            return content;
+        }
+
+        // Reasoning 모델 응답 정리 함수 (새로 개선된 버전)
+        function cleanReasoningResponse(content) {
+            if (!content) return content;
+            
+            // 1단계: 구조적 분리 - 추론 과정과 최종 답변 분리
+            let finalAnswer = content;
+            
+            // "사용자가...묻고 있습니다" 패턴으로 추론 과정과 답변 분리
+            const reasoningPattern = /^.*?사용자가.*?묻고\s*있습니다[.,]?\s*([\s\S]*?)(?=\*\*\d+\.|$)/;
+            const match = content.match(reasoningPattern);
+            
+            if (match) {
+                // 매칭된 경우 추론 과정 이후 부분만 사용
+                finalAnswer = match[1].trim();
+            } else {
+                // 다른 패턴으로 시도
+                const patterns = [
+                    /검색\s*결과를\s*(?:확인|분석|종합|정리).*?(?=\*\*\d+\.)/s,
+                    /^.*?(?:검색|분석|확인).*?(?=\*\*\d+\.)/s,
+                    /^.*?질문.*?(?=\*\*\d+\.)/s
+                ];
+                
+                for (const pattern of patterns) {
+                    const patternMatch = content.match(pattern);
+                    if (patternMatch) {
+                        finalAnswer = content.replace(pattern, '').trim();
+                        break;
                     }
                 }
             }
             
-            // 모든 모델에 공통으로 적용되는 기본 정리
-            // 검색 결과 관련 텍스트 제거
-            content = content.replace(/검색 결과를 확인해보겠습니다.*?양도소득세 계산 시/s, '');
-            content = content.replace(/검색 결과에서.*?필요경비로 인정된다고 명시되어 있으며/s, '');
+            // 2단계: 추론 과정 표현 완전 제거
+            const reasoningExpressions = [
+                // 검색 관련 표현
+                /검색\s*결과[를을]?\s*(?:확인|분석|종합|정리|요약|참고).*?(?=\n\n|\*\*)/gs,
+                /검색\s*(?:결과|과정).*?(?=\n\n|\*\*)/gs,
+                
+                // 분석 과정 표현
+                /.*?(?:분석|확인|검토|살펴|고려)해[보보았]?.*?(?=\n\n|\*\*)/gs,
+                /이러한.*?(?:분석|내용).*?(?=\n\n|\*\*)/gs,
+                
+                // 결론 중복 표현
+                /(?:결론적으로|요약하면|정리하면|따라서).*?(?=\n\n|\*\*)/gs,
+                
+                // 추론 과정 시작 표현
+                /^.*?(?:질문|문의).*?(?=\*\*\d+\.)/s,
+                
+                // 뭉탱이 답변 패턴 (더 강력하게)
+                /이상의?\s*(?:내용|분석|정리).*$/s,
+                /위의?\s*(?:내용|설명|분석).*$/s,
+                /앞서.*?(?:설명|언급).*$/s
+            ];
             
-            // 더 강력한 정리: 중복된 내용 제거
-            content = cleanDuplicateContent(content);
+            reasoningExpressions.forEach(pattern => {
+                finalAnswer = finalAnswer.replace(pattern, '');
+            });
             
-            return content;
+            // 3단계: 구조 정리
+            finalAnswer = finalAnswer
+                .replace(/^\s*\n+/g, '') // 시작 부분 공백 제거
+                .replace(/\n{3,}/g, '\n\n') // 과도한 줄바꿈 정리
+                .trim();
+            
+            // 4단계: 빈 답변이나 너무 짧은 답변 방지
+            if (!finalAnswer || finalAnswer.length < 50) {
+                // 원본에서 **로 시작하는 첫 번째 섹션부터 추출 시도
+                const fallbackMatch = content.match(/(\*\*\d+\..*)/s);
+                if (fallbackMatch) {
+                    finalAnswer = fallbackMatch[1].trim();
+                } else {
+                    finalAnswer = content; // 최후의 수단으로 원본 사용
+                }
+            }
+            
+            return finalAnswer;
+        }
+
+        // 기본 모델 응답 정리 함수
+        function cleanBasicResponse(content) {
+            if (!content) return content;
+            
+            // 기본적인 정리만 수행
+            return content
+                .replace(/검색\s*결과를?\s*(?:확인|분석).*?(?=\*\*)/gs, '')
+                .replace(/\n{3,}/g, '\n\n')
+                .trim();
         }
 
         // 사용자 메시지 추가
@@ -1515,7 +1485,7 @@
             scrollToBottom();
         }
 
-        // 봇 메시지 추가
+        // 봇 메시지 추가 (수정된 버전 - 피드백 데이터 안전하게 처리)
         function addBotMessage(message, userQuestion = '') {
             const messagesEl = document.getElementById('messages');
             const messageEl = document.createElement('div');
@@ -1525,6 +1495,10 @@
             const messageId = 'msg_' + Date.now();
             messageEl.id = messageId;
             
+            // 피드백용 데이터 정리 (HTML 태그 제거, 길이 제한)
+            const cleanAnswer = cleanTextForFeedback(message);
+            const cleanQuestion = cleanTextForFeedback(userQuestion);
+            
             messageEl.innerHTML = `
                 <div class="message-avatar">💰</div>
                 <div class="message-content">
@@ -1533,10 +1507,10 @@
                         <button class="action-btn copy-btn" data-message-id="${messageId}" title="답변 복사">
                             📋 복사
                         </button>
-                        <button class="action-btn feedback-btn" data-message-id="${messageId}" data-type="positive" data-question="${userQuestion}" data-answer="${message}" title="좋은 답변">
+                        <button class="action-btn feedback-btn" data-message-id="${messageId}" data-type="positive" data-question="${cleanQuestion}" data-answer="${cleanAnswer}" title="좋은 답변">
                             👍 좋은답변
                         </button>
-                        <button class="action-btn feedback-btn negative" data-message-id="${messageId}" data-type="negative" data-question="${userQuestion}" data-answer="${message}" title="나쁜 답변">
+                        <button class="action-btn feedback-btn negative" data-message-id="${messageId}" data-type="negative" data-question="${cleanQuestion}" data-answer="${cleanAnswer}" title="나쁜 답변">
                             👎 나쁜답변
                         </button>
                     </div>
@@ -1544,6 +1518,18 @@
             `;
             messagesEl.appendChild(messageEl);
             scrollToBottom();
+        }
+
+        // 피드백용 텍스트 정리 함수 (새로 추가)
+        function cleanTextForFeedback(text) {
+            if (!text) return '';
+            
+            return text
+                .replace(/<[^>]*>/g, '') // HTML 태그 제거
+                .replace(/\s+/g, ' ') // 연속된 공백을 하나로
+                .replace(/\n+/g, ' ') // 줄바꿈을 공백으로
+                .substring(0, 200) // 200자로 제한
+                .trim();
         }
 
         // 메시지 복사
@@ -1573,15 +1559,11 @@
         function openFeedbackModal(messageId, type, question, answer) {
             console.log('피드백 모달 열기:', { messageId, type, question, answer });
             
-            // HTML 태그 제거하고 순수 텍스트만 추출
-            const cleanQuestion = question ? question.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim() : '';
-            const cleanAnswer = answer ? answer.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim() : '';
-            
             currentFeedbackData = {
                 messageId: messageId,
                 type: type,
-                question: cleanQuestion,
-                answer: cleanAnswer,
+                question: question,
+                answer: answer,
                 timestamp: new Date().toISOString()
             };
             
@@ -1777,7 +1759,7 @@
 
         // 모델 선택 상태 표시 업데이트 (알림 없이)
         function updateModelSelectionDisplay() {
-            const currentModel = window.selectedModel || 'sonar-reasoning';
+            const currentModel = window.selectedModel || 'sonar-reasoning-pro';
             updateModelSelectionUI(currentModel, false); // 알림 없이 UI만 업데이트
         }
 
@@ -2086,57 +2068,6 @@
         function scrollToBottom() {
             const messagesEl = document.getElementById('messages');
             messagesEl.scrollTop = messagesEl.scrollHeight;
-        }
-
-        // 중복 내용 정리 함수
-        function cleanDuplicateContent(content) {
-            if (!content) return content;
-            
-            // 중복된 섹션 제거
-            const sections = content.split('##');
-            if (sections.length > 2) {
-                const uniqueSections = [];
-                const seenSections = new Set();
-                
-                for (let section of sections) {
-                    const cleanSection = section.trim();
-                    if (cleanSection && !seenSections.has(cleanSection)) {
-                        seenSections.add(cleanSection);
-                        uniqueSections.push(section);
-                    }
-                }
-                
-                content = uniqueSections.join('##');
-            }
-            
-            // 중복된 결론 및 참고 자료 제거
-            const sectionsToClean = ['**결론**', '**참고 자료**'];
-            sectionsToClean.forEach(section => {
-                const parts = content.split(section);
-                if (parts.length > 2) {
-                    content = parts[0] + section + parts[1];
-                }
-            });
-            
-            // reasoning/deep-research 모델의 추가 결론 제거
-            const additionalConclusions = [
-                /이러한 분석을 통해.*$/s,
-                /결론적으로.*$/s,
-                /따라서.*$/s,
-                /요약하면.*$/s,
-                /위의 내용을 종합하면.*$/s,
-                /이상의 분석 결과.*$/s,
-                /이러한 관점에서.*$/s,
-                /실무적 관점에서.*$/s,
-                /세무적 관점에서.*$/s,
-                /법적 관점에서.*$/s
-            ];
-            
-            additionalConclusions.forEach(pattern => {
-                content = content.replace(pattern, '');
-            });
-            
-            return content;
         }
 
         // HTML 이스케이프
