@@ -1281,16 +1281,16 @@
 
                 11. 웹 검색을 통해 참고한 사이트들의 링크를 다음 형식으로 반드시 포함하세요:
 
-                **참고 자료**
+                **참고할 만한 링크**
                 🔗 [사이트명] - 🔗 참고자료 클릭
                 🔗 [사이트명] - 🔗 참고자료 클릭
                 🔗 [사이트명] - 🔗 참고자료 클릭
                 
                 위 형식에서 [사이트명]은 실제 사이트 이름으로, URL은 실제 웹 주소로 작성하되 표시는 "🔗 참고자료 클릭"으로 하세요.
                 
-                중요: 참고 자료 나열 시 다음 순서를 반드시 지켜주세요:
-                1. 공공기관 사이트를 먼저 나열 (국세청, 국가법령정보센터, 찾기쉬운 생활법령정보 등)
-                2. 그 다음에 민간 사이트 나열 (브런치, 세무법인 사이트 등)
+                중요: 참고할 만한 링크에는 공공기관 사이트만 표시하세요:
+                - 국세청, 국가법령정보센터, 찾기쉬운 생활법령정보, 대법원 종합법률정보, 헌법재판소, 행정안전부, 기획재정부
+                - 민간 사이트는 검색에 활용하되 참고자료에는 표시하지 마세요
 
                 12. 그 다음에 반드시 다음 문구를 포함하세요: "\n\n\n\n\n**Tax Agent 안내 말씀**\n\n'Tax Agent'는 언제나 최상의 답변을 제공하지만, 실제 양도세 업무를 진행하실 때는 전문가에게 문의 하는것도 필요합니다.\n\n🏢 **"국세청 33년 경력"의 믿고 맡길 수 있는 신승세무법인**\n🔗 http://www.sostax.co.kr/"
 
@@ -1300,6 +1300,8 @@
                    - 세 번째 참고 사이트: [3]
                    
                    예시: "국세청에 따르면 [1], 2024년 양도소득세 세율은...", "대법원 판례 [2]에 따르면..."
+                   
+                   참고: 모든 사이트(공공기관 및 민간사이트)를 검색하여 답변을 생성하되, 참고할 만한 링크에는 공공기관만 표시합니다.
 
                 14. 답변 스타일 및 구조:
                    - 모든 제목은 굵은 글씨(**제목**)로 작성하세요
@@ -1321,7 +1323,7 @@
                      (결론 내용 - 반드시 포함, "결론" 제목 필수)
                      
                      
-                     **4. 참고 자료**
+                     **4. 참고할 만한 링크**
                      🔗 [사이트명] - 🔗 참고자료 클릭
                      
                      
@@ -1885,8 +1887,8 @@
             message = message.replace(/\*\*(\d+\.\s*)?결론\*\*/g, `<h3 style="${titleStyle}">$1결론</h3>`);
             message = message.replace(/\*\*결론\*\*/g, `<h3 style="${titleStyle}">결론</h3>`);
             
-            // 참고 자료 섹션 스타일링
-            message = message.replace(/\*\*(\d+\.\s*)?참고 자료\*\*/g, `<h3 style="${referenceStyle}">$1참고 자료</h3>`);
+            // 참고할 만한 링크 섹션 스타일링
+            message = message.replace(/\*\*(\d+\.\s*)?참고할 만한 링크\*\*/g, `<h3 style="${referenceStyle}">$1참고할 만한 링크</h3>`);
             
             // Tax Agent 안내 말씀 섹션 스타일링
             const noticeStyle = 'margin-top: 80px; padding: 10px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 15px; border-left: 5px solid #667eea; box-shadow: 0 4px 15px rgba(0,0,0,0.1);';
@@ -1929,14 +1931,14 @@
             // URL을 클릭 가능한 링크로 변환
             message = message.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" style="color: #667eea; text-decoration: none; font-weight: bold; padding: 2px 4px; background: rgba(102, 126, 234, 0.1); border-radius: 4px; transition: all 0.3s ease;">$1</a>');
             
-            // 참고 자료 링크 스타일링 - 실제 URL 표시
+            // 참고할 만한 링크 스타일링 - 공공기관 사이트만 표시
             const referenceLinkStyle = 'margin: 12px 0; padding: 15px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 10px; border-left: 4px solid #667eea; box-shadow: 0 2px 8px rgba(0,0,0,0.1);';
             const referenceLinkTextStyle = 'color: #667eea; text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 8px;';
             message = message.replace(/🔗 \[(.*?)\] - 🔗 참고자료 클릭/g, function(match, siteName) {
                 // 사이트명에 따른 URL 가져오기
                 let url = '';
                 
-                // 공공기관 사이트 URL 매핑
+                // 공공기관 사이트 URL 매핑 (참고할 만한 링크에는 공공기관만 표시)
                 const publicInstitutionMap = {
                     '국가법령정보센터': 'https://www.law.go.kr',
                     '국세청': 'https://www.nts.go.kr',
@@ -1949,22 +1951,10 @@
                     '기획재정부': 'https://www.moef.go.kr'
                 };
                 
-                // 민간 사이트 URL 매핑
-                const privateSiteMap = {
-                    '브런치': 'https://brunch.co.kr/@@4AQs/2703',
-                    '브런치(양도세 필요경비)': 'https://brunch.co.kr/@@4AQs/2703',
-                    '세무법인 혜움': 'https://www.heumtax.com/contents/posts/capital-gains-tax-deductions',
-                    '다음 카페': 'https://m.cafe.daum.net/transtax/6vQ1/549',
-                    '다음 카페(세무상담)': 'https://m.cafe.daum.net/transtax/6vQ1/549',
-                    '신승세무법인': 'http://www.sostax.co.kr/',
-                    '키움인베스트': 'https://www.kiwoominvest.com',
-                    'ULEX': 'https://www.ulex.or.kr'
-                };
-                
                 // 정확한 매칭 먼저 시도
-                url = publicInstitutionMap[siteName] || privateSiteMap[siteName];
+                url = publicInstitutionMap[siteName];
                 
-                // 정확한 매칭이 없으면 키워드 매칭 시도
+                // 정확한 매칭이 없으면 키워드 매칭 시도 (공공기관만)
                 if (!url) {
                     if (siteName.includes('국세청')) {
                         if (siteName.includes('양도소득세') || siteName.includes('양도세')) {
@@ -1984,37 +1974,26 @@
                         url = 'https://www.mois.go.kr';
                     } else if (siteName.includes('기획재정부')) {
                         url = 'https://www.moef.go.kr';
-                    } else if (siteName.includes('브런치')) {
-                        url = 'https://brunch.co.kr/@@4AQs/2703';
-                    } else if (siteName.includes('세무법인 혜움') || siteName.includes('혜움')) {
-                        url = 'https://www.heumtax.com/contents/posts/capital-gains-tax-deductions';
-                    } else if (siteName.includes('다음 카페') || siteName.includes('카페')) {
-                        url = 'https://m.cafe.daum.net/transtax/6vQ1/549';
-                    } else if (siteName.includes('신승세무법인') || siteName.includes('신승')) {
-                        url = 'http://www.sostax.co.kr/';
-                    } else if (siteName.includes('키움인베스트') || siteName.includes('키움')) {
-                        url = 'https://www.kiwoominvest.com';
-                    } else if (siteName.includes('ULEX') || siteName.includes('ulex')) {
-                        url = 'https://www.ulex.or.kr';
                     }
                 }
                 
                 if (url) {
                     return `<div style="${referenceLinkStyle}"><a href="${url}" target="_blank" style="${referenceLinkTextStyle}"><span style="flex: 1;">${siteName}</span><span style="font-size: 12px; color: #666;">${url}</span></a></div>`;
                 } else {
-                    return `<div style="${referenceLinkStyle}"><a href="#" onclick="openReferenceLink('${siteName}'); return false;" style="${referenceLinkTextStyle}"><span style="flex: 1;">${siteName}</span><span style="font-size: 12px; color: #666;">🔗 참고자료 클릭</span></a></div>`;
+                    // 공공기관이 아닌 사이트는 표시하지 않음
+                    return '';
                 }
             });
             
             // 참고 번호를 클릭 가능한 링크로 변환 (개선된 버전)
             message = message.replace(/\[(\d+)\]/g, function(match, number) {
-                // 참고 자료 섹션에서 사이트명 추출
-                const referenceSection = message.match(/\*\*참고 자료\*\*([\s\S]*?)(?=\*\*Tax Agent 안내 말씀\*\*|$)/);
+                // 참고할 만한 링크 섹션에서 사이트명 추출
+                const referenceSection = message.match(/\*\*참고할 만한 링크\*\*([\s\S]*?)(?=\*\*Tax Agent 안내 말씀\*\*|$)/);
                 if (referenceSection) {
                     const references = referenceSection[1].match(/🔗 \[(.*?)\] - 🔗 참고자료 클릭/g);
                     if (references && references[number - 1]) {
                         const siteName = references[number - 1].match(/🔗 \[(.*?)\] - 🔗 참고자료 클릭/)[1];
-                        return `<a href="#" onclick="openReferenceLink('${siteName}'); return false;" style="background: #667eea; color: white; border-radius: 50%; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; margin: 0 2px; vertical-align: middle; text-decoration: none; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='scale(1.1)'; this.style.boxShadow='0 4px 8px rgba(102, 126, 234, 0.3)'" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'" title="참고 자료 ${number}로 이동">${number}</a>`;
+                        return `<a href="#" onclick="openReferenceLink('${siteName}'); return false;" style="background: #667eea; color: white; border-radius: 50%; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; margin: 0 2px; vertical-align: middle; text-decoration: none; cursor: pointer; transition: all 0.3s ease;" onmouseover="this.style.transform='scale(1.1)'; this.style.boxShadow='0 4px 8px rgba(102, 126, 234, 0.3)'" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none'" title="참고할 만한 링크 ${number}로 이동">${number}</a>`;
                     }
                 }
                 return `<span style="background: #667eea; color: white; border-radius: 50%; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; margin: 0 2px; vertical-align: middle;">${number}</span>`;
@@ -2078,9 +2057,9 @@
             return div.innerHTML;
         }
 
-        // 참고자료 링크 열기 함수
+        // 참고할 만한 링크 열기 함수 (공공기관만)
         function openReferenceLink(siteName) {
-            // 공공기관 사이트 URL 매핑 (고정 참고자료) - 키워드 매칭 포함
+            // 공공기관 사이트 URL 매핑 - 키워드 매칭 포함
             const publicInstitutionMap = {
                 '국가법령정보센터': 'https://www.law.go.kr',
                 '국세청': 'https://www.nts.go.kr',
@@ -2093,22 +2072,11 @@
                 '기획재정부': 'https://www.moef.go.kr'
             };
             
-            // 민간 사이트 URL 매핑 (동적 참고자료) - 키워드 매칭 포함
-            const privateSiteMap = {
-                '브런치': 'https://brunch.co.kr/@@4AQs/2703',
-                '브런치(양도세 필요경비)': 'https://brunch.co.kr/@@4AQs/2703',
-                '세무법인 혜움': 'https://www.heumtax.com/contents/posts/capital-gains-tax-deductions',
-                '다음 카페': 'https://m.cafe.daum.net/transtax/6vQ1/549',
-                '다음 카페(세무상담)': 'https://m.cafe.daum.net/transtax/6vQ1/549',
-                '신승세무법인': 'http://www.sostax.co.kr/'
-            };
-            
             // 정확한 매칭 먼저 시도
-            let url = publicInstitutionMap[siteName] || privateSiteMap[siteName];
+            let url = publicInstitutionMap[siteName];
             
-            // 정확한 매칭이 없으면 키워드 매칭 시도
+            // 정확한 매칭이 없으면 키워드 매칭 시도 (공공기관만)
             if (!url) {
-                // 공공기관 키워드 매칭
                 if (siteName.includes('국세청')) {
                     if (siteName.includes('양도소득세') || siteName.includes('양도세')) {
                         url = 'https://www.nts.go.kr/tax/yangdo_2.html';
@@ -2128,23 +2096,13 @@
                 } else if (siteName.includes('기획재정부')) {
                     url = 'https://www.moef.go.kr';
                 }
-                // 민간 사이트 키워드 매칭
-                else if (siteName.includes('브런치')) {
-                    url = 'https://brunch.co.kr/@@4AQs/2703';
-                } else if (siteName.includes('세무법인 혜움') || siteName.includes('혜움')) {
-                    url = 'https://www.heumtax.com/contents/posts/capital-gains-tax-deductions';
-                } else if (siteName.includes('다음 카페') || siteName.includes('카페')) {
-                    url = 'https://m.cafe.daum.net/transtax/6vQ1/549';
-                } else if (siteName.includes('신승세무법인') || siteName.includes('신승')) {
-                    url = 'http://www.sostax.co.kr/';
-                }
             }
             
             if (url) {
                 window.open(url, '_blank');
             } else {
-                console.log('찾을 수 없는 사이트명:', siteName);
-                alert('해당 참고자료의 링크를 찾을 수 없습니다. 사이트명: ' + siteName);
+                console.log('찾을 수 없는 공공기관 사이트명:', siteName);
+                alert('해당 공공기관의 링크를 찾을 수 없습니다. 사이트명: ' + siteName);
             }
         }
 
