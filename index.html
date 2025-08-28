@@ -1573,7 +1573,7 @@
             messageEl.className = 'message user';
             messageEl.innerHTML = `
                 <div class="message-avatar">👤</div>
-                <div class="message-content">${escapeHtml(message)}</div>
+                <div class="message-content">${escapeHtml(message).replace(/\n/g, '<br>')}</div>
             `;
             messagesEl.appendChild(messageEl);
             scrollToBottom();
