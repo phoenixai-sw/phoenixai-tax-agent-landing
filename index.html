@@ -1149,20 +1149,35 @@
         // 메시지 전송
         function sendMessage() {
             const input = document.getElementById('messageInput');
-            const message = input.value.trim();
+            
+            // 디버깅 코드 추가
+            console.log('=== 디버깅 시작 ===');
+            console.log('원본 입력값:', JSON.stringify(input.value));
+            console.log('trim 후 값:', JSON.stringify(input.value.trim()));
+            console.log('줄바꿈 개수:', (input.value.match(/\n/g) || []).length);
+            console.log('trim 후 줄바꿈 개수:', (input.value.trim().match(/\n/g) || []).length);
+            console.log('=== 디버깅 끝 ===');
+            
+            // 안전한 메시지 처리 (줄바꿈 보존)
+            const message = input.value
+                .replace(/\r\n/g, '\n')  // Windows 줄바꿈 통일
+                .replace(/\r/g, '\n')    // Mac 줄바꿈 통일
+                .trim();  // 앞뒤 공백만 제거
+            
+            console.log('처리 후 메시지:', JSON.stringify(message));
             
             if (!message || isLoading) return;
             
-            // 관리자 모드 체크
-            if (message.toLowerCase() === '관리자 모드') {
+            // 관리자 모드 체크 (원본 값으로 정확한 매칭)
+            if (input.value.trim().toLowerCase() === '관리자 모드') {
                 openAdminModal();
                 input.value = '';
                 input.style.height = 'auto';
                 return;
             }
             
-            // 데이터 모드 체크
-            if (message.toLowerCase() === '데이터 모드') {
+            // 데이터 모드 체크 (원본 값으로 정확한 매칭)
+            if (input.value.trim().toLowerCase() === '데이터 모드') {
                 openDataModal();
                 input.value = '';
                 input.style.height = 'auto';
