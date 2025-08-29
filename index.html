@@ -2807,7 +2807,7 @@
             return bestMatch;
         }
 
-        // 데이터셋 검색 결과 표시 (기존 API 답변과 동일한 형식)
+        // 데이터셋 검색 결과 표시 (API 기반 답변과 동일한 형식)
         function displayDatasetResult(match) {
             const messagesEl = document.getElementById('messages');
             const messageEl = document.createElement('div');
@@ -2817,13 +2817,18 @@
             const messageId = 'msg_' + Date.now();
             messageEl.id = messageId;
             
+            // 데이터셋 기반 답변에 제목 추가
+            const formattedAnswer = `**[데이터셋 기반의 답변]**
+
+${match.answer}`;
+            
             // 피드백용 데이터 정리 (HTML 태그 제거, 길이 제한)
             const cleanAnswer = cleanTextForFeedback(match.answer);
             
             messageEl.innerHTML = `
                 <div class="message-avatar">💰</div>
                 <div class="message-content">
-                    ${formatMessage(match.answer)}
+                    ${formatMessage(formattedAnswer)}
                     <div class="message-actions">
                         <button class="action-btn copy-btn" data-message-id="${messageId}" title="답변 복사">
                             📋 복사
