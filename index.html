@@ -2022,6 +2022,9 @@
             message = message.replace(/\*\*(\d+\.\s*.*?)\*\*/g, `<h3 style="${titleStyle}">$1</h3>`);
             message = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             
+            // 데이터셋 넘버링 형식 처리 (예: 1. 제목, 2. 제목)
+            message = message.replace(/(\d+)\.\s*([^<]+?)(?=<br>|$|💡|🏢)/g, `<h3 style="${titleStyle}">$1. $2</h3>`);
+            
             // 이탤릭체
             message = message.replace(/\*(.*?)\*/g, '<em>$1</em>');
             
