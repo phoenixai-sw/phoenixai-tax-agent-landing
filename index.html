@@ -1283,15 +1283,7 @@
             
             if (datasetMatch) {
                 console.log('데이터셋 매칭 성공:', datasetMatch);
-                // API 답변과 동일한 대기 시간 적용
-                setLoading(true);
-                
-                // 15초 대기 후 답변 표시
-                setTimeout(() => {
-                    setLoading(false);
-                    displayDatasetResult(datasetMatch, message);
-                }, 15000);
-                
+                displayDatasetResult(datasetMatch);
                 return; // LLM API 호출하지 않음
             }
             
@@ -2018,27 +2010,9 @@
             const noticeTitleStyle = 'color: #333; margin: 20px 0 -20px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 0px;';
             message = message.replace(/\*\*Tax Agent 안내 말씀\*\*/g, `<div style="${noticeStyle}"><h3 style="${noticeTitleStyle}">Tax Agent 안내 말씀</h3>`);
             
-            // 데이터셋 넘버링 형식 처리 (다양한 형식 지원)
-            // 형식 1: 1. 제목 (ID 43, 44번 등) - 먼저 처리
-            const beforeReplace = message;
-            message = message.replace(/(\d+)\.\s*([^<]+?)(?=\s*\d+\.|$|💡|🏢)/g, `<h3 style="${titleStyle}">$1. $2</h3>`);
-            if (beforeReplace !== message) {
-                console.log('넘버링 변환 성공:', beforeReplace, '→', message);
-            } else {
-                console.log('넘버링 변환 실패 - 원본:', message);
-                // 더 간단한 정규식으로 재시도
-                message = message.replace(/(\d+)\.\s*([^<]+?)(?=\s*\d+\.|$)/g, `<h3 style="${titleStyle}">$1. $2</h3>`);
-                console.log('재시도 후:', message);
-            }
-            
-            // 형식 2: **1. 제목** (ID 49번 등)
-            message = message.replace(/\*\*(\d+)\.\s*([^*]+)\*\*/g, `<h3 style="${titleStyle}">$1. $2</h3>`);
-            
-            // 제목 넘버링 스타일링 (기존 API 답변용)
+            // 제목 넘버링 스타일링
             message = message.replace(/\*\*(\d+\.\s*.*?)\*\*/g, `<h3 style="${titleStyle}">$1</h3>`);
             message = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            
-
             
             // 이탤릭체
             message = message.replace(/\*(.*?)\*/g, '<em>$1</em>');
@@ -2559,7 +2533,7 @@
             {
                 id: 49,
                 question: "양도소득세 세율은 어떻게 되나요?",
-                answer: "답변: 양도소득세 세율은 다음과 같습니다:\n\n**1. 기본세율 (누진세율)**\n   - 1,200만원 이하: 6%\n   - 1,200만원 초과 ~ 4,600만원 이하: 15%\n   - 4,600만원 초과 ~ 8,800만원 이하: 24%\n   - 8,800만원 초과 ~ 1.5억원 이하: 35%\n   - 1.5억원 초과 ~ 3억원 이하: 38%\n   - 3억원 초과 ~ 5억원 이하: 40%\n   - 5억원 초과: 42%\n\n**2. 비사업용 토지 중과세율**\n   - 기본세율 + 10%p 추가 적용\n   - 예: 기본세율 35%인 경우 → 45% 적용\n\n**3. 단기 양도 중과세율**\n   - 1년 미만 보유: 70%\n   - 1~2년 미만 보유: 60%\n\n**4. 장기보유특별공제**\n   - 보유기간: 연수 × 4% (최대 40%)\n   - 거주기간: 연수 × 4% (최대 40%)\n   - 합산 최대 80%\n\n**5. 비과세 요건**\n   - 1세대 1주택: 양도가액 12억원 이하\n   - 장기보유특별공제 적용 후 과세표준이 0원 이하인 경우\n\n💡 **Tax Agent 안내 말씀**\n'Tax Agent'는 언제나 최상의 답변을 제공하지만, 실제 양도세 업무를 진행하실 때는 전문가에게 문의 하는것도 필요합니다. 🏢 **",
+                answer: "답변: 양도소득세 세율은 다음과 같습니다: **1. 기본세율 (누진세율)** - 1,200만원 이하: 6% - 1,200만원 초과 ~ 4,600만원 이하: 15% - 4,600만원 초과 ~ 8,800만원 이하: 24% - 8,800만원 초과 ~ 1.5억원 이하: 35% - 1.5억원 초과 ~ 3억원 이하: 38% - 3억원 초과 ~ 5억원 이하: 40% - 5억원 초과: 42% **2. 비사업용 토지 중과세율** - 기본세율 + 10%p 추가 적용 - 예: 기본세율 35%인 경우 → 45% 적용 **3. 단기 양도 중과세율** - 1년 미만 보유: 70% - 1~2년 미만 보유: 60% **4. 장기보유특별공제** - 보유기간: 연수 × 4% (최대 40%) - 거주기간: 연수 × 4% (최대 40%) - 합산 최대 80% **5. 비과세 요건** - 1세대 1주택: 양도가액 12억원 이하 - 장기보유특별공제 적용 후 과세표준이 0원 이하인 경우 💡 **Tax Agent 안내 말씀** 'Tax Agent'는 언제나 최상의 답변을 제공하지만, 실제 양도세 업무를 진행하실 때는 전문가에게 문의 하는것도 필요합니다. 🏢 **",
                 references: [1, 2, 3]
             },
             {
@@ -2833,52 +2807,8 @@
             return bestMatch;
         }
 
-        // 넘버링과 띄어쓰기를 처리하는 전담 함수
-        function formatNumberedItems(answer) {
-            let formattedAnswer = answer;
-            
-            // 1. 넘버링이 있는 제목들을 찾아서 구조화 (더 정확한 패턴)
-            formattedAnswer = formattedAnswer.replace(/(\d+)\.\s*([^<]+?)(?=<br>|$|💡|🏢)/g, '<br><br><div style="margin-left: 3em; margin-right: 3em; padding: 10px 0;"><strong>$1. $2</strong></div>');
-            
-            // 2. 항목 간 간격 조정
-            formattedAnswer = formattedAnswer.replace(/(<\/div>)(<br>)(<div)/g, '$1<br><br>$3');
-            
-            // 3. 디버깅용 로그
-            console.log('formatNumberedItems input:', answer);
-            console.log('formatNumberedItems output:', formattedAnswer);
-            
-            return formattedAnswer;
-        }
-        
-        // 데이터셋 답변 구조화 함수
-        function formatDatasetAnswer(answer) {
-            // "답변:" 부분 제거
-            let formattedAnswer = answer.replace(/^답변:\s*/, '');
-            
-            // 줄바꿈을 먼저 처리
-            formattedAnswer = formattedAnswer.replace(/\n/g, '<br>');
-            
-            // 넘버링과 띄어쓰기 처리 (새로운 함수 호출)
-            formattedAnswer = formatNumberedItems(formattedAnswer);
-            
-            // "**제목**" 형태를 찾아서 구조화 (중요한 문장 굵게)
-            formattedAnswer = formattedAnswer.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-            
-            // 중요 문구 강조 (예: "중요:", "주의:", "참고:" 등)
-            formattedAnswer = formattedAnswer.replace(/(중요|주의|참고|예시|결론|요약):/g, '<br><strong>$1:</strong><br>');
-            
-            // 연속된 <br> 태그 정리
-            formattedAnswer = formattedAnswer.replace(/<br><br><br>/g, '<br><br>');
-            
-            // 디버깅용 로그 (개발 완료 후 제거 가능)
-            console.log('Original answer:', answer);
-            console.log('Formatted answer:', formattedAnswer);
-            
-            return formattedAnswer;
-        }
-
         // 데이터셋 검색 결과 표시 (기존 API 답변과 동일한 형식)
-        function displayDatasetResult(match, userQuestion = '') {
+        function displayDatasetResult(match) {
             const messagesEl = document.getElementById('messages');
             const messageEl = document.createElement('div');
             messageEl.className = 'message bot';
@@ -2889,23 +2819,19 @@
             
             // 피드백용 데이터 정리 (HTML 태그 제거, 길이 제한)
             const cleanAnswer = cleanTextForFeedback(match.answer);
-            const cleanQuestion = cleanTextForFeedback(userQuestion);
-            
-            // 데이터셋 답변 구조화 (기존 formatMessage 함수 사용)
-            const formattedAnswer = formatMessage(match.answer);
             
             messageEl.innerHTML = `
                 <div class="message-avatar">💰</div>
                 <div class="message-content">
-                    ${formattedAnswer}
+                    ${formatMessage(match.answer)}
                     <div class="message-actions">
                         <button class="action-btn copy-btn" data-message-id="${messageId}" title="답변 복사">
                             📋 복사
                         </button>
-                        <button class="action-btn feedback-btn" data-message-id="${messageId}" data-type="positive" data-question="${cleanQuestion}" data-answer="${cleanAnswer}" title="좋은 답변">
+                        <button class="action-btn feedback-btn" data-message-id="${messageId}" data-type="positive" data-question="" data-answer="${cleanAnswer}" title="좋은 답변">
                             👍 좋은답변
                         </button>
-                        <button class="action-btn feedback-btn negative" data-message-id="${messageId}" data-type="negative" data-question="${cleanQuestion}" data-answer="${cleanAnswer}" title="나쁜 답변">
+                        <button class="action-btn feedback-btn negative" data-message-id="${messageId}" data-type="negative" data-question="" data-answer="${cleanAnswer}" title="나쁜 답변">
                             👎 나쁜답변
                         </button>
                     </div>
