@@ -2024,6 +2024,11 @@
             message = message.replace(/(\d+)\.\s*([^<]+?)(?=\s*\d+\.|$|💡|🏢)/g, `<h3 style="${titleStyle}">$1. $2</h3>`);
             if (beforeReplace !== message) {
                 console.log('넘버링 변환 성공:', beforeReplace, '→', message);
+            } else {
+                console.log('넘버링 변환 실패 - 원본:', message);
+                // 더 간단한 정규식으로 재시도
+                message = message.replace(/(\d+)\.\s*([^<]+?)(?=\s*\d+\.|$)/g, `<h3 style="${titleStyle}">$1. $2</h3>`);
+                console.log('재시도 후:', message);
             }
             
             // 형식 2: **1. 제목** (ID 49번 등)
