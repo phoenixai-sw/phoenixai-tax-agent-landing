@@ -1283,7 +1283,15 @@
             
             if (datasetMatch) {
                 console.log('데이터셋 매칭 성공:', datasetMatch);
-                displayDatasetResult(datasetMatch, message);
+                // API 답변과 동일한 대기 시간 적용
+                setLoading(true);
+                
+                // 15초 대기 후 답변 표시
+                setTimeout(() => {
+                    setLoading(false);
+                    displayDatasetResult(datasetMatch, message);
+                }, 15000);
+                
                 return; // LLM API 호출하지 않음
             }
             
@@ -2807,6 +2815,26 @@
             return bestMatch;
         }
 
+        // 데이터셋 답변 구조화 함수
+        function formatDatasetAnswer(answer) {
+            // "답변:" 부분 제거
+            let formattedAnswer = answer.replace(/^답변:\s*/, '');
+            
+            // 번호가 있는 항목들을 찾아서 구조화
+            formattedAnswer = formattedAnswer.replace(/\*\*(\d+)\.\s*\*\*/g, '<br><br><strong>$1.</strong> ');
+            
+            // "**제목**" 형태를 찾아서 구조화
+            formattedAnswer = formattedAnswer.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+            
+            // 줄바꿈 처리
+            formattedAnswer = formattedAnswer.replace(/\n/g, '<br>');
+            
+            // 연속된 <br> 태그 정리
+            formattedAnswer = formattedAnswer.replace(/<br><br><br>/g, '<br><br>');
+            
+            return formattedAnswer;
+        }
+
         // 데이터셋 검색 결과 표시 (기존 API 답변과 동일한 형식)
         function displayDatasetResult(match, userQuestion = '') {
             const messagesEl = document.getElementById('messages');
@@ -2821,10 +2849,13 @@
             const cleanAnswer = cleanTextForFeedback(match.answer);
             const cleanQuestion = cleanTextForFeedback(userQuestion);
             
+            // 데이터셋 답변 구조화
+            const formattedAnswer = formatDatasetAnswer(match.answer);
+            
             messageEl.innerHTML = `
                 <div class="message-avatar">💰</div>
                 <div class="message-content">
-                    ${formatMessage(match.answer)}
+                    ${formattedAnswer}
                     <div class="message-actions">
                         <button class="action-btn copy-btn" data-message-id="${messageId}" title="답변 복사">
                             📋 복사
