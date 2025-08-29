@@ -2541,7 +2541,7 @@
             {
                 id: 49,
                 question: "양도소득세 세율은 어떻게 되나요?",
-                answer: "답변: 양도소득세 세율은 다음과 같습니다: **1. 기본세율 (누진세율)** - 1,200만원 이하: 6% - 1,200만원 초과 ~ 4,600만원 이하: 15% - 4,600만원 초과 ~ 8,800만원 이하: 24% - 8,800만원 초과 ~ 1.5억원 이하: 35% - 1.5억원 초과 ~ 3억원 이하: 38% - 3억원 초과 ~ 5억원 이하: 40% - 5억원 초과: 42% **2. 비사업용 토지 중과세율** - 기본세율 + 10%p 추가 적용 - 예: 기본세율 35%인 경우 → 45% 적용 **3. 단기 양도 중과세율** - 1년 미만 보유: 70% - 1~2년 미만 보유: 60% **4. 장기보유특별공제** - 보유기간: 연수 × 4% (최대 40%) - 거주기간: 연수 × 4% (최대 40%) - 합산 최대 80% **5. 비과세 요건** - 1세대 1주택: 양도가액 12억원 이하 - 장기보유특별공제 적용 후 과세표준이 0원 이하인 경우 💡 **Tax Agent 안내 말씀** 'Tax Agent'는 언제나 최상의 답변을 제공하지만, 실제 양도세 업무를 진행하실 때는 전문가에게 문의 하는것도 필요합니다. 🏢 **",
+                answer: "답변: 양도소득세 세율은 다음과 같습니다:\n\n**1. 기본세율 (누진세율)**\n   - 1,200만원 이하: 6%\n   - 1,200만원 초과 ~ 4,600만원 이하: 15%\n   - 4,600만원 초과 ~ 8,800만원 이하: 24%\n   - 8,800만원 초과 ~ 1.5억원 이하: 35%\n   - 1.5억원 초과 ~ 3억원 이하: 38%\n   - 3억원 초과 ~ 5억원 이하: 40%\n   - 5억원 초과: 42%\n\n**2. 비사업용 토지 중과세율**\n   - 기본세율 + 10%p 추가 적용\n   - 예: 기본세율 35%인 경우 → 45% 적용\n\n**3. 단기 양도 중과세율**\n   - 1년 미만 보유: 70%\n   - 1~2년 미만 보유: 60%\n\n**4. 장기보유특별공제**\n   - 보유기간: 연수 × 4% (최대 40%)\n   - 거주기간: 연수 × 4% (최대 40%)\n   - 합산 최대 80%\n\n**5. 비과세 요건**\n   - 1세대 1주택: 양도가액 12억원 이하\n   - 장기보유특별공제 적용 후 과세표준이 0원 이하인 경우\n\n💡 **Tax Agent 안내 말씀**\n'Tax Agent'는 언제나 최상의 답변을 제공하지만, 실제 양도세 업무를 진행하실 때는 전문가에게 문의 하는것도 필요합니다. 🏢 **",
                 references: [1, 2, 3]
             },
             {
@@ -2821,10 +2821,12 @@
             let formattedAnswer = answer.replace(/^답변:\s*/, '');
             
             // 번호가 있는 항목들을 찾아서 구조화 (예: **1.** → 1. 제목)
-            formattedAnswer = formattedAnswer.replace(/\*\*(\d+)\.\s*([^*]+)\*\*/g, '<br><br><strong>$1. $2</strong>');
+            // 넘버링 앞뒤로 3칸씩 거리를 두는 스타일 적용
+            formattedAnswer = formattedAnswer.replace(/\*\*(\d+)\.\s*([^*]+)\*\*/g, '<br><br><div style="margin-left: 3em; margin-right: 3em;"><strong>$1. $2</strong></div>');
             
             // 번호만 있는 항목들을 찾아서 구조화 (예: **1.** → 1.)
-            formattedAnswer = formattedAnswer.replace(/\*\*(\d+)\.\s*\*\*/g, '<br><br><strong>$1.</strong> ');
+            // 넘버링 앞뒤로 3칸씩 거리를 두는 스타일 적용
+            formattedAnswer = formattedAnswer.replace(/\*\*(\d+)\.\s*\*\*/g, '<br><br><div style="margin-left: 3em; margin-right: 3em;"><strong>$1.</strong></div> ');
             
             // "**제목**" 형태를 찾아서 구조화 (중요한 문장 굵게)
             formattedAnswer = formattedAnswer.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
@@ -2835,8 +2837,8 @@
             // 연속된 <br> 태그 정리
             formattedAnswer = formattedAnswer.replace(/<br><br><br>/g, '<br><br>');
             
-            // 항목 구분을 위한 추가 띄어쓰기
-            formattedAnswer = formattedAnswer.replace(/(<strong>\d+\.\s*[^<]+<\/strong>)/g, '<br>$1<br>');
+            // 항목 구분을 위한 추가 띄어쓰기 (이미 div로 감싸져 있으므로 조정)
+            formattedAnswer = formattedAnswer.replace(/(<div style="margin-left: 3em; margin-right: 3em;"><strong>\d+\.\s*[^<]+<\/strong><\/div>)/g, '<br>$1<br>');
             
             // 중요 문구 강조 (예: "중요:", "주의:", "참고:" 등)
             formattedAnswer = formattedAnswer.replace(/(중요|주의|참고|예시|결론|요약):/g, '<br><strong>$1:</strong><br>');
