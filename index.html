@@ -2820,16 +2820,28 @@
             // "답변:" 부분 제거
             let formattedAnswer = answer.replace(/^답변:\s*/, '');
             
-            // 번호가 있는 항목들을 찾아서 구조화
+            // 번호가 있는 항목들을 찾아서 구조화 (예: **1.** → 1. 제목)
+            formattedAnswer = formattedAnswer.replace(/\*\*(\d+)\.\s*([^*]+)\*\*/g, '<br><br><strong>$1. $2</strong>');
+            
+            // 번호만 있는 항목들을 찾아서 구조화 (예: **1.** → 1.)
             formattedAnswer = formattedAnswer.replace(/\*\*(\d+)\.\s*\*\*/g, '<br><br><strong>$1.</strong> ');
             
-            // "**제목**" 형태를 찾아서 구조화
+            // "**제목**" 형태를 찾아서 구조화 (중요한 문장 굵게)
             formattedAnswer = formattedAnswer.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
             
             // 줄바꿈 처리
             formattedAnswer = formattedAnswer.replace(/\n/g, '<br>');
             
             // 연속된 <br> 태그 정리
+            formattedAnswer = formattedAnswer.replace(/<br><br><br>/g, '<br><br>');
+            
+            // 항목 구분을 위한 추가 띄어쓰기
+            formattedAnswer = formattedAnswer.replace(/(<strong>\d+\.\s*[^<]+<\/strong>)/g, '<br>$1<br>');
+            
+            // 중요 문구 강조 (예: "중요:", "주의:", "참고:" 등)
+            formattedAnswer = formattedAnswer.replace(/(중요|주의|참고|예시|결론|요약):/g, '<br><strong>$1:</strong><br>');
+            
+            // 연속된 <br> 태그 다시 정리
             formattedAnswer = formattedAnswer.replace(/<br><br><br>/g, '<br><br>');
             
             return formattedAnswer;
