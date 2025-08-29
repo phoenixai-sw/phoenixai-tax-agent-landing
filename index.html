@@ -2819,11 +2819,15 @@
         function formatNumberedItems(answer) {
             let formattedAnswer = answer;
             
-            // 1. 넘버링이 있는 제목들을 찾아서 구조화
-            formattedAnswer = formattedAnswer.replace(/(\d+)\.\s*([^<]+?)(?=<br>|$)/g, '<br><br><div style="margin-left: 3em; margin-right: 3em; padding: 10px 0;"><strong>$1. $2</strong></div>');
+            // 1. 넘버링이 있는 제목들을 찾아서 구조화 (더 정확한 패턴)
+            formattedAnswer = formattedAnswer.replace(/(\d+)\.\s*([^<]+?)(?=<br>|$|💡|🏢)/g, '<br><br><div style="margin-left: 3em; margin-right: 3em; padding: 10px 0;"><strong>$1. $2</strong></div>');
             
             // 2. 항목 간 간격 조정
             formattedAnswer = formattedAnswer.replace(/(<\/div>)(<br>)(<div)/g, '$1<br><br>$3');
+            
+            // 3. 디버깅용 로그
+            console.log('formatNumberedItems input:', answer);
+            console.log('formatNumberedItems output:', formattedAnswer);
             
             return formattedAnswer;
         }
