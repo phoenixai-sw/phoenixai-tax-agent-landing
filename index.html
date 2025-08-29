@@ -2815,6 +2815,19 @@
             return bestMatch;
         }
 
+        // 넘버링과 띄어쓰기를 처리하는 전담 함수
+        function formatNumberedItems(answer) {
+            let formattedAnswer = answer;
+            
+            // 1. 넘버링이 있는 제목들을 찾아서 구조화
+            formattedAnswer = formattedAnswer.replace(/(\d+)\.\s*([^<]+?)(?=<br>|$)/g, '<br><br><div style="margin-left: 3em; margin-right: 3em; padding: 10px 0;"><strong>$1. $2</strong></div>');
+            
+            // 2. 항목 간 간격 조정
+            formattedAnswer = formattedAnswer.replace(/(<\/div>)(<br>)(<div)/g, '$1<br><br>$3');
+            
+            return formattedAnswer;
+        }
+        
         // 데이터셋 답변 구조화 함수
         function formatDatasetAnswer(answer) {
             // "답변:" 부분 제거
@@ -2823,24 +2836,17 @@
             // 줄바꿈을 먼저 처리
             formattedAnswer = formattedAnswer.replace(/\n/g, '<br>');
             
-            // 번호가 있는 항목들을 찾아서 구조화 (예: 1. → 1.)
-            // 넘버링 앞뒤로 3칸씩 거리를 두는 스타일 적용
-            formattedAnswer = formattedAnswer.replace(/(\d+)\.\s*([^<]+?)(?=<br>|$)/g, '<br><br><div style="margin-left: 3em; margin-right: 3em; padding: 10px 0;"><strong>$1. $2</strong></div>');
+            // 넘버링과 띄어쓰기 처리 (새로운 함수 호출)
+            formattedAnswer = formatNumberedItems(formattedAnswer);
             
             // "**제목**" 형태를 찾아서 구조화 (중요한 문장 굵게)
             formattedAnswer = formattedAnswer.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
-            
-            // 항목 구분을 위한 추가 띄어쓰기
-            formattedAnswer = formattedAnswer.replace(/(<div style="margin-left: 3em; margin-right: 3em; padding: 10px 0;"><strong>\d+\.\s*[^<]+<\/strong><\/div>)/g, '<br>$1<br>');
             
             // 중요 문구 강조 (예: "중요:", "주의:", "참고:" 등)
             formattedAnswer = formattedAnswer.replace(/(중요|주의|참고|예시|결론|요약):/g, '<br><strong>$1:</strong><br>');
             
             // 연속된 <br> 태그 정리
             formattedAnswer = formattedAnswer.replace(/<br><br><br>/g, '<br><br>');
-            
-            // 항목 간 추가 간격 조정
-            formattedAnswer = formattedAnswer.replace(/(<\/div>)(<br>)(<div)/g, '$1<br><br>$3');
             
             // 디버깅용 로그 (개발 완료 후 제거 가능)
             console.log('Original answer:', answer);
