@@ -2022,14 +2022,14 @@
             message = message.replace(/\*\*(\d+\.\s*.*?)\*\*/g, `<h3 style="${titleStyle}">$1</h3>`);
             message = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             
-            // 데이터셋 넘버링 형식 처리 (예: 1. 제목, 2. 제목)
+            // 데이터셋 넘버링 형식 처리 (다양한 형식 지원)
+            // 형식 1: 1. 제목 (ID 43, 44번 등)
             message = message.replace(/(\d+)\.\s*([^<]+?)(?=\s*\d+\.|$|💡|🏢)/g, `<h3 style="${titleStyle}">$1. $2</h3>`);
             
-            // 디버깅용 로그 (개발 완료 후 제거 가능)
-            console.log('=== formatMessage 함수 시작 ===');
-            console.log('formatMessage 원본 입력:', message);
-            console.log('formatMessage 넘버링 처리 후:', message);
-            console.log('=== formatMessage 함수 끝 ===');
+            // 형식 2: **1. 제목** (ID 49번 등)
+            message = message.replace(/\*\*(\d+)\.\s*([^*]+)\*\*/g, `<h3 style="${titleStyle}">$1. $2</h3>`);
+            
+
             
             // 이탤릭체
             message = message.replace(/\*(.*?)\*/g, '<em>$1</em>');
@@ -2883,11 +2883,7 @@
             const cleanQuestion = cleanTextForFeedback(userQuestion);
             
             // 데이터셋 답변 구조화 (기존 formatMessage 함수 사용)
-            console.log('=== displayDatasetResult 함수 ===');
-            console.log('match.answer:', match.answer);
             const formattedAnswer = formatMessage(match.answer);
-            console.log('formattedAnswer:', formattedAnswer);
-            console.log('=== displayDatasetResult 함수 끝 ===');
             
             messageEl.innerHTML = `
                 <div class="message-avatar">💰</div>
