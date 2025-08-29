@@ -302,31 +302,7 @@
             border-bottom-right-radius: 8px;
         }
         
-        /* 데이터셋 검색 결과 스타일 */
-        .dataset-label {
-            background: #28a745;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: bold;
-            display: inline-block;
-            margin-bottom: 8px;
-        }
-        
-        .dataset-score {
-            color: #6c757d;
-            font-size: 12px;
-            margin-bottom: 8px;
-            font-style: italic;
-        }
-        
-        .dataset-answer {
-            background: #e8f5e8;
-            padding: 12px;
-            border-radius: 8px;
-            border-left: 4px solid #28a745;
-        }
+
 
         /* 메시지 액션 버튼들 */
         .message-actions {
@@ -2831,23 +2807,39 @@
             return bestMatch;
         }
 
-        // 데이터셋 검색 결과 표시
+        // 데이터셋 검색 결과 표시 (기존 API 답변과 동일한 형식)
         function displayDatasetResult(match) {
             const messagesEl = document.getElementById('messages');
             const messageEl = document.createElement('div');
-            messageEl.className = 'message bot-message';
+            messageEl.className = 'message bot';
+            
+            // 메시지 ID 생성
+            const messageId = 'msg_' + Date.now();
+            messageEl.id = messageId;
+            
+            // 피드백용 데이터 정리 (HTML 태그 제거, 길이 제한)
+            const cleanAnswer = cleanTextForFeedback(match.answer);
             
             messageEl.innerHTML = `
-                <div class="message-avatar">🤖</div>
+                <div class="message-avatar">💰</div>
                 <div class="message-content">
-                    <div class="dataset-label">[데이터셋 근거]</div>
-                    <div class="dataset-score">유사도: ${(match.score * 100).toFixed(1)}%</div>
-                    <div class="dataset-answer">${match.answer}</div>
+                    ${formatMessage(match.answer)}
+                    <div class="message-actions">
+                        <button class="action-btn copy-btn" data-message-id="${messageId}" title="답변 복사">
+                            📋 복사
+                        </button>
+                        <button class="action-btn feedback-btn" data-message-id="${messageId}" data-type="positive" data-question="" data-answer="${cleanAnswer}" title="좋은 답변">
+                            👍 좋은답변
+                        </button>
+                        <button class="action-btn feedback-btn negative" data-message-id="${messageId}" data-type="negative" data-question="" data-answer="${cleanAnswer}" title="나쁜 답변">
+                            👎 나쁜답변
+                        </button>
+                    </div>
                 </div>
             `;
             
             messagesEl.appendChild(messageEl);
-            messagesEl.scrollTop = messagesEl.scrollHeight;
+            scrollToBottom();
         }
     </script>
   </body>
