@@ -2873,8 +2873,8 @@
             const cleanAnswer = cleanTextForFeedback(match.answer);
             const cleanQuestion = cleanTextForFeedback(userQuestion);
             
-            // 데이터셋 답변 구조화
-            const formattedAnswer = formatDatasetAnswer(match.answer);
+            // 데이터셋 답변 구조화 (기존 formatMessage 함수 사용)
+            const formattedAnswer = formatMessage(match.answer);
             
             messageEl.innerHTML = `
                 <div class="message-avatar">💰</div>
