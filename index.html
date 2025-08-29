@@ -2817,108 +2817,7 @@
             return bestMatch;
         }
 
-        // 데이터셋 답변을 API 답변과 동일한 구조로 변환
-        function structureDatasetAnswer(answer) {
-            if (!answer) return answer;
-            
-            let structured = answer;
-            
-            // 1. 기존 구조 제거 (중복 방지)
-            structured = structured.replace(/\*\*(\d+)\.\s*(.*?)\*\*/g, '');
-            structured = structured.replace(/\*\*Tax Agent 안내 말씀\*\*/g, '');
-            structured = structured.replace(/\*\*참고할 만한 링크\*\*/g, '');
-            structured = structured.replace(/\*\*결론\*\*/g, '');
-            
-            // 2. 텍스트 정리
-            structured = structured.replace(/\n+/g, ' ').replace(/\s+/g, ' ').trim();
-            
-            // 3. 문장 단위로 분리
-            const sentences = structured.split(/[.!?]+/).filter(s => s.trim().length > 10);
-            
-            // 4. 구조화된 답변 생성
-            let result = '';
-            let sectionCount = 1;
-            
-            // 첫 번째 섹션 (주요 설명)
-            if (sentences.length > 0) {
-                result += `**${sectionCount}. ${sentences[0].trim()}**
 
-`;
-                sectionCount++;
-            }
-            
-            // 핵심 설명 섹션
-            if (sentences.length > 1) {
-                result += `**${sectionCount}. 핵심 설명**
-
-`;
-                for (let i = 1; i < Math.min(3, sentences.length); i++) {
-                    result += `- ${sentences[i].trim()}
-
-`;
-                }
-                sectionCount++;
-            }
-            
-            // 실제 사례 섹션
-            if (sentences.length > 3) {
-                result += `**${sectionCount}. 실제 사례 예시**
-
-`;
-                for (let i = 3; i < Math.min(5, sentences.length); i++) {
-                    result += `- ${sentences[i].trim()}
-
-`;
-                }
-                sectionCount++;
-            }
-            
-            // 실무 영향 섹션
-            if (sentences.length > 5) {
-                result += `**${sectionCount}. 양도소득세 실무 영향**
-
-`;
-                for (let i = 5; i < Math.min(7, sentences.length); i++) {
-                    result += `- ${sentences[i].trim()}
-
-`;
-                }
-                sectionCount++;
-            }
-            
-            // 결론 섹션
-            result += `**${sectionCount}. 결론**
-
-`;
-            if (sentences.length > 7) {
-                for (let i = 7; i < sentences.length; i++) {
-                    result += `- ${sentences[i].trim()}
-
-`;
-                }
-            } else {
-                result += `- 조합원 입주권 상태에서 잔금 이전에 사용승인이 난 경우, 양도 시점에 따라 양도 대상이 달라집니다.
-
-`;
-            }
-            
-            // 참고 링크 섹션
-            result += `**${sectionCount + 1}. 참고할 만한 링크**
-
-🔗 국세청 - 🔗 참고자료 클릭
-🔗 국가법령정보센터 - 🔗 참고자료 클릭
-🔗 찾기쉬운 생활법령정보 - 🔗 참고자료 클릭
-
-
-**Tax Agent 안내 말씀**
-
-'Tax Agent'는 언제나 최상의 답변을 제공하지만, 실제 양도세 업무를 진행하실 때는 전문가에게 문의 하는것도 필요합니다.
-
-🏢 **"국세청 33년 경력"의 믿고 맡길 수 있는 신승세무법인**
-🔗 http://www.sostax.co.kr/`;
-            
-            return result;
-        }
 
         // 데이터셋 검색 결과 표시 (API 기반 답변과 동일한 형식)
         function displayDatasetResult(match) {
@@ -2930,7 +2829,7 @@
             const messageId = 'msg_' + Date.now();
             messageEl.id = messageId;
             
-            // 데이터셋 기반 답변 내용 정리 및 구조화
+            // 데이터셋 기반 답변 내용 정리
             let answerContent = match.answer;
             
             // 기존에 "답변:"으로 시작하는 경우 제거
@@ -2938,10 +2837,8 @@
                 answerContent = answerContent.substring(3).trim();
             }
             
-            // 데이터셋 답변을 API 답변과 동일한 구조로 변환
-            const structuredAnswer = structureDatasetAnswer(answerContent);
-            
-            const formattedAnswer = structuredAnswer;
+            // 데이터셋 답변은 이미 구조화되어 있으므로 그대로 사용
+            const formattedAnswer = answerContent;
             
             // 피드백용 데이터 정리 (HTML 태그 제거, 길이 제한)
             const cleanAnswer = cleanTextForFeedback(match.answer);
