@@ -1283,7 +1283,7 @@
             
             if (datasetMatch) {
                 console.log('데이터셋 매칭 성공:', datasetMatch);
-                displayDatasetResult(datasetMatch);
+                displayDatasetResult(datasetMatch, message);
                 return; // LLM API 호출하지 않음
             }
             
@@ -2808,7 +2808,7 @@
         }
 
         // 데이터셋 검색 결과 표시 (기존 API 답변과 동일한 형식)
-        function displayDatasetResult(match) {
+        function displayDatasetResult(match, userQuestion = '') {
             const messagesEl = document.getElementById('messages');
             const messageEl = document.createElement('div');
             messageEl.className = 'message bot';
@@ -2819,6 +2819,7 @@
             
             // 피드백용 데이터 정리 (HTML 태그 제거, 길이 제한)
             const cleanAnswer = cleanTextForFeedback(match.answer);
+            const cleanQuestion = cleanTextForFeedback(userQuestion);
             
             messageEl.innerHTML = `
                 <div class="message-avatar">💰</div>
@@ -2828,10 +2829,10 @@
                         <button class="action-btn copy-btn" data-message-id="${messageId}" title="답변 복사">
                             📋 복사
                         </button>
-                        <button class="action-btn feedback-btn" data-message-id="${messageId}" data-type="positive" data-question="" data-answer="${cleanAnswer}" title="좋은 답변">
+                        <button class="action-btn feedback-btn" data-message-id="${messageId}" data-type="positive" data-question="${cleanQuestion}" data-answer="${cleanAnswer}" title="좋은 답변">
                             👍 좋은답변
                         </button>
-                        <button class="action-btn feedback-btn negative" data-message-id="${messageId}" data-type="negative" data-question="" data-answer="${cleanAnswer}" title="나쁜 답변">
+                        <button class="action-btn feedback-btn negative" data-message-id="${messageId}" data-type="negative" data-question="${cleanQuestion}" data-answer="${cleanAnswer}" title="나쁜 답변">
                             👎 나쁜답변
                         </button>
                     </div>
