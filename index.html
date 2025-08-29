@@ -1283,7 +1283,14 @@
             
             if (datasetMatch) {
                 console.log('데이터셋 매칭 성공:', datasetMatch);
-                displayDatasetResult(datasetMatch);
+                setLoading(true);
+                
+                // 15초 대기 후 데이터셋 답변 표시
+                setTimeout(() => {
+                    displayDatasetResult(datasetMatch);
+                    setLoading(false);
+                }, 15000);
+                
                 return; // LLM API 호출하지 않음
             }
             
@@ -1993,6 +2000,9 @@
             
             // 줄바꿈을 <br>로 변환
             message = message.replace(/\n/g, '<br>');
+            
+            // 근거 숫자 뒤 문장 간격 조정 (3칸 띄우기)
+            message = message.replace(/(\[\d+\])([^<])/g, '$1<br><br><br>$2');
             
             // 제목 스타일링 (넘버링 포함)
             const titleStyle = 'color: #333; margin: 50px 0 -20px 0; font-size: 18px; border-bottom: 2px solid #667eea; padding-bottom: 0px;';
